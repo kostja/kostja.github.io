@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-I'm a software developer with Mail.Ru Group, where I work on an open source NoSQL database [Tarantool](http://tarantool.org)
+I'm a software developer with Mail.Ru Group, where I work on an open source NoSQL database [Tarantool](http://tarantool.org).
 
 My github page: 
 {% include icon-github.html username="kostja" %} /
