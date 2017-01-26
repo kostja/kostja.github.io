@@ -1,0 +1,19 @@
+---
+layout: post
+date:      2008-03-12 01:25
+title: Bug#12713
+---
+
+Since about 20 months after start, a solution for <a
+href="http://bugs.mysql.com/12713">Bug#12713</a> finally reached the main
+tree.
+
+If you're not using stored functions this may have a very little effect on
+you, since other than fixing the problem at hand it was no more than a
+cleanup of the execution flow and the server/storage engine interaction.
+Anyway, it was a difficult one, one out of a dozen of design gotchas we
+added to the server with 5.0. The all-time record for that sort of difficult
+bugs
+
+is <a href="http://bugs.mysql.com/989">Bug#989</a>, reported back in 2003
+and planned for a fix in  6.0 only.
