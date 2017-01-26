@@ -1,0 +1,60 @@
+---
+layout: post
+date:      2005-11-02 01:21
+title:   SuSE 10 and en_US.UTF-8
+categories:      linux, suse
+---
+
+<p>I must have been depressed. I don't know what struck me. Anyway, yesterday I replaced my nicely working SuSE 9.1 with OpenSUSE 10. </p>
+
+<p>Well, I had reasons -- mainly thinking of better ACPI and Wi-Fi support. Plus utf8->koi8 recoding plugin didn't work that well in irssi. And also 2.6.4 kernel of SuSE 9.1. And I decided that it's about time to switch to en_US.UTF-8 (from ru_RU.KOI8-R). Here's what I encountered:</p>
+<lj-cut>
+<p><b>UTF-8 issues:</b><ul>
+<li>ZSH <a href="http://zsh.dotsrc.org/FAQ/zshfaq02.html#l16">doesn't support it</a>. That is, it doesn't crash, but non-ascii characters get garbled when you type them.</li>
+<li>Mutt works well. Needed to add
+<pre>
+set charset=utf-8
+</pre>
+to .muttrc and then found how many mail headers are malformed. 
+Everything readline-based (e.g. bash) works well.</li>
+<li>Xterm works after adding
+<pre>
+XTerm*utf8: 1
+XTerm*font: -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1
+</pre>
+to .Xdefaults.</li>
+<li>Rxvt doesn't support unicode. There is rxvt-unicode (urxvt) project that supports UTF-8, and works quite well.
+
+To have syntax highlighting work in urxvt I had to set
+<pre>
+URxvt.termName: rxvt
+</pre>
+in .Xdefaults.</li>
+<li>There are two decent raster unicode font packages, <a href="http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html">ucs-fonts</a> and <a href="http://openlab.jp/efont/">efont</a>. Both are shipped with SuSE. Xterm hangs when started with efont (Update: <a href="https://bugzilla.novell.com/show_bug.cgi?id=131998">Bug#132998</a>), and
+there is no 12x24 font in ucs-fonts, so I use urxvt + efont-fixed-10x24.</li>
+<li>Vim works out-of-the-box, but langmap doesn't work even after conversion from KOI8-R to UTF-8.</li>
+<li>mova/Mueller dictionary -- still need to think how to hack it to make it work, have already faced the trouble when tried to set it up for <lj user="mashka_naoshka"/> (she uses Fedora Core 3)</li>
+<li>Fido -- Golded goes off the rocket. Yet another reason to dump it.</li>
+<li>a2ps (text to postscript converter) -- doesn't convert UTF-8 proprely texts. Moreover, it stopped converting KOI8-R texts either. The problem is probably with fonts.</li>
+</ul></p><p>
+
+<b>SuSE 10 issues:</b>
+<ul>
+<li>Misses half of the needed packages. No such trivial packages as licq or ncftp. Of course no Mplayer and no w32codecs-all (video playback codecs). No jpilot but plenty of KDE and GNOME tools to work with handhelds. Of course no urxvt-unicode.</li>
+
+<li>As usually, package dependencies are crappy. You want xmms-plugins (7 MB), and it depends on Wine (50 MB). You want Gaim, and it depends on evolution-data-center, (15 MB).</li>
+<li>Installs gcc 4.0.2 prerelease as the default compiler. I hope the kernel wasn't compiled with it.</li>
+<li>XMMS won't play mp3 out of the box due to licensing issues. You need to install xmms-lib-mad and mad (mpeg audio decoder library).</li>
+<li>Postfix: make sure to edit /etc/sysconfig and have tlsmgr started if you use tls transport in postfix.</li>
+<li>Mozilla-Firefox from www.mozilla.org crashes under SuSE 10 whenever I want to download something. The shipped Mozilla-Firefox works better, but still crashes.
+Mozilla-Firefox in SuSE 9.1 almost never crashed for me.</li>
+<li>ttmkfdir is not shipped, I had to install an ALT-Linux RPM.</li>
+<li>IceWM has a new configuration files format. The current theme name is taken from .icewm/theme and as I use a custom theme I had to move it from ~/.icewm/Infadel2 to .icewm/themes/Infadel2/ to make it accessible from within .icewm/theme.
+What's worse, icepref and icemenu are not included into 10.0 and their packages from 9.3 don't work in 10.0 (wrong version of python-gtk). So, no icewm/icepref
+in 10.0.</li>
+<li>Valgrind 3.0 is too slow and generates too much noise leaks which I failed to suppress. Downgraded to 2.4.1.</li></ul></p>
+Overall, I think SuSE is not getting better as fast as other distributions. SuSEConfig is still run every time I install a package, hardware detection is still started whenever I simply want to change an option in my network setup. Still no such thing as apt-get or yum or emerge for updates.
+<p>
+Update: talked with <a href="http://www.lenzg.net/">Lenz Grimmer</a> about my troubles, and regarding missing packages it turned out that I was
+using an evaluation DVD burnt from the publically available ISO images. The most prudent thing to do after installing from it would be to mirror the full 
+repository from <a href="ftp://ftp.citkit.ru/pub/Linux/SuSE/suse/i386/10.0/">somewhere</a> or supply YaST with a reference to a mirror.</p>

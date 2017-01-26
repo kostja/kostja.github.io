@@ -1,0 +1,8 @@
+---
+layout: post
+title: begun.ru is growing nicely
+date:      2005-06-11 12:33
+---
+
+Webplanet.ru writes that <a href="http://www.rambler.ru">Rambler</a> considers buying <a href="http://www.begun.ru">Begun</a> (a context ad system) for $750k.
+It's nice to see how grows business success of the project of which you implemented a good hunk :)

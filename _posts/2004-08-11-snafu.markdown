@@ -1,0 +1,7 @@
+---
+layout: post
+date:    2004-08-11 20:23
+title:   "Word of the day"
+---
+
+snafu
