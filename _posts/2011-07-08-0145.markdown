@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2011-07-08 01:45
+title:   Tarantool, yet another 1.4 feature made it into 'master' branch
+---
+
+This week we pushed a new implementation of Memcached protocol support. Up until now, Tarantool had a special "memcached" mode, working as a persistent replacement for the traditional memcached install.
+Since Tarantool connectors are still rather scarce, we decided to split the caching logic from the protocol logic.
+From now on, memcached protocol is just another protocol Tarantool supports, and it is used when you bind to 
+<a href="http://tarantool.org/tarantool_user_guide.html#memcached_port">memcached_port</a>. Memcached protocol doesn't imply memcached expire, and you <a href="http://tarantool.org/tarantool_user_guide.html#memcached_expire">can turn expire on/off</a> separately. 
+
+Memcached now works correctly in local hot standby mode and on a replica.

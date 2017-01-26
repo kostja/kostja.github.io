@@ -1,0 +1,18 @@
+---
+layout: post
+date:      2013-04-30 01:16
+title:   Importance of intra-query parallelism.
+---
+
+Oracle Database has a feature which allows it to query millions of rows in parallel while executing a join which has a big fanout.
+How important is it that a database server has a lot of intra-query concurrency? Does it still make a lot of sense to run an analytical query in parallel threads, on a single machine?
+
+While at Percona Live, there was  a lot of talk about the future of MySQL, and some even mentioned this as being part of the future. 
+
+The reason for intra-query parallelism has always been to fill up the pipeline to disk with lots of parallel queries. Indeed, this pipe is thick and long - and if used, it'd better produce a lot of data at once. Efficiency of CPU utilization is sacrificed to achieve efficiency of a rotating disk drive.
+
+Yet in DaaS world this all fails to make sense to me. In a cloud, one execution unit is not one CPU, but one instance, and one database instance equals to a cluster of virtual machines. Map/Reduce was only the first sign of the change - it is stupid, indeed, but network is faster than disk, and if a query needs to inspect a million of rows, they'd better be on thousands of disks, not on a single one. 
+
+It's funny how MySQL technology is steadily pulled up-market. I haven't seen a single project use MySQL Stored Procedures, which were created for SAP R/3 integration, in applications they were created for. Perhaps, when parallel query in MySQL is ready, it also will be used for something completely different.
+
+Meanwhile, I think the task of coming up with an efficient join algorithm to run across sharded data is more in line with the way hardware is going to look like in the future. Sharding is done best when not done at all. But so is concurrency.

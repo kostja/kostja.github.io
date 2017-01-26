@@ -1,0 +1,342 @@
+---
+layout: post
+date:      2011-04-15 09:35
+title:   Presentation notes metadata locking in MySQL 5.5.
+---
+
+If you missed the talk, I have everything written down. I have more notes than slides: in the end, I decided to have as few text-only slides as possible, they do not add much to the content anyway.
+
+<h3>Slide 1  Introduction</h3>
+
+<p>
+Hi, my name is Konstantin Osipov, I'm a software engineer with 
+Mail.Ru where I develop an open source NoSQL storage server called
+<a href="http://tarantool.org">Tarantool</a>.
+</p><p>
+Before joining Mail.Ru I was for a long time a server engineer with MySQL,
+and took part in making MySQL 5.5 happen.
+</p><p>
+My talk is therefore about the changes we made to server locking in 5.5,
+why they're beneficial, the performance improvements they brought,
+and making use of it in conjunction with MySQL PSEA architecture.
+</p>
+
+<h3>Slide 2 Background</h3>
+
+<p>
+People familiar with MySQL development "kitchen" perfectly know that
+it was often problem-oriented, that is, focused on 
+making existent features work more consistently, improving feature
+interoperability, rather than developing new features 
+from scratch or re-designing existing ones.
+</p><p>
+In such environment it often happens that when you begin attacking
+a problem you don't know where you are going to end, and when you end,
+it's not the place you probably wanted to be in.
+</p><p>
+Luckily, and, on the hindsight, I can say this with conviction, 
+MySQL metadata locking turned up a pretty good server system, and,
+compared to other approaches, an adequate one in the 
+context of the overall server architecture.
+</p><p>
+I'll try to convince you about that in this talk, but please let
+me first
+</p>
+
+<h3>Slide 3 Define the problem </h3>
+
+<lj-cut />
+<p>
+In a pure abstraction, it's all about dealing with conflicts 
+between readers and writers. The system doesn't have to be
+transactional for such conflicts to occur and not in every
+system such conflicts need to be resolved by means of 
+a locking mechanism.
+</p><p>
+A concrete example is a concurrent execution of UPDATE and
+ALTER TABLE statements on the same table. 
+</p><p>
+When executing it in parallel, the RDBMS needs to protect not
+only the consistency of data on disk, but the practical
+consistency of shared data structures in main memory, various
+caches, and so on.
+</p><p>
+Whoops, but thusly defined, 
+</p>
+
+<h3>Slide 4 The problem doesn't exist</h3>
+
+
+<p>
+or is part of a bigger picture.
+</p><p>
+Indeed, in a classic RDBMS, the server doesn't specifically 
+protect DML from DDL statements. Naturally, as long as the 
+catalog data is represented just the same as any other data -
+in a relational table, the DBMS can use the same mechanism to
+protect catalog data as it uses for any other relation. 
+</p><p>
+An example: a row-based locking engine. 
+</p>
+
+<h3>Slide 5 PostgreSQL approach</h3>
+
+<p>
+In this vein, PostgreSQL consistently uses MVCC to access a 
+catalog table like it does for any other relation.
+Since each transaction has its own consistent read view of 
+the database, a DML statement sees a snapshot of catalog data,
+and DDL can be fully online. 
+</p><p>
+One may wonder, how can one implement replication in this environment.
+After all, to apply changes to the slave, one needs to come up
+with a serial order of all transactions running in the system
+(this is what the binary log, after all, is: a serial order
+of all transactions), and such order would not be possible to come
+up with in a consistent read- based server.
+</p><p>
+Unlike MySQL, and similarly to some of the MySQL storage engines,
+PostgreSQL employs physical replication: the 
+binary log contains information about files and blocks, not 
+tables and records. Therefore, statement-based replication
+will, most likely, never be done in PostgreSQL.
+</p><p>
+
+<h3>Slide 6 The realm of MySQL architecture</h3>
+
+<p>
+The elegance of a uniform approach to locking of data and metadata
+is out of reach for a complicated and heterogeneous RDBMS,
+such as MySQL.
+</p><p>
+Indeed, the server needs to maintain consistency not just between
+table data and catalog data in one MVCC, but between multiple
+storage engines, engines and the binary log, data and the
+query cache, or, ultimately, multiple MySQL server nodes in MySQL
+cluster.
+</p><p>
+On top of that, not all engines support transactions or row
+locks (only table level locks), some engines don't support their
+own catalog of data.
+</p><p>
+(A diagram with MySQL subsystems)
+</p><p>
+Maintaining consistency between all these subsystems
+had a lot of holes: and here's the proof:
+</p>
+
+<h3>Slide 8 List of bugs dealt with by the new locking</h3>
+
+
+<p>
+Overall, we can group these problems in these categories:
+<dir>
+<li>
+Lack of transactional duration of a lock. DROP or ALTER
+could delete a table under the feet of a running transaction,
+therefore violating ACID.
+<li>
+Broken statement (and sometimes row-) based replication
+of tables, views, stored routines. A replication log could
+go out of sync with the actual order of events: a DDL on
+the slave could execute before DML, lead to DML failure on
+slave, stop replication.
+<li>
+Lack of hierarchical locks. DROP DATABASE could easily
+deadlock when there were other DDL statements running in 
+parallel.
+<li>
+Scalability of the table cache (abuse of LOCK_open). 
+<li>
+Locking of Merge tables.
+<li>
+Inter-subsystem deadlocks (GRL + table cache + flush)
+</dir>
+
+<h3>Slide 9 In come the metadata locks</h3>
+
+
+<p>
+MySQL needed a stand-alone locking mechanism, usable with
+all engines and by all participants. We needed a single
+system that could be used to protect a single table, for
+usual ALTER/DROP/CREATE, a schema, for statements like 
+RENAME DATABASE, or the entire instance, in cases such
+as SET GLOBAL READ ONLY.
+</p><p>
+It should be possible to take a lock only based
+on object name, with no knowledge of the underlying
+storage engine, without having to access any data structures,
+plug-ins or other objects -- because such data structures
+or plug-ins may themselves require protection by metadata locking.
+</p><p>
+It should be possible to gradually acquire one
+lock after another, without risk of a deadlock:
+take a lock on a table based on its name, open its definition, discover that
+it's a view, and go on with locking of the underlying view objects.
+</p><p>
+It should be possible to specify lock duration, for
+short-lived lock, such as a single statement, normal locks,
+lasting from transaction start to end, and special 
+MySQL locks, lasting indefinitely long -- those taken
+by LOCK TABLES and HANDLER statements, and all that
+without causing too much deadlocks.
+</p>
+
+<h3>Slide 10 What a metadata lock is</h3>
+
+<p>
+A metadata lock thus is identified by a type and a name. 
+The system can support arbitrary types, and logical
+nesting of object types (e.g. tables belong to schemas).
+Lock compatibility matrix for each type may differ.
+</p><p>
+Each lock has a list of pending and granted tickets. 
+A ticket identifies the thread, which was granted the lock,
+and the lock type -- the same lock object may be granted
+to many threads, if their request types are compatible
+with each other.
+</p>
+
+<h3>Slide 11 How this solves the problem</h3>
+
+
+<p>
+A metadata lock is taken on each name 
+prior to the use of the named object. 
+If an object is part of a hierarchy, 
+an intention lock is taken on the parent
+until we reach the scope of the universe.
+</p><p>
+Lock duration allows MDL to
+automatically free locks at statement
+end, transaction end, and so on.
+</p><p>
+While we still employ deadlock avoidance techniques,
+deadlock detection is a saviour for cases
+when lock order is ad-hoc, or try-and-back-off
+approach could not be used.
+</p>
+
+<h3>Slide 12 Hierarchical locks</h3>
+
+<p>
+MDL supports hierarchical locks. 
+They allow one to lock an entire instance
+or an individual schema.
+</p><p>
+Benefits:
+</p><p>
+BACKUP DATABASE no longer needs to take
+down the entire instance
+Online backup is deadlock-detection aware
+</p>
+
+<h3>Slide 13 The comforts of deadlock detection</h3>
+
+<p>
+MySQL used to employ lock avoidance techniques 
+that worked in 99% of cases (c) Monty.
+</p><p>
+However, with longer lock durations, lock
+requests can come in ad-hoc order: some
+deadlock detection mechanism becomes mandatory.
+</p><p>
+Besides, just taking your chances, rather
+than trying to avoid a deadlock, makes
+the most used case simpler and more efficient.
+</p><p>
+What is our deadlock detector?
+</p><p>
+We feature a graph-based deadlock detection. There
+may be parallel searches in the graph going on
+a the same time, and each search would inspect the
+relevant part of the subgraph.
+</p><p>
+Even though the problem of finding a cycle in a graph
+is NP-complete, and we employ a simple breadth-first 
+search, the practical performance is excellent, since
+most often the wait-for graph in MDL consists of a large
+number of disjoint and small subgraphs. 
+</p><p>
+KISS.
+</p><p>
+When choosing a victim, we look at lock priority:
+DDL is more important than DML, and DML usually gets
+aborted.
+</p>
+<h3>Slide 14 Performance</h3>
+<p>
+http://www.markleith.co.uk/?p=471
+</p><p>
+There is a myth in C/C++ developers community that mutexes are a
+danger and should not be used, which was further inflated by mass
+adoption by lock-free algorithms. The lesson we learned with MDL
+is that mutexes aren't "evil": it's important to make sure that
+the mutex is not contended, and that the critical path uses a
+moderate amount of mutexes (each unlock is a CPU cache flush).
+If these two precautions are made, mutexes can be used to 
+build highly scalable apps.
+</p><p>
+MDL at it start received some criticism, such as it
+adds a new subsystem, a new mutex on the critical path.
+It should be understood that this is a replacement mutex:
+the goal is to unify all locks and MDL makes it possible.
+MDL can even wrap other mutexes into its locks, and thus 
+make the mutex order deadlocks visible to the deadlock detector.
+</p><p>
+The other piece of criticism was that the graph-based deadlock
+detection is very slow, especially when you have a thousand of
+nodes, and the problem finding a loop in this grpah is NP complete. 
+In practice, however, our graph is very disjoint, and typical
+deadlock cycle length is under 4. Setting a cap on the depth
+of the search solves the complexity problem and is a
+very acceptable solution in the circumstances.
+</p>
+<h3>Slide 15 How to plug in</h3>
+<p>
+You need to plug-in to let MySQL detect
+cross-storage engine deadlocks.
+</p><p>
+We don't dictate how you represent your wait-for subgraph:
+this allows various subsystem to use simpler implementations,
+or re-use their existing data structures.
+</p><p>
+We have stored our data structure that represents the wait-for
+graph in a thread local data. It's not a standalone data structure:
+it's simple, since there is a place for only one verge.
+The locks are taken one at a time, so we do not need to store a
+complicated graph.
+</p><p>
+To plug in:
+<dir>
+<li> it's safe to include "mdl.h" since it's a standalone header
+  which does not require the rest of the server.
+<li>implement a MDL_waitfor_subgraph, to accept MDL_waitfor_graph_visitor
+<li> let the MDL system know you're waiting,
+  by using MDL_context::will_wait_for()
+</dir>
+</p>
+<h3>Slide 16 The roadmap</h3>
+<dir>
+<li> cross-storage engine deadlock detection
+by plugging into the deadlock detector
+<li> extending the locking to the cluster
+<li> elimination of handler::store_lock API for those
+engines that don't need it.
+<li> use of atomics for shared locks 
+<li> sharding of the MDL set
+<li> more of the status and performance schema instrumentation
+</dir>
+<h3>Slide 17 References</h3>
+<p>
+The worklogs:
+
+<a href="http://forge.mysql.com/worklog/task.php?id=3983">WL#3983</a>
+<a href="http://forge.mysql.com/worklog/task.php?id=3726">WL#3726</a>
+<a href="http://forge.mysql.com/worklog/task.php?id=4284">WL#4284</a>,
+
+<a href="http://bazaar.launchpad.net/~mysql/mysql-server/mysql-trunk/view/head:/sql/mdl.h">the source</a>,
+
+<a href="http://forge.mysql.com/w/images/0/0a/Mdl.pdf">the pdf</a>.
+</p>

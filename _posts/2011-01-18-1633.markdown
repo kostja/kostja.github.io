@@ -1,0 +1,33 @@
+---
+layout: post
+date:      2011-01-18 16:33
+title:   Functional testing of Tarantool
+categories:      python, yapps, tarantool, testing
+---
+
+<div><a href="http://github.com/mailru/tarantool">Tarantool</a> offers clients a simple binary protocol with basic data manipulation commands - GET, PUT, SET, DELETE. All administrative commands, however, must be sent in textual form to a separate, administative port. A separate port is useful as long as there is no authentication support. Examples of administrative commands are 'SAVE SNAPSHOT' or 'SHOW STAT'.</div><br /> <div>The whole thing had a few functional tests, but all of them required to be run manually. If you're not the one who wrote it, you probably wouldn't know how to run it.</div><br />  <div>I was looking for something that would be easy to write and easy to run. It needed to be a lingua franca of testing, used both by developers and quality assurance engineers. It would also be nice to be able to easily express in the new framework test cases for discovered bugs.</div><br />  <div>Of course, for an ex-SQL geek, SQL looked very much like the lingua franca. For SQL, after all, there is at least a standardized dialect. Even more orderly it looked when compared to &quot;languages&quot; of key/value storages, which are nowhere near having a common subset -- even though core concepts are the same in all of them.</div><br />  <div>So, I chose SQL. Tarantool/silverbox data operations, if expressed in SQL, consist of 4 main SQL statements: INSERT, SELECT, UPDATE and DELETE. Many restrictions apply, which is OK, thought I, as long SQL can be used without non-standard extensions. Well, the latter wasn't the case.</div><lj-cut><br />  <div>First of all, Tarantool is a key/value storage, not a relational storage. I.e. all commands actually tell the server which key/value pair to change. In SQL terms, that means that all DML statements must be qualified with the primary key. So far, so good, the WHERE clause must be mandatory.</div><br /> <div>Secondly, Tarantool schema objects are indexed, not named. SQL &quot;tables&quot; are called &quot;namespaces&quot;, each numbered from 0 to N. Table access is made using an index number (aka &quot;key&quot;, although I would prefer calling &quot;key&quot; a specific value in an index), not a column name. Index #0 is always treated as the primary key. OK, I reduced the set of allowed SQL identifiers to only those that end with a digit(s).</div><br />  <div>Then, there is of course no fixed table structure. A tuple can have an arbitrary number of fields, as long as there are enough fields to cover all defined indexes. There is no way to SELECT just a few fields. All statements operate with a whole tuple. I locked 'field_spec' in SELECT rule to always be '*' (a wildcard).</div><br />  <div>But then I learned that Tarantool allows INSERT, UPDATE and DELETE to return a tuple. The closest equivalent in SQL terms would be RETURNING clause, which is only proposed for the standard. Not something I was prepared for ;)</div><br />  <div>After all restrictions were applied, a test micro-language emerged.</div><br />  <div>To implement language parsing, <a href="http://kostja-osipov.livejournal.com/32262.html">I used a Python YAPPS parsing library</a>.</div><br />  <div>Since Tarantool administrative statements weren't numerous, I just added a regular expression to filter them out and pipe to a separate socket.</div><br />  <div>After that, it was easy to create a command line tool.</div><br /> <pre>
+kostja@shmita:~/work/tarantool/test$ ./tarantool
+tarantool&gt; select * from t0 where k0 = 1
+No match
+tarantool&gt; insert into t0 values (1, &quot;My first tuple&quot;)
+Insert OK, 1 row affected
+tarantool&gt; select * from t0 where k0 = 1
+Found 1 tuple:
+[1, 'My first tuple']
+tarantool&gt; save snapshot
+---
+ok
+...
+tarantool&gt; show info
+---
+info:
+  version: &quot;1.3.2-264-ga7bb270&quot;
+  uptime: 73
+  pid: 22101
+  wal_writer_pid: 22102
+  lsn: 2
+  recovery_lag: 0.000
+  recovery_last_update: 0.000
+  status: primary
+...
+</pre>  <div>A trained eye will see that I did not invent the wheel and made the command line client look close to 'mysql' command line client.</div><br />  <div>A command line client is good for manual and ad-hoc tests, while to automate testing one needs something like 'mysqltest' program. I'll write about the substitute I came up with in the next post.</div><br />  <div>PS And yes, since Tarantool is open source, my contribution is public. By now it has already been reviewed and is available in our 'master' branch on github.</div><br />  <div>To check it out, you can clone the source, install required dependencies (mostly python stuff -- python-pexpect, python-yaml), compile (make _debug_box/tarantool_silverbox), start the server (cd test &amp;&amp; ./run --start-and-exit) and connect to it (cd test &amp;&amp; ./tarantool).</div></lj-cut>

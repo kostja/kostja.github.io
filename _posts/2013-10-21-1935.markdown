@@ -1,0 +1,7 @@
+---
+layout: post
+date:      2013-10-21 19:35
+title:   The video from NoSQL matters about Tarantool
+---
+
+http://vimeo.com/66713654

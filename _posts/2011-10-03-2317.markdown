@@ -1,0 +1,28 @@
+---
+layout: post
+date:      2011-10-03 23:17
+title:   Implementing auto_increment using Lua stored procedures (Tarantool)
+---
+
+Most databases, which do not natively support SEQUENCE data type require user to create a separate table, or other database object to hold sequence information.
+
+ In Tarantool, thanks to being able to access indexes directly from Lua, supporting sequences is just a few lines of code, wrapping the standard INSERT command:
+
+<pre>
+function box.auto_increment(spaceno, ...)
+    max_tuple = box.space[spaceno].index[0].idx:max()
+    if max_tuple ~= nil then
+        max = box.unpack('i', max_tuple[0])
+    else
+        max = -1
+    end
+    return box.insert(spaceno, max + 1, ...)
+end
+</pre>
+(You can see a syntax-highlighted source with comments <a href="https://github.com/mailru/tntlua/blob/master/auto_increment.lua">here</a>.)
+
+There is no need for locks, mutexes or alike: a stored procedure is atomic. There is also no lying and no mystery implementation
+to support auto_increment for HASH keys: HASH isn't an ordered data structure, and :max() method for it simply throws
+an exception.
+
+To make sure there is good code reuse,  we created an <a href="http://github.com/mailru/tntlua">open source repository</a> with various data structures and algorithms for Tarantool in Lua.

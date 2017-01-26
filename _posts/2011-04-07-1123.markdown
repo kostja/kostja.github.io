@@ -1,0 +1,31 @@
+---
+layout: post
+date:      2011-04-07 11:23
+title:   Open standards in practice
+categories:      presentation, background, openoffice, impress
+---
+
+It's a discovery of the day: you can simply unzip an OpenOffice presentation and edit its contents.
+Useful if you want to gimp-edit background of a slide template:
+
+    kostja@shmita:~/1$ unzip ../1.odp 
+    Archive:  ../1.odp
+     extracting: mimetype                
+     extracting: Pictures/100000000000032000000258038F47C7.png  
+     extracting: Pictures/100000000000032000000258AF6D31CF.png  
+     extracting: Pictures/10000201000000580000001F5DE9F6E5.png  
+     extracting: Pictures/10000000000003200000025801D1316A.png  
+      inflating: content.xml             
+      inflating: styles.xml              
+     extracting: meta.xml                
+      inflating: Thumbnails/thumbnail.png  
+      inflating: Configurations2/accelerator/current.xml  
+       creating: Configurations2/progressbar/
+       creating: Configurations2/floater/
+       creating: Configurations2/popupmenu/
+       creating: Configurations2/menubar/
+       creating: Configurations2/toolbar/
+       creating: Configurations2/images/Bitmaps/
+       creating: Configurations2/statusbar/
+      inflating: settings.xml            
+      inflating: META-INF/manifest.xml

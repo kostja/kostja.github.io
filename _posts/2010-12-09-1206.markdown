@@ -1,0 +1,31 @@
+---
+layout: post
+date:      2010-12-09 12:06
+title:   git vimdiff
+categories:      git, vim
+---
+
+There is a way to implement git vimdiff that I didn't find online. 
+(For some reason git geeks take even the most mundane tasks as a hacking contest, so the most popular way of getting it done involves shell scripting, changing git diff defaults, and asking git diff not to make exceptions from the new defaults).
+
+This is how I managed to do it:
+
+    [alias]
+        commit = commit -a
+            vimdiff = difftool -y -x gitvimdiff.sh
+
+gitvimdiff.sh is a simple wrapper around vimdiff to help difftool understand that the checked out file needs to be on the left in 2-window vimdiff pane:
+
+    kostja@shmita:~$ find . -name 'gitvimdiff.sh' -exec cat '{}' \;
+    #!/bin/sh
+    vimdiff $2 $1
+
+Even though this is not as cryptic as a typical online recipe, still more cryptic than in Bazaar (which I generally find long way more user-friendly):
+
+    kostja@shmita:~$ cat .bazaar/bazaar.conf 
+    [ALIASES]
+    diff = diff --diff-options=-p
+    vimdiff = diff --using=vimdiff
+
+
+BTW, can anybody tell me why alias commit = commit -a doesn't seem to work? Apparently you can't redefine existing commands in git (you can do it in bzr).

@@ -1,0 +1,15 @@
+---
+layout: post
+date:      2012-02-24 01:21
+title:   Garbage collection and CPU cache
+---
+
+Tarantool is garbage collected internally. So is Lua. Garbage collection can do a lot of damage in soft realtime systems,  if done at a wrong time. Luckily, Tarantool is a good example of a Hoare CSP process, so we garbage collect when entering certain states, and where it can't hurt response times.
+
+With Lua, things get more complicated.  A single server query can run a Lua loop, and use a potentially unlimited amount of memory. There is not much you can do about it in a general case. But for a typical use we were looking for a strategy which doesn't use too much memory and doesn't go awry at peaks.
+
+While playing with it we noticed that less memory can also be faster, apparently thanks to better utilisation of CPU caches.
+
+A procedure which inserts 1000000 records ran slower when garbage collection was turned completely off. When simply collecting garbage after each insert, it ran about 2 seconds faster -- which was, looking only at in-memory operations performance, perhaps a 50% performance improve.
+
+I hadn't thought much of it before I learned that in Java turning garbage collection completely off could be a production strategy. Indeed, these Java engineers from a dinner story tonight had so much trouble with its garbage collection, especially at peaks, that it was easier to equip the machine with cartload of memory and reboot it once a day. Easier, at least, than to make the garbage collector work right. Evidently, in the circumstances, CPU cache utilisation was very low on their  priority list :)

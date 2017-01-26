@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2013-08-08 11:25
+title:   Notes from a test plan
+---
+
+It's been a month or so since I've begun looking at the new data dictionary implementation for Tarantool. Roman created a first version 3 months ago, but myself, blame my perfectionism, thought that some flexibility in the way system spaces can be manipulated with won't harm. The idea is that all space metadata is stored in spaces, not in a configuration file. Kind of "kill the .frms in your mind" feature. A user simply updates the "system" spaces and that effects in creation or destruction of spaces, indexes, data types.
+When this whole thing becomes really twisted is that a system space definition also resides in system spaces. There are 3 dedicated spaces - _space - defines space names and ids, _index - defines indexes on spaces, and _format - defines tuple format. And these spaces, in the beginning, contain their own definitions.
+
+Now, here's what I wrote in the test plan for this feature yesterday:
+
+Check that when replacing a tuple in _index system space, thus redefining the primary key in this system space, the new tuple ends up (can be later found) in the new primary key it defines.

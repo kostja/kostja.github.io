@@ -1,0 +1,13 @@
+---
+layout: post
+date:      2009-05-31 01:10
+title:   Bug#8523, MySQL users
+---
+
+If you're in airline business, what you do has a lot of impact. Airports are crossroads of emotions, dramas, life-changing events. What you do can give you a lot of satisfaction, as well as bring a lot of satisfaction to passengers.
+
+Doing databases, or, at least, working on MySQL, to me feels the same. I feel personally responsible for success or failure of the entire organization, in other words, whether our, MySQL, "flight" is on time. Emotionally, this is very hard. Hard to objectively accept and tackle mistakes, hard to stay motivated when you feel that your contribution is not making a difference.
+But it's what it makes a dream job, too, at least for me.
+
+Bugs like <a href="http://bugs.mysql.com/8523">Bug#8523</a>, and before that, <a href="http://bugs.mysql.com/989">Bug#989</a> is what makes MySQL an airline company.
+So if you're on the other side of it, be sure, your comments do make a difference.

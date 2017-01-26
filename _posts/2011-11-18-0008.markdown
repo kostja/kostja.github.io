@@ -1,0 +1,20 @@
+---
+layout: post
+date:      2011-11-18 00:08
+title:   Support case of the day
+---
+
+I'm not used to support duties, so every time I get a call like that it's a bit frightening: replication doesn't work. A connect to master gets established OK, the server receives updates, but the replica... uhm... sits on LSN #1. 
+
+Hm.. what could be causing this?-)
+ 
+Tarantool has a master port, which speaks binary request/response protocol, and a separate replication port, which simply expects a binlog position(64-bit integer) on connect and then keeps feeding the replica WAL updates. 
+Now, case in question, the replica would connect to the master port and begin the infinite wait...
+
+The problem was easy to detect since the master didn't even listen on its replication_port. 
+
+Now, I'm thinking how to fix this. One solution is to simply merge two ports and agree on protocol type during handshake. 
+
+Another is to leave things as is but add handshake to replication.
+
+Once (if) we get authentication support, we'll need to merge all ports into one anyway.

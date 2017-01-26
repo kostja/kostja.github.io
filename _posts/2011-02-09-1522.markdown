@@ -1,0 +1,28 @@
+---
+layout: post
+date:      2011-02-09 15:22
+title:   Now using CMake
+categories:      cmake, tarantool
+---
+
+Spent last week moving away from hand-written GNU make files to CMake build
+scripts. CMake is an example of an instrument built on a fairly weak
+foundation, but with a lot of practical insight. It is quite easy to use,
+and it just works. However, if something hasn't been purposefully built into
+the tool, it's most likely not there.
+
+Ability to concatenate several files into one is one such example: you can
+do it when configuring the project, by means of FILE command, but you can't
+do it in a build rule, since FILE command wasn't designed for use in
+custom build rules.
+
+Not that I need it that much, but I was also unable to figure out how to
+create a "meta" build rule, i.e. apply a set of build commands to all files
+with a certain extension: you can create a function, which, when invoked,
+defines a new target, but I found no way of specifying that e.g. .rl files
+must be built into .c files prior to everything else.
+
+In any case, my main goal was attained: instead of a set of custom written
+makefiles, Tarantool standardized on an existing and widely adopted
+configuration management tool. And yes, I've been using autotools before,
+and do think that CMake is a step, if not a leap, forward.

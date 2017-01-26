@@ -1,0 +1,14 @@
+---
+layout: post
+date:      2012-02-22 23:33
+title:   A new look of tarantool.org
+---
+
+<p>After sitting for more than two months on a branch, a new, <a href="http://jinja.pocoo.org">static CMS</a>-based layout finally got filled up with content (mostly) and made its way to the <a href="http://tarantool.org">web site</a>.
+</p>
+<p>
+Yay :)
+</p>
+<p>
+The logo is not finished yet. We needed something shorter than tar@antool, and a contraction of 'T', 'n' and 't' wins hands down in this respect :).
+</p>

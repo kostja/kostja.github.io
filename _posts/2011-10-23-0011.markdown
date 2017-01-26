@@ -1,0 +1,9 @@
+---
+layout: post
+date:      2011-10-23 00:11
+title:  A first principle of construction
+---
+
+A first principle of construction: on no account allow the engineering to dictate the building’s form . . . .
+never modify the social spaces to conform to the engineering structure of the building.
+–Christopher Alexander

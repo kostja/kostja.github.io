@@ -1,0 +1,13 @@
+---
+layout: post
+date:      2010-12-09 12:23
+title:   Speaking at O'Reilly MySQL Conference!
+---
+
+Yay! My talk on new metadata locking in 5.5 was accepted to the 
+<a href="http://en.oreilly.com/mysql2011">O'Reilly MySQL Conference</a>
+
+I'm happy to be given a chance to come and visit this place again (7th time!), especially since I know that it reinvents itself every year. 
+
+This year it's going to be different: as far as I can see, there is close to no participation in the conference on the Oracle side, and the content is being provided almost fully by the rest of the community. 
+Nothing to worry about if one looks for best talks -- last year's most popular sessions were delivered by Percona and Monty Program speakers anyway -- but very likely this year's participation will be, as in good old days, fewer suites and more engineers.

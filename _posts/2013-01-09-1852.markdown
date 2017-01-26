@@ -1,0 +1,16 @@
+---
+layout: post
+date:      2013-01-09 18:52
+title:   Tarantool on_connect/on_disconnect triggers.
+Picture:   fish_magic
+---
+
+I've just pushed <a href="https://github.com/mailru/tarantool/commit/db6d2c844025d26cfbd7e7b89e1510eec2235a99" target="_blank">on_connect/on_disconnect trigger support</a> into the master branch. This was mainly done to be able to keep track of abnormally disconnected clients - an activity necessary when Tarantool is used as a persistent asynchronous messaging server. 
+
+When stored procedures are added early in a product life cycle, they quickly permeate all parts of server functionality.
+
+Tarnatool doesn't have authorization, but an on-connect trigger can be used for it: client address is available in the trigger and if a trigger throws an error, the erorr is sent to the client and the connection is dropped. 
+
+The next in line for merge to the master is box.io library - event-driven TCP and UDP I/O, again available in our stored procedures.
+
+Thanks to Lua, the project is melding into a mix of an application and a database server, and our users seem to like it a lot.

@@ -1,0 +1,29 @@
+---
+layout: post
+date:      2012-04-04 11:11
+title:   munmap() performance on Linux
+---
+
+munmap() is slow on Linux, and it is linear from the chunk size. 
+I have known about it for a while, but haven't got a chance to investigate why.
+
+Anyone knows the reason? The problem is so serious that when working with large memory volumes Tarantool has to fork off a separate thread just to do munmap(), to avoid serious latency issues in the connection thread.
+
+This morning I got a chance to actually <a href="http://pastebin.com/9HgqS3Tv">write a test program</a> and measure the impact.
+An interesting result is that it gets relatively faster with a larger chunk.
+
+    kostja@atlas:~$ ./a.out 
+       size  	mmap time	munmap time	t1/t2   	t2/size
+       1048576	0.000006	0.000281	46.833333	0.026798
+       2097152	0.000008	0.000388	48.500000	0.018501
+       4194304	0.000006	0.001230	205.000000	0.029325
+       8388608	0.000008	0.000680	85.000000	0.008106
+      16777216	0.000002	0.001550	775.000000	0.009239
+      33554432	0.000002	0.002711	1355.500000	0.008079
+      67108864	0.000006	0.005897	982.833333	0.008787
+     134217728	0.000007	0.010866	1552.285714	0.008096
+     268435456	0.000004	0.020137	5034.250000	0.007502
+     536870912	0.000005	0.040046	8009.200000	0.007459
+    1073741824	0.000011	0.067541	6140.090909	0.006290
+
+PS If you have Solaris/Darwin/FreeBSD at hand, I would love if you repeat the program and paste your numbers.

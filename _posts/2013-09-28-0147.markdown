@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2013-09-28 01:47
+title:   open_memstream()
+---
+
+Have you heard about <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/open_memstream.html" target="_blank">open_memstream()</a>? This is a nice addition of POSIX 2008. 
+Good little step towards bringing down the number of different string classes in an average C/C++ program.

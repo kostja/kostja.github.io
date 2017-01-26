@@ -1,0 +1,20 @@
+---
+layout: post
+date:      2012-04-10 09:23
+title:   Cost of a syscall
+---
+
+The problem with modern hardware is that it's impossible to know *how* expensive things are.
+A simple thing such as a memory access can mean an L1 cache hit, L2 cache hit, cache miss, or a page fault. Cost difference is 1000000 times.
+
+This leads to a programming style when an engineer doesn't know and doesn't want to know what machine instructions his/her code will produce, and how much they will cost.
+This situation, which was normal in 90s when CPU speeds doubled every 2-3 years, nowadays is an obscure and crippling effect of Moore's law.
+
+A syscall which blocks, even momentarily, is bound to cost way more than a system call which doesn't: a context switch not only has to do more work, it potentially thrashes L1/L2 cache, so is fraught with consequences.
+Just to find out how much it may cost, my colleague <lj user="avdicius" /> <a href="http://pastebin.com/Sp5vBL39">set up a small benchmark</a>, which ping-pongs a single byte between two processes using a pipe. 
+
+The result is 200000 writes to a pipe per second. Or, peak 100000 rps with 100% CPU utilization when handling a request involves working with some sort of device.
+For comparison, writing to a pipe which doesn't block costs less than 1/12 of that.
+
+Now, above is not just a funny example, it's a puzzling example of a program which runs *faster* when the system has more work to do. Run the above test in multiple instances, and *each* instance gets a performance boost.
+So far I've been unable to rationally explain this part.

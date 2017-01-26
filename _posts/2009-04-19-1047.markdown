@@ -1,0 +1,21 @@
+---
+layout: post
+date:      2009-04-19 10:47
+title:   Working in Hyatt Regency Santa Clara
+---
+
+I'm in Santa Clara since yesterday, at MySQL Users Conference.
+
+This will be my fifth conference: I missed only one since 2003. I was
+supposed to come as a guest, but my friend and colleague Dmitri didn't get a
+US visa, so I am speaking in his stead. Me and Peter Gulutzan will present
+new all-engine foreign keys. Oh. 
+
+So I'm working from Hyatt. It's a great sunny day, the air here is clear and
+fresh, and everybody is enjoying the weekend.  Well, as mentioned, except
+me, and maybe Drizzle developers, who already started Drizzle developer
+conference :)
+
+Musing about this all, I took a step back, and thought: so typical of me:
+
+<img src="http://i350.photobucket.com/albums/q419/kostja_priutsky/hyatt.jpg" />

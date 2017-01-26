@@ -1,0 +1,32 @@
+---
+layout: post
+date:      2010-05-02 17:00
+title:   Blogging is a marketing instrument
+---
+
+Disclaimer: this post is not intended for the planet. When aggregation of my
+blog was set up, there was an agreement that only posts with certain tags
+are syndicated. This setting is perhaps no longer operational.
+
+As a speaker at an O'Reilly conference, I got a free book, "Confessions of a
+public speaker" by Berkun. Despite the somewhat cheesy title, I found the
+book practical and amusing. The book has a lot of hands-on material and is
+written in a live, entertaining manner. 
+
+Especially when comparing with a voluminous college book on rhetoric, which
+I got myself a few years ago, and since then never touched. Berkun's book is
+an easy read, and I worked it off on planes and in Moscow metro.
+
+The matter of good rhetoric deserved an own chapter, called "The art of
+making a point". Berkun writes, that the art did not change much since the
+ancient Greece, and success is still achieved by three major components:
+logic, character and emotion (Logos, Pathos, Ethos). Still, the manner of
+public speaking (the emotion), has evolved, and, notes Berkun, got to be
+measured right, in proportion to the character of the audience. He compares
+a modern lecture on a technical subject with a modern sermon, and notes that
+the level of emotion differs.
+
+Similarly, classical marketing materials, created by professional corporate
+staff look out of place in the modern world of blogging, where the distance
+between hands-on technical people and users/consumers is significantly
+shorter.

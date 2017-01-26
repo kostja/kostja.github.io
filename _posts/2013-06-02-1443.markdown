@@ -1,0 +1,44 @@
+---
+layout: post
+date:      2013-06-02 14:43
+title:   Evaluating a MySQL database connector
+categories:      mysql, lua, tarantool
+---
+
+Since Tarantool stored procedure API was extended with socket I/O, a whole universe of applications for data-enriched networking (routing, proxying, PUSH-notifications, and so on) has become possible.
+
+But there is one case which doesn't lend itself so easily: anything MySQL. The first scenario I'd love to support is when Tarantool works as a smart write-back cache for MySQL, providing a higher update RPS, but automatically maintaining a slightly dated copy of all the data in a relational database.
+
+One dramatic shortcoming of MySQL universe, which, IMHO, if addressed properly, could spark a whole new set of uses and third-party solutions, is the clumsiness of the client-server protocol.
+
+The MySQL client-server protocol is unnecessarily hard to implement: it is built on top of a layered design, with built-in compression and transport-level tricks to be able to communicate over unreliable protocol such as UDP.
+
+A separate issue still not done right is that replication has never been considered part of the protocol or the client library (there is even <a href="http://github.com/Begun/libslave" target="_blank">an open source project solving exactly this problem)</a>.
+
+In Tarantool, a user of the connector can read the replication stream in just the same way as he/she would read result set of an ordinary query, and this adds a whole new set of ways in which a database can be used. 
+
+Finally, the MySQL library itself lacks necessary modularity: socket I/O, SSL encryption, character set support, prepared statement support, zlib compression, even reading client passwords from the command line, and, since recently, plug-in support are all intermixed with the binary protocol, which is at the core of what the library does, and are all part of one thick bundle.
+
+What if I want something tiny to just be able to connect to the server and send simple queries? 
+What if I want to use it inside an event loop or in coroutine environment?
+What if I want to write a protocol mapper between, say, HTTP and MySQL?
+What if I don't want to add a dependency on OpenSSL? 
+In the best case, there is only one answer to a question like this, in the worst case one has to re-implement the protocol from ground up.
+
+In Tarantool, we learned that the protocol must stand alone after we re-designed our own library 3 times, since people would simply ignore the "official" library and just go ahead and write their own. 
+
+Back to MySQL, the situation has begun to change in the last three years. 
+
+First, Drizzle project implemented libdrizzle - a wholly new client library to talk to Drizzle server. The unobvious part is that Drizzle binary protocol is fully compatible with MySQL, so libdrizzle can talk to MySQL as well. 
+Good things about libdrizzle is that it is built around an event loop, so the entire code base is callback based. Makes it easier to embed into callback-based environment such as node.js. Little advantage for Tarantool, which, while using an event loop under the hood, hides it completely by providing lightweight green threads, and thus is able to execute sequential networked code.
+
+Another good thing about libdrizzle is that the code base is small and is easy to read, even if you're new to MySQL world.
+
+The shortcomings of libdrizzle is that it doesn't support prepared statements - indeed, why would you add support for prepared statements when Drizzle itself doesn't have it :), and is completely character set-unaware - in Drizzle, everything is utf-8.
+
+The second library created recently is MariaDB's native-client. 
+I've taken a quick look at the code, and it seems that it pretty much is the same as old-good MySQL - full support of the API in one think bundle. 
+
+Which library should we choose? Whatever it is, we'll need to patch it, since even libdrizzle is not modular enough so that it can be integrated into Tarantool core without changing any of the upstream code. The advantage of MariaDB library is that it has prepared statement support. On the other hand, prepared statements still don't work properly with connection pools, and hence are still not used widely. Indeed, most of the shops I know simply wrap their statements into stored procedures, which also gives extra security, but use the old direct API to invoke them.
+
+Next week we'll be looking at the two libraries more closely.

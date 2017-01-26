@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2012-04-16 16:51
+title:   Speak at NoSQL matters 2012 in Cologne, 29-30 May 2012
+---
+
+Provided I manage to get a visa, I should speak about Tarantool at <a href="http://nosql-matters.org">nosql-matters.org</a> conference, in Cologne, this May.
+Judging by the <a href="http://nosql-matters.org/speakers/">invited speaker crowd</a> this is going to be more a technology (lots of authors of NoSQL databases), rather than a community event. Interesting none the less!

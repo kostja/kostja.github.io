@@ -1,0 +1,9 @@
+---
+layout: post
+date:      2011-06-04 00:41
+title:   I wonder if a human has a limited supply of stuff he can write or say...
+---
+
+I definitely have. I've been working all this week on <a href="http://tarantool.org/tarantool/tarantool_user_guide.html">Tarantool user manual</a>. Formulating and reformulating rather simple, quite frankly, thoughts. Looking for a gradually unfolding way to present the material.
+Tomorrow is <a href="http://devconf.ru">DevConf</a>, where I give two talks, and I still need to write more presentation notes. 
+My verbal source is definitely at an end.

@@ -1,0 +1,43 @@
+---
+layout: post
+date:      2015-07-25 10:57
+title:   Concurrent programming is difficult
+---
+
+<div class="gh-gist" data-gist-id="kostja/767622d554c676a35454">Pursuing your vision is difficult. Especially, if this vision is a multi-threaded in-memory database.
+
+A couple of days ago I&#39;ve got a working implementation of 3-thread layout for Tarantool core.
+
+Mm... what&#39;s that supposed to mean if Tarantool is single-threaded? First, it&#39;s not. The binary log
+is written in a separate thread. Checkpointing (snapshotting) is done in a separate thread. Replication
+relays run in their own threads. But the transaction processor still runs in 1 thread only. You&#39;re
+supposed to shard anyway, so why not begin with shardingon a single multi-core server, that&#39;s the idea.
+
+One thing, however, which was part of transaction processor thread but didn&#39;t belong to it was the
+client/server protocol, handling the socket I/O.
+
+So, now we have 3 major threads: the network thread, the transaction processor thread, and the
+binlog thread. Once in a while there is a checkpoint thread that gets involved.
+
+The benchmark numbers were supposed to go up. But not only that, they were supposed to go up
+while still maintaining at least comparable CPU utilization. I wasn&#39;t interested in 20% performance
+boost for 100%&nbsp; incraese in CPU usage, even though that&#39;s exactly what I got at first.
+
+So, finally, after a day of tuning and patching, and cooling off the hot mutexes I got my numbers.
++25% performance increase for +30% higher CPU utilization. It&#39;s +25% only because in this specific
+benchmark network I/O is only 25% of the original performance profile, the rest is B-trees operations
+and transaction management, stuff that stayed in the transaction thread.
+
+Happily, I pushed the patch to&nbsp; the next-release tree. And yesterday we ran first YCSB benchmarks with it.
+
+Now, YCSB is a stupid idea for a benchmark. For example, YCSB RO benchmark is N clients (for example, N is 16)
+issuing tiny requests in synchronous fashion. Essentially, with few clients it means the client and the
+server operate in lock-step fashion - the cliens&nbsp; fire up a bunch of requests over network, and wait for esults.
+The server kicks in, handles the input, and responds. 30% user time, 70% sys time during the benchmark.
+
+Now, in this particular test Tarantool results got worse, while CPU usage went significantly up. On top of a lot of kernelspace and userspace switching, the patch added a bunch of network/transaction thread switching. The same lock step, one step further.
+
+And now I have to think what to do with it. We can&#39;t look silly even on a silly benchmark.
+
+Multi-threading, evidently, needs more work.
+</div>

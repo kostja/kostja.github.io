@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2010-12-31 14:39
+title:   Python 'socket' module
+categories:      python
+---
+
+Apparently there is some obscenity going on inside Python's sockets implementation. A simple client that uses Python sockets produces as low as <strong>22 RPS</strong> on my box, whereas an almost identical C client gives me about <strong>7000 RPS</strong>. The problem disappeared after turning on TCP_NODELAY on the client socket -- but this doesn't explain the <strong>*huge*</strong> drop in performance. There is a <a href="http://bugs.python.org/issue3766">Python project issue</a> reported about it, but it seems the only recipe is to turn on TCP_NODELAY, i.e. not a real fix. Some &quot;smart&quot;&nbsp;fellow must have put in an artificial sleep, or calls send/recv with buffer of size 1 -- a sensible explanation is hard to come by.

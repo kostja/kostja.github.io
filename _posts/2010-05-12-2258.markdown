@@ -1,0 +1,11 @@
+---
+layout: post
+date:      2010-05-12 22:58
+title:   Announcing MySQL User Group meeting in Moscow
+---
+
+The next MySQL User Group meeting in Moscow will happen at 7 PM on May 17th, in <a href="http://maps.google.ru/maps/place?hl=en&um=1&ie=UTF-8&q=oksana+hotel+moscow&fb=1&gl=ru&hq=oksana+hotel&hnear=moscow&cid=10970240834535722873">Oksana Hotel Moscow (VDNX metro station)</a>.
+We expect a few server engineers to be there, including a couple of prominent "defectors" :-) from MariaDB - Monty and Sergey Petrunia.
+You can find more information (in Russian) <a href="http://groups.google.com/group/moscow-mysql-user-group/browse_thread/thread/4ce04ca2425d353?hl=ru">at the Moscow MySQL User Group mailing list</a>.
+Please RSVP either here, or in the list.
+Thanks to <a href="http://www.phpclub.ru/">PHPClub</a> and personally to Alexandr Smirnov for making it happen!

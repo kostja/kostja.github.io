@@ -1,0 +1,18 @@
+---
+layout: post
+date:      2011-03-17 01:31
+title:   Looking for people to join Tarantool development team -- Russian job search sites need some love
+---
+
+The plague of Russian engineering job market is that anyone who has even a
+handful of talent and/or ambition, by 30 either becomes a manager or moves
+abroad -- almost no Russian engineering company has a technical career
+track, sufficiently understands or values technical skills. This makes
+search for talented engineers rather difficult -- and sometimes fun, like on
+the screenshot below. It's a search form on a recruiting site, and I attempt
+to filter out all kinds of job titles (almost) all meaning the same - "the
+boss" :-)
+
+
+
+<img src="http://farm6.static.flickr.com/5251/5533322520_0d6992f48b_b.jpg" width="600"/>

@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2009-09-25 11:18
+title:   Query cache = useless?
+categories:      mysql
+---
+
+Following up on <a href="http://www.facebook.com/note.php?note_id=143487095932">Mark Callaghan's blog post on how useful query cache is nowadays</a>.
+
+One has to say it aloud at last: let's kill it. Say, in 5.4.
+It's useless on modern hardware anyway, and if you look at re-designing it, it turns out there is need for multiple solutions, since no single one performs well in all caching workloads.
+What would it give our users? One less gotcha-like feature in the server that they need to learn, learn to forget. It will open up a niche for third-party projects to contribute. And the core server development team will have one less thing to worry about.

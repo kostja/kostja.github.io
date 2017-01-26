@@ -1,0 +1,16 @@
+---
+layout: post
+date:      2013-02-08 14:30
+title:   Socket I/O in a stored procedure
+---
+
+The next feature added to Tarantool/Box development branch is <a href="http://tarantool.org/dist/master/tarantool_user_guide.html#sp-box-socket">box.socket</a>, a <a href="http://w3.impa.br/~diego/software/luasocket/">luasocket</a>-style API to work with TCP and UDP sockets. 
+
+Initially this was requested for monitoring and audit of the server, for example, to send a UDP packet to a statistics server on every connect/dicsonnect, or simply once in every few seconds.
+
+But there are other very interesting uses:
+- node.js -like operation mode, when http and script server is a single application. In our case, a database, a Web server and a scripting engine (there is a <a href="https://github.com/rtsisyk/tarantool/tree/js">prototype of Javascript stored procedures</a> for Tarantool, too),
+- proxying - a replica can automatically proxy an update request to the master server,
+- custom client-server protocols.
+
+Apparently the lack of network I/O in traditional databases is a restriction of a secure client/server operation model. Once you're not worried as much about security, this becomes a very interesting addition. I'm sure we'll learn about all the drawbacks of the approach in the coming months :)

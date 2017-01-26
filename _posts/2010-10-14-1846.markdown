@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2010-10-14 18:46
+title:   Speak at Highload++ conference
+---
+
+I hope to speak at <a href="http://www.highload.ru">Highload++</a> the week after next. Although the schedule has not been finalized yet, there is an indication that I'll be able to give my MySQL Stored Programs tutorial and speak about InnoDB internals.
+Hope to see you there!

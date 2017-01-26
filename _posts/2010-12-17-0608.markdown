@@ -1,0 +1,38 @@
+---
+layout: post
+date:      2010-12-17 06:08
+title:   Metacity vs. IceWM
+categories:      ubuntu, linux, icewm
+---
+
+I would have ignored Gnome for another decade, but its integration with the
+rest of Ubuntu is so good (nm-applet and other status bar applets rock), I
+decided it's time for change.
+
+But almost fled tonight, after so much pain with Metacity for a window
+manager. Keyboard shortcuts are lame, window options and window decoration
+can not be configured, etc, etc.
+
+In the end, I switched to a combination of icewm for window management (and
+keyboard shortcuts, and winoptions), and Gnome for everything else. 
+
+    kostja@shmita:~$ cat .gnomerc 
+    export WINDOW_MANAGER=/usr/bin/icewm
+
+Looks nice!
+
+    kostja@shmita:~$ cat .icewm/winoptions 
+    #
+    xterm.dTitleBar: 0
+    xterm.icon: xterm
+    rxvt.dTitleBar: 0
+    rxvt.icon: xterm
+    URxvt.dTitleBar: 0
+    URxvt.icon: xterm
+    desktop_window.ignoreQuickSwitch: 1
+    gnome-panel.ignoreQuickSwitch: 1
+    desktop_window.ignoreWinList: 1
+    gnome-panel.ignoreWinList: 1
+
+    kostja@shmita:~$ cat .icewm/preferences| grep ShowTaskBar
+    ShowTaskBar = 0

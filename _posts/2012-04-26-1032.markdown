@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2012-04-26 10:32
+title:   Videos of recent talks
+---
+
+Live streaming technology is advancing by leaps and bounds, and showing up at a conference unprepared becomes more and more problematic.
+
+Videos of the two most recent appearances (in Russian):
+
+http://live.digicast.ru/embed/1056?language=ru#time1334390220
+http://techforum.mail.ru/video/ (Зал 2, the video starts at 5:27)

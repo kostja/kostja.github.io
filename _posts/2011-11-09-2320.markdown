@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2011-11-09 23:20
+title:   Tarantool mailing lists
+---
+
+There&#39;s a Russian-speaking Google Group for tarantool -- http://groups.google.com/group/tarantool-ru.
+Our main, English-speaking mailing list is hosted on Launchpad, http://lists.launchpad.net/tarantool-developers.

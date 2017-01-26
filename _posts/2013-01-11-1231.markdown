@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2013-01-11 12:31
+title:   Why Objective C?
+---
+
+I'm often asked why <a href="http://github.com/mailru/tarantool">Tarantool</a> is written in Objective C. Damien Katz, my ex-colleague from MySQL AB :), <a href="http://damienkatz.net/2013/01/the_unreasonable_effectiveness_of_c.html">wrote a very good post on the strengths of C</a>. We use Objective C as "C with exceptions". Objective C' @finally clause allows for  simple integration of exception-aware code with C code. In contrast, the only sensible way to deal with exceptions in C++ is <a href="http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization" target="_blank">RAII</a>, and this pretty much means that you forget about C the moment you decide to use exceptions in your program.
+
+One serious "deficiency" of C is that it doesn't bring along the programming paradigms and patterns found in modern programming languages. In other words, it doesn't teach you programming culture. This is why, I think, it is 
+much better to return to C after a few years with other languages. There is something unique to learn in almost every modern programming language.
+
+Often, a larger project uses a ton of languages and instruments. Tarantool is not an exception: apart from C and Objective C we use Lua, Ragel, Bison, a configuration file parser of our own breed, and this is just for the server itself. For tests, we use Python, Perl, PHP and Shell. <a href="http://tarantool.org/benchmark.html">Some of our benchmarks</a> are written in Java.

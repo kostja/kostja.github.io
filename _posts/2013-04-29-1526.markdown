@@ -1,0 +1,7 @@
+---
+layout: post
+date:      2013-04-29 15:26
+title:   Draft spec for automatic sharding and Tarantool/Proxy
+---
+
+The idea to proxy access to Tarantool/Box is obvious, and a closed source proxy existed within Mail.Ru for a long time. Now that socket I/O is part of server-side Lua, proxying in Tarantool/Box is easier and more manageable than anywhere else. I published a draft spec for a proxy which job is to hide data sharding from the end user: https://github.com/mailru/tarantool/wiki/Tarantool-proxy. There is no universal solution to the sharding problem, and when creating the spec, I tried to avoid the pitfall of making it a single-user solution. I hope, with your help, we'll be able to avoid that.

@@ -1,0 +1,7 @@
+---
+layout: post
+date:      2010-09-28 13:42
+title:   A better MySQL CHECKSUM TABLE, fixing Bug#39474
+---
+
+The current MySQL table checksum is very simple: it's basically the same as CRC32(CONCAT(all data in the table)).<br />Since long ago we've had <a href="http://bugs.mysql.com/39474">customers complain about the algorithm</a>, but one doesn't change such things every day.<br />Now the time has come to make the change.<br />The only question is how much should the checksum formula be changed? Is it sufficient to just fix <a href="http://bugs.mysql.com/39474">Bug#39474</a> or should we take the opportunity to do more?<ul><li>Is crc32 a good enough function for a checksum? Should we start using some other hash function?</li><li>Should checksum change when table metadata changes? I.e. when you change the underlying data type? What about changing the table comment? Order of columns in the table?</li><li>Any other issues we should address along the way?</li></ul>Your input is much appreciated!

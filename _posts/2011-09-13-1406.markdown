@@ -1,0 +1,7 @@
+---
+layout: post
+date:      2011-09-13 14:06
+title:   Tarantool/Box is part of nosql-database.org listing
+---
+
+We have been accepted to <a href="http://nosql-database.org/">nosql-database.org</a> listing today.

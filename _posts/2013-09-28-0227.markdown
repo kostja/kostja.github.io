@@ -1,0 +1,17 @@
+---
+layout: post
+date:      2013-09-28 02:27
+title:   Launchpad bug tracker
+---
+
+The issue tracker on our source code host, GitHub, has matured enough for <a href="http://github.com/tarantool/tarantool/issues" target="_blank">the team to make a decision to move</a>. 
+It's probably not the best idea to criticize a free home for an open source project, after all, Launchpad wasn't making any money from hosting us, but, truth be said, and perhaps lack of business model is the reason, it has fallen behind in features and usability.
+
+Just for the record, the most important problems with bugs at Launchpad for us were:
+- 7-digit bug ids. Tarantool is a small project and we perhaps will never go out of 4 digits, and you often need to have a quick and easy "handle" for a bug during conversation or in a email
+- too many attributes of a bug. The milestone and series system was again designed for a large project, and only complicated matters for us
+- bug states were quite nice, but then again we only used a few of them. At the same time there was no "legal" way to mark a bug as a duplicate - perhaps something related to the internal policies at Canonical.
+- no way to cross-link a bug and a commit, unless (I guess) you're using Bazaar
+- no bulk operations on bugs.
+
+GitHub issues solve a lot of the above, plus, and this is actually the main reason, the issue tracker and the code both benefit from being close to each other.

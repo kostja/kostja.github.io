@@ -1,0 +1,25 @@
+---
+layout: post
+date:      2010-12-27 13:50
+title:   Setting up POSTFIX's sender_dependent_relayhost_maps
+categories:      example, sender_dependent_relayhost_maps, postfix
+---
+
+My new employer, Mail.Ru, allows its SMTP&nbsp;servers to relay mails from senders that use their corporate email addresses only. Erm, to be more accurate, the authenticated user must match &quot;From&quot; field of the mail. Since I also have a personal mail at @mail.ru, and an account at gmail.com, my mail sent from these accounts was (until today!) bounced.
+
+ This would be a simple problem to solve if I used a &quot;modern mail client&quot;, but since I use a somewhat archaic, but very powerful chain of mutt +&nbsp;postfix +&nbsp;procmail&nbsp; + sendmail, I had to find a tweak for the default (and simple)&nbsp;Postfix configuration and make it support multiple relay hosts.
+
+It turns out that Postfix option that allows you to choose a relay host based on the &quot;From&quot; address is called <strong>sender_dependent_relayhost_maps.</strong>
+The docs for the option are rather scarce, and there aren't many examples online either, but my setting is pretty simple so I managed to make it work.
+Here's what I had to do:
+<ul><li>Remove the default 'relayhost' map from /etc/postfix/main.cf:</li></ul><pre>relayhost = </pre>
+<ul><li>Add <strong>sender_dependent_relayhost_maps</strong> to main.cf:</li></ul><pre>sender_dependent_relayhost_maps = hash:/etc/postfix/relayhost_maps</pre><ul><li>Populate relayhost_maps and create a .db file:</li></ul><pre>kostja@shmita:~$ cat /etc/postfix/relayhost_maps
+username@mail.ru             smtp.mail.ru
+username@xxxx.xxxx.ru        smtp.xxxx.xxxx.ru
+username@gmail.com           [smtp.gmail.com]:587
+kostja@shmita:~$&nbsp;sudo postmap /etc/postfix/relayhost_maps</pre><ul><li>Provide sasl_passwd (user/password)&nbsp;file entries for all hosts:</li></ul><pre>kostja@shmita:~$ sudo cat /etc/postfix/sasl_passwd
+smtp.xxxx.xxxx.xx      username@xxxx.xxxx.ru:password
+smtp.mail.ru           username@mail.ru:password
+[smtp.gmail.com]:587   username@gmail.com:password
+kostja@shmita:~$&nbsp;sudo postmap /etc/postfix/sasl_passwd</pre>
+Voila, this was sufficient for Postfix to start routing the mail correctly. GMail requires TLS&nbsp;and certificate files to accept mail on its smtp hosts, but this topic is very well covered in blogs, <a href="http://www.marksanborn.net/linux/send-mail-postfix-through-gmails-smtp-on-a-ubuntu-lts-server/">e.g. here</a>.

@@ -1,0 +1,13 @@
+---
+layout: post
+date:      2011-06-17 13:28
+title:   What's new in Tarantool this week
+---
+
+Some quick news about what is happening in <a href="http://tarantool.org">Tarantool world</a>
+<ul>
+  <li><a href="http://tarantool.org/tarantool_user_guide.html">the user guide</a> is ready,</li>
+  <li><a href="http://github.com/mailru/tarantool">the master (1.4)</a> just received a bulk of changes related to dynamic replica-master and
+vice versa propagation, and this stuff is already documented,</li>
+  <li><a href="https://github.com/akalend/tarantool">first release of PHP client</a> was made by <a href="http://akalend.habrahabr.ru/">akalend</a>.</li>
+</ul>

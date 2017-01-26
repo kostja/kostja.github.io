@@ -1,0 +1,8 @@
+---
+layout: post
+date:      2011-04-15 01:10
+title:   Metadata locking in MySQL 5.5 -- MySQL Users Conference 2011 presentation
+---
+
+<img style="visibility:hidden;width:0px;height:0px;" border="0" width="0" height="0" src="http://c.gigcount.com/wildfire/IMP/CXNID=2000002.0NXC/bHQ9MTMwMjg*NDE2ODg*MyZwdD*xMzAyODQ*MjExODA5JnA9MTAxOTEmZD*mbj1saXZlam91cm5hbCZnPTEmbz**NmU*OWJmNTYz/ZjU*ZWVhYjQ2ZTY5Y2FmODlhMTA3NiZvZj*w.gif"><div style="width:425px" id="__ss_7635272"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/kostjaosipov/metadata-locking-in-mysql-55" title="Metadata locking in MySQL 5.5">Metadata locking in MySQL 5.5</a></strong> <lj-embed id="2"/> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/kostjaosipov">Kostja Osipov</a> </div> </div>
+The presentation notes will follow in a separate blog post.

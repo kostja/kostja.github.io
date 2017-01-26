@@ -1,0 +1,15 @@
+---
+layout: post
+date:      2011-03-07 12:16
+title:   MySQL 5.5 innodb_buffer_pool_instances should be set automatically
+categories:      innodb, mysql, tuning
+---
+
+<a href="http://dev.mysql.com/doc/refman/5.5/en/innodb-parameters.html#sysvar_innodb_buffer_pool_instances">innodb_buffer_pool_instances</a>
+is, perhaps, the single most important tuning parameter in MySQL 5.5. And
+the default of 1 severely caps MySQL performance on any recent hardware.
+
+A more reasonable default is called for, e.g. (innodb_buffer_pool_size in
+GB + number of CPUs)/2.
+
+This observation is coming from my recent experience of "first run" tuning of MySQL 5.5 on several installations: this is the first thing that was changed on all of them.

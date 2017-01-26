@@ -1,0 +1,21 @@
+---
+layout: post
+date:      2010-05-02 03:55
+title:   How on earth is it possible to accept this?
+---
+
+Somebody should teach me how to accept community contributions.
+On Friday I looked at the second version of a community contributed patch. I.e. it was since then re-written. It's <a href="http://bugs.mysql.com/20837">Bug#20837</a>, and it again is an infrastructure issue that is identical in all our forks.
+
+While looking at the patch, I encountered 7 issues, which I had to report: 
+<a href="http://bugs.mysql.com/53340">Bug#53340</a>, <a href="http://bugs.mysql.com/53341">Bug#53341</a>, <a href="http://bugs.mysql.com/53342">Bug#53342</a>, <a href="http://bugs.mysql.com/53343">Bug#53343</a>, <a href="http://bugs.mysql.com/53344">Bug#53344</a>, <a href="http://bugs.mysql.com/53345">Bug#53345</a>, <a href="http://bugs.mysql.com/53346">Bug#53346</a>.
+
+(I won't go into the details how the bad piece of code got into 5.0 in the first place, people who were in charge back in 2004 are now all gone.)
+
+My experience suggests that quality is an issue with almost every piece of code that's thrown at us  (MariaDB team contributions are an exception, since they are made by ex-MySQLers).
+Should a semi-working, semi-documented code be accepted, expecting that there will be more patches? 
+In that environment it would be impossible to plan for stable versions (if you mean it).
+
+Perhaps the reason for low contributed code quality is that MySQL ecosystem is mostly made by DBAs, not C/C++ engineers. Perhaps through more documentation, standardization, re-engineering we can get better results.
+
+On the other hand, MySQL has a fairly large community of engines. Indeed, we have more than a dozen of fairly significant storage engines. There were no contributions from this group of any significance.

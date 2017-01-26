@@ -1,0 +1,13 @@
+---
+layout: post
+date:      2011-11-09 17:17
+title:   Buildbot rant
+---
+
+In order for a continuous integration system to be effective, it needs to be actually working.
+
+I.e. bug-free. I.e. it needs to be continually tested, I guess.&nbsp;
+
+We&#39;ve been using Buildbot and have been extremely *un*happy with it. A single little piece of this twisted monster, the GitPoller plug-in, is messing up the whole set-up.
+
+When it stops,&nbsp;sorry, no more changes, and hence no more builds. And the damn thing is so badly written that it does stop. At first it used to stop when a branch with a specific name would show up in the tree. We fixed it. Then it turned out that it also stops when a few attempts to reach github have failed. We&#39;ve fixed that too. Why it doesn&#39;t work now, I don&#39;t want to know.

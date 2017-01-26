@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2012-04-04 11:38
+title:   Increasingly dissatisfied with Google Search
+---
+
+I'm starting to use other engines, mainly bing, more and more often. In the past months I noticed some background  noise about personalized search output, but haven't got a chance to turn it off. And now I clearly see that Google is hiding results from me. 
+
+The most recent example was when I was trying to find more data on Funky Fieber, or Funky Beans - this is a game which is getting increasingly popular in Germany and Europe, and unless you hold the beans and play with them, it's really hard to understand why it's cool. At first, Google was stupid enough to assume that a) I don't understand German b) I'm more interested in search results from Russia.
+Funk Beans is a difficult search, I know: the game is  (apparently) from Netherlands, is super-popular in Germany, but the name is English, and it hasn't risen high enough yet to dominate over your old grandma Cajun bean recipes. 
+
+Yes, another piece of Google fun was that Google knows that I'm a vegetarian, and at first tried to feed me with a huge amount of vegetarian links. I guess I will need to have different avatars going forward, to fool (or teach?) Google AI: Kostja The Vegetarian, Kostja The Construction Worker, Kostja the Child and Kostja the Software Engineer.

@@ -1,0 +1,7 @@
+---
+layout: post
+date:      2012-07-12 19:37
+title:   Discovery of the year
+---
+
+In a nutshell, modern GCC can't correctly compile modern Objective C code. Should Tarantool abandon gcc (preferring llvm) or abandon Objective C?

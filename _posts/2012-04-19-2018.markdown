@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2012-04-19 20:18
+title:   Debian repository with Tarantool packages
+---
+
+As part of our regular build procedure, we now maintain a .deb archive with most recent stable builds:
+<pre>
+sudo echo "deb http://tarantool.org/dist/debian/ unstable main" >> /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install tarantool
+</pre>

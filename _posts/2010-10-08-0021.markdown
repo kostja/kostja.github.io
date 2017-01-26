@@ -1,0 +1,18 @@
+---
+layout: post
+date:      2010-10-08 00:21
+title:   Fixing all the bugs (psychic effects of being part of the bug triage)
+Security:  friends
+---
+
+All the years I've been involved with MySQL server I dreamed about fixing all the bugs. Some people can live with bugs, I just can't. I don't feel good extending the code, while knowing that the crap that's in it is not wed out first. I hate magnifying existing buggy code when coding with new features.
+
+But I'm not &quot;in charge&quot;. I can't hire a dozen more engineers, I can't sanction their training, can't change the roadmap etc., etc.
+
+And all incarnations of management MySQL had through 4 major releases and two acquisitions couldn't tackle this beast either.
+
+So I was wondering... Could there be some sort of bugfixing fund?
+From engineering POV, fixing a single bug costs from $1000 to $20 000. We have about 2000 open bugs against the product. Most of them are minor. Some serious. Let's assume 10% cost $20k/each (based on required man-hours), 10% - $10k/each. Let's assume there is 5 to 10% inflow every month. Let's assume there is a 50% regression rate.
+Then, basically, getting the problem down to 100 bugs is just $10 000 000 to 20 000 000.
+
+Now, does anybody care? And if yes, where to find the money?

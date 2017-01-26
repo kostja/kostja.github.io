@@ -1,0 +1,15 @@
+---
+layout: post
+date:      2011-04-26 21:55
+title:   Upcoming speaking gigs
+---
+
+Spring is a conference season.
+
+<a href="http://en.oreilly.com/mysql2011/">MySQL Users Conference</a> and <a href="http://ritconf.ru/">RIT</a> are behind, but I have two more engagements in the upcoming weeks:
+- <a href="http://event.perlrussia.org/mayperl4/">YAPC Russia</a>, on Tarantool/Box key/value storage
+- <a href="http://devconf.ru">DevConf</a>, on methods of regression testing of 24/7 server applications.
+
+As usual, I'm always happy, with my Moscow MySQL User Group founder hat, to talk about the current state of everything in MySQL.
+
+See you at the conferences!

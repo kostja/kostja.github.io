@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2013-09-16 15:32
+title:   Relevance of regression test failures on exotic platforms
+Picture:   fish_magic
+---
+
+Back in my days at MySQL we had a lot of issues with test failures. We had lots of platforms, and would try to run and maintain our regression test suite on all of them. I remember spending days investigating issues on some obscure OS (Mac OS, mainly, Windows was taken care of) or hardware (little-endian, mainly) .
+With Tarantool, we never got to do that. We do run buidls on lots of platforms, and someone always screams when they break, since we only run builds on platforms which are in actual use. And they do break, so it's a lot of hassle. But we haven't had time to maintain the regression tests on some of these platforms. Ugly? Yes. Yet we know which systems people use in production, and do take care of these. This set is much more narrow than the set of systems which people play with.
+And also, we don't pay attention to test failures caused by, essentially, bad tests. If a test fails once in a while on a busy box, well, this is kind of bad, but tolerable. One day  we'll rewrite the test. 
+It turns out that these tests failures have very little relevance to what people experience in production. In the course of these 3 years I've never seen a test failure on an exotic platform being relevant to any production bug we've had.
+Perhaps this is all possible since Tarantool team is so much smaller than MySQL. But it spares us all from lots and lots of boring and unneeded work.

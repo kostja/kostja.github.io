@@ -1,0 +1,29 @@
+---
+layout: post
+date:      2012-04-04 01:31
+title:   Need help of MySQL experts (no kidding)
+categories:      mysql
+---
+
+Today at a conference I was approached with a task, typical for a modern web app.
+
+We have a chat system, and need to store and show all messages in the system.
+There is no limit as to how long you store, and how much you can see.
+
+There are two types of queries: 
+- get all incoming messages for a given user, in chronological order, with pagination.
+- show a dialogue of two users, in chronological order, with pagination.
+
+A user is identified by 32 bit uid. 
+A message can be uniquely identified by sender_uid and created_time (32 bit), or uid (destination user) and created_time.
+
+If you store the whole thing in a single table, &lt;uid, created_time, sender_uid, message &gt, you're messed up with random reads when you need to show  a user inbox in chronological order. 
+
+If you store the same message in two places, you get the same mess, but at write time. 
+
+How do you best approach this? Is there a canonical solution? Column store? 
+
+Thanks,
+
+-- 
+kostja

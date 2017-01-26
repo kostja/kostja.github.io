@@ -1,0 +1,22 @@
+---
+layout: post
+date:      2012-08-06 16:11
+title:   Upcoming talks about Tarantool/Box 
+---
+
+<p>On 23rd of August I present <a href="http://tarantool.org">Tarantool</a> at <a href="nosql2012.datavercity.net">NoSQL Matters</a>, San Jose.
+</p>
+<p>In October, it's <a href="http://techforum.mail.ru">Mail.Ru Technical Forum</a> and, subject to acceptance by the program committee, <a href="http://highload.ru">Highload++</a> (both take
+place in Moscow). 
+</p>
+<p>
+On the 2nd of November I hope to be speaking at 
+<a href="http://topconf.com">TopConf</a>, in
+Tallinn. On 6th Of November (subject to approval, again), I hope to speak at
+<a href="http://nosqlnow.org">NoSQL Now!</a> Barcelona.
+</p>
+<p>
+Finally, this Thursday, 9th of August,  I give a talk about Tarantool 
+at <a href="http://itmozg.ru/high_performance_conference">HPC</a> conference,
+in Moscow.
+</p>

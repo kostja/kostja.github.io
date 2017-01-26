@@ -1,0 +1,83 @@
+---
+layout: post
+date:      2012-01-24 22:47
+title:  Time to sort two million 8-byte records vs. two million 40-byte records
+---
+
+<p>
+I was trying to get an idea how much slower/faster sorting data gets with
+unit size. This relates to low-level data structure organization, in
+particular, when it makes sense to index data by pointer vs. by value. L1
+cache line size on a modern Intel CPU is 64 bytes, and I was thinking it
+would make a difference. What I got wasn't quite what I had expected:
+apparently, it takes only 4 times as much time to sort two million 1024 byte
+records than to sort two million two-byte records.
+</p>
+<p>
+I found this pretty amazing. 
+</p>
+<p>
+Here's my program and test results:
+</p>
+<pre>
+    kostja@atlas:~$ cat foo.sh 
+    #!/bin/sh
+    for el_size in 2 4 8 16 32 64 128 256 512 1024
+    do
+        echo -n "$el_size\t"
+        ./a.out $el_size
+    done
+    kostja@atlas:~$ cat foo.c       
+    #include <stdio.h>
+    #include <sys/time.h>
+    #include <stdlib.>
+
+    #define EL_CNT 2000000
+
+    int EL_SIZE;
+
+    int my_cmp(const void *a, const void *b) { return memcmp(a, b, EL_SIZE); }
+
+    int usage(const char *progname)
+    {
+        printf("usage: %s &lt;element_size&gt;\n", progname);
+        return 1;
+    }
+
+    int main(int argc, char **argv)
+    {
+        EL_SIZE = argc &gt; 1 ? atoi(argv[1]) : 0;
+
+        if (EL_SIZE <= 0)
+            exit(usage(argv[0]));
+
+        char *c = malloc(EL_CNT * EL_SIZE);
+        int i;
+        for (i = 0; i &lt; (EL_CNT * EL_SIZE); ++i) {
+            c[i] = (rand() % 30) + 65;
+        }
+        struct timeval tv, tv1;
+
+        gettimeofday(&tv, NULL);
+
+        qsort(c, EL_CNT, EL_SIZE, my_cmp);
+
+        gettimeofday(&tv1, NULL);
+
+        printf("%lf\n", ((tv1.tv_sec - tv.tv_sec) * 1000000 +
+                 tv1.tv_usec - tv.tv_usec)/1000000.0);
+
+        free(c);
+    }
+    kostja@atlas:~$ gcc -O3 foo.c; sh ./foo.sh
+    2	0.552472
+    4	0.502978
+    8	0.559762
+    16	0.682934
+    32	0.895612
+    64	1.203204
+    128	1.300302
+    256	1.583563
+    512	1.782502
+    1024	2.142894
+</pre>

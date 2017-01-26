@@ -1,0 +1,12 @@
+---
+layout: post
+date:      2013-09-28 01:55
+title:   New algorithm for taking snapshot in Tarantool
+---
+
+Just merged in a patch which I think gives Tarantool one more small but important edge over any other free in-memory database on the market. 
+The patch changes the algorithm of snapshotting (consistent online backup in Tarantool) from fork() + copy-on-write to use of delayed garbage collection. The overhead per tuple (Tarantool name for a record) is only 4 bytes, to store the added MVCC version. And, since delayed garbage collection is way more fine-grained compared to page-splits after a fork(), as it works on record level, not on page level, the extra memory "headroom", required for a snapshot, is now within 10% of all memory dedicated to an instance.
+
+This feature goes into 1.5, which is, technically speaking, frozen :), but the patch has quite good locality and has been tested in production for a few months already, so I couldn't stand the temptation of making it available ASAP.
+
+Speaking of our master, 1.6, it has already got online add/drop space/index, space and index names, and now is getting ready to switch to <a href="http://msgpack.org/" target="_blank">msgpack</a> as the primary data format. But since we withstood from making incompatible changes for almost 3 years, there is still a lot of wants and wishes for 1.6. So the current best bet is to get <a href="http://github.com/tarantool/tarantool/blob/master" target="_blank">1.6</a> out of alpha by the end of the year.

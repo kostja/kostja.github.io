@@ -1,0 +1,19 @@
+---
+layout: post
+date:      2011-09-03 01:30
+title:   NoSQL approach to SQL information_schema
+---
+
+I wonder whether Java/JDBC developers would prefer it if there was a way to access all SQL database metadata through a data structure as simple as a built-in Java object. This is how we provided access to our own metadata to Lua: tuple spaces are exported as nested Lua objects, with methods or members used to query properties and configuration parameters, iterators to go after the whole data set, built-in metamethods integrating our user-defined types with the rest of language primitives ("for" loops, print and length operator, and so on).
+
+Hey, to print the whole configuration down in Lua one can do this: 
+<pre>
+for name, value in pairs(box.cfg) do print(name, "=", value) end
+</pre>
+To grab a handle on an an index in a given tuple space on just writes:
+<pre>
+index = box.space[0].index[2]
+tuple = index.find(key)
+for field in ipairs(tuple) do print(field) end
+</pre>
+And Lua, as a more modern language, takes care of a lot of issues SQL developer has to keep in mind: accessing non-existing objects, resource management, static typing, and so on. And did I mention that <a href="http://luajit.org/performance.html">LuaJIT is fast</a>?

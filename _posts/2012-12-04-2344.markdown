@@ -1,0 +1,168 @@
+---
+layout: post
+date:      2012-12-04 23:44
+title:   Multiple user level locks per connection in MySQL 5.7
+categories:      mysql
+---
+
+<p>
+People say that to have a good vacation, you need to do something else,
+something you don't do every day at work.
+<br/>So, instead of hacking on <a href="http://tarantool.org">Tarantool</a>, I did some good old MySQL hacking.
+Thanks to Alexey Rybak from Badoo I had a nice opportunity for it --
+a task to improve MySQL user level locks.</p>
+
+<p>GET_LOCK() function in MySQL allows a connection  to hold at most
+one user level lock. Taking a new lock automatically releases the
+old lock, if any.
+<br/>    
+The limit of one lock per session existed since  early versions 
+of MySQL didn't have a deadlock detector for SQL locks. 
+MDL patches in MySQL 5.5 added a deadlock detector, 
+so starting from 5.5 it became possible to take multiple locks
+in any order -- a deadlock, should it occur, would be detected
+and an error returned to the client that closed the wait chain.
+<br/>
+So, thanks to MDL, implementing user level locks seemed to be
+an easy task, and in line with MySQL general strategy of moving
+all hand-crafted lock implementations to a single system.
+A code cleanup, too.
+</p>
+
+<p>
+The implementation indeed turned out to be rather straightforward, 
+but as it always happens with MySQL, not without issues.
+<br/>
+By now I've finished working on the patch and published the tree, it's
+available here: 
+<br/>
+<a href="https://code.launchpad.net/~kostja/percona-server/userlock">
+https://code.launchpad.net/~kostja/percona-server/userlock</a>
+</p>
+
+<p>
+I intend to contribute the patch to all MySQL forks - MySQL at Oracle,
+Percona, MariaDB. I'm publishing the patch under BSD licence, so any
+other fork (Twitter, Facebook, Google) is welcome to pick it up
+too.
+</p>
+<p>
+Now let me list some less obvious moments in the new user level
+locks:
+<ul>
+<li>
+it has become possible not only to take distinct locks in the
+  same connection, it's also possible to take the same lock twice.
+  In this case, the lock is granted and each instance of the same
+  lock needs to be released afterwards. In other words, the  new
+  user level locks are recursive.
+</li>
+<li>
+the documented (and preserved) behaviour of GET_LOCK() is to 
+  return 0 in case of lock wait timeout and NULL in case of error.
+  This doesn't look right to me, since when a lock is not granted
+  I'd personally prefer getting an error, not a 0 or NULL.
+  This starts to matter when a user lock is taken inside a stored
+  function or trigger - if an error is returned, the statement is
+  usually aborted, but 0 or NULL from GET_LOCK will keep it 
+  going. So as long as currently GET_LOCK() timeout doesn't return 
+  an error, it's possible that a trigger is invoked for each row, and
+  the lock times out for some rows, and doesn't time out for others. 
+  But oh well, this is the current MySQL behaviour, so a matter of
+  separate consideration.
+</li>
+<li>
+if a connection which is waiting on a user level lock is killed
+  by KILL CONNECTION/KILL QUERY, it's wait is aborted. This is alright,
+  and works with MDL too. GET_LOCK() returns NULL in this case, 
+  and I preserved this behaviour. But if a connection is simply gone
+  (the client has disappeared, closed a socket, crashed, etc, all
+  this while waiting on a user lock), the old user lock wait
+  implementation would eventually detect an abandoned socket, and
+  abort the wait.
+<p>
+  MDL, however, didn't look at session sockets while waiting on a lock.
+  I thought that this matter is important enough and fixed MDL to look at
+  session socket state during long waits on any lock.
+  Indeed, the whole checking for the disconnected mutex was done
+  in scope of a fix for <a href="http://bugs.mysql.com/10374">Bug#10374</a> by Davi Arnaut. (Hello, Oracle,
+  if not for an open bugs database, I would never be able to find
+  or understand this!). At some point this was considered important
+  enough, so why break it.</li>
+<li>the last issue is with variable @@lock_wait_timeout.
+  In theory, @@lock_wait_timeout should affect all locks in SQL.
+  I could make it work for user locks as well. But I decided
+  not to do it yet, since there is always an explicit timeout,
+  and honouring @@lock_wait_timeout would mean checking which
+  one is larger -- the explicitly provided one, or session global,
+  and honoring the smaller timeout. This perhaps needs to be done.
+</li>
+</ul>
+</p>
+
+<h3>Fixes in tests</h3>
+<p>
+It was a surprise to see that actually no test is relying on (or
+testing) the fact there could be only one lock per session.  There
+is not even a test which would test all return values of
+GET_LOCK() or RELEASE_LOCK().  For example, if a lock is not owned
+by this session, RELEASE_LOCK() returns either NULL or 0, depending
+on whether the lock exists at all or not. And I
+haven't found tests for IS_USED_LOCK()/IS_FREE_LOCK() either.
+<br/>
+The main test suite actually passed after the first draft, and most
+surprises came from the replication tests.
+<br/>
+For example, rpl_err_ignoredtable.test in 5.5 apparenty works
+according to the intent of the author, but despite some of its
+obscure details. 
+<br/>
+In particular, this test takes a user lock in an UPDATE, to make
+sure that UPDATE blocks at some point, and be able to abort it while it's blocked.
+But to detect that the UPDATE has blocked, an impossible condition is
+used, so the detection code actually oversleeps the lock wait
+timeout.
+<br/>
+This test started to fail when lock implementation changed, so I had
+to provide a correct wait condition.
+<br/>
+rpl_stm_000001 (why would you use 5 leading zeros in a test name, 
+especially considering there is only rpl_stm_000002?-)) has a
+hard-coded sleep, instead of a synchronous wait, so I fixed it
+too.
+<br/>
+Another replication test -- rpl.rpl_rewrt_db -- failed since
+it relied on the order of subsystem destruction in server session
+cleanup (THD::~THD()).
+<br/>
+Before my patch, user level locks of a session were destroyed
+last, in particular, after closing temporary tables.
+So, this replication test would do the following trick to
+synchronously wait until a temporary table is closed:
+<ul><li>
+take a lock in a session
+</li><li>
+kill it
+</li><li>
+take a lock in a concurrent session, and, as soon as this
+lock is granted, assume that the other session is destroyed, and,
+in particular, temporrary tables are closed (the side effect
+which was ultimately desired).
+</li></ul>
+<br/>
+How clever! Except that at first I put user level lock
+subsystem destruction slighly higher in THD::~THD(), closer
+to its new home - MDL subsystem. Well, I had to put everything back,
+plus move MDL susbystem destruction to the end of THD::~THD(), 
+to make this test work.
+</p>
+<h3>Rant</h3>
+<p>
+I doubt I would have been able to make my way through the test suite
+if I haven't had previous experience on the MySQL team.
+<br/>
+Writing the patch was moderately fun (I'm not going to bash MySQL
+Item class hierarchy another time), but groveling through a huge
+test suite and fixing stupid errors which were only barely related
+to my patch was extremely tedious.
+</p>
