@@ -6,7 +6,15 @@ date: 2017-01-24 12:24:02 +0300
 categories: misc
 ---
 
-Let's talk database architecture now. It’s worth debating why in 2015, there is still a window of opportunity for a modern database.
+> I'm publishing a transcript of my talk at Highload Conference in Moscow in
+> Spring 2015. It  is actually the first part out of four (yes, I got a
+> big conference slot back then :))
+
+
+I'd like to begin my talk by asking the question: 
+
+Is there now, in year 2015, a window of opportunity for a new database
+management system?
 
 ![Problem statement - ACID](/assets/acid.png)
 
@@ -84,7 +92,9 @@ Rollbacks in Tarantool are done similarly to a tape rewind: if an error occurs, 
 
 Well, saying "never" is probably too emphatic, but if you monitor your hardware, this never happens in real life. Generally speaking, when designing a system, you'd better base your design on the most probable scenarios. If you’re trying to even out performance costs of all outcomes, whether it’s a commit or rollback, the system you build is very unlikely to be efficient, because your benchmark will be your worst-case scenario.
 
-Now that we've discussed the basic design principles of Tarantool, let's turn to the engineering matters.
+> This concludes the first part of the transcript. In the second part, I 
+> will turn to the engineering matters, and design concurrency primitives
+> we created for Tarantool. Stay tuned!
 
 {% if page.comments %}
 
