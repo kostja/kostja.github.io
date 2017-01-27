@@ -2,6 +2,7 @@
 layout: post
 date:      2010-02-18 16:05
 title:   Bug#989 is in. Again.
+--- 
 
 <a href="http://blogs.mysql.com/peterg/2009/04/01/progress-report-march-2009/">The infamous Bug#989</a> was pushed into the trunk.
 
