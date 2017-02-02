@@ -10,8 +10,47 @@ categories: misc
 > Spring 2015. It  is actually the first part out of four (yes, I got a
 > big conference slot back then :))
 
+Here's how I came to the idea of giving this talk. I don't like speaking about
+new features, especially about upcoming features. While people enjoy listening
+to such talks, I don’t like spoiling the opportunity by presenting a feature
+before it’s ready. But people are also curious to learn how things work. So,
+this talk is about how it all works – or should work, from my perspective, – in
+a modern database management system (DBMS).
 
-I'd like to begin my talk by asking the question: 
+I'll try to walk you through the entire implementation scale, from the
+macrolevel down to the microlevel, first dropping macroproblems to win
+ourselves some space and have  design freedom in the middle and at the
+microlevels.
+
+The macrolevel stands for the high-level design of a database. Is there any
+practical sense in coming up with a new DBMS implementation today? What’s the
+point of re-inventing the wheel, shouldn’t we rather use an existing
+open-source system and be happy with its performance, or tune and patch it,
+like Alibaba [AliSQL](https://github.com/alibaba/AliSQL) or Facebook [RocksDB](http://rocksdb.org/)? Indeed, something has to justify
+the cost of creating a new database from scratch.
+
+After we establish some basic architecture principles, we'll dig deeper and
+discuss engineering aspects. To process transactions, databases may use
+different sets of algorithms, like multiversion concurrency control or locking,
+but the performance also depends on how efficiently a preferred algorithm is
+implemented (in other words, how good you are at software engineering). While
+the right choice of an algorithm may boost the performance dozens of times, an
+optimal implementation may double or triple it, which also counts: when your
+product goes into production, you feel happy that a simpler solution doesn't
+beat it hands down, because your database, despite having millions of features,
+is not paying an unreasonably high price for these features. 
+
+Part 2 of this talk is about high-level engineering principles. Here, I discuss
+how we work with the operating system and implement inter-thread communication.
+It lays the necessary groundwork for parts 3 and 4 by moving the problems of
+concurrency and system programming out of the way.
+
+Parts 3 and 4 are the most technically advanced ones. Here, I'll try to give a
+high-level overview of our home-made algorithms and data structures which would
+allow us to store and process data as fast and efficiently as possible.
+
+
+So I'd like to begin the first part by asking the question: 
 
 Is there now, in year 2015, a window of opportunity for a new database
 management system?
