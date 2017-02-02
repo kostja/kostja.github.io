@@ -73,7 +73,7 @@ The classical approach to the problem is multi-version concurrency control, when
 
 ![Isolation](/assets/isolation.png)
 
-Generally, we need to signal to the other participant that there is someone else working with the same data at the same time, or accept presence of phantoms - effects of violated transaction isolation. A formal way to define the problem is to introduce the concept of a transaction schedule (see the example on the slide below). We have data items (*x* and *y*), participants (1 and 2) and operations (*r* for read and *w* for write). The participants read or write the data, and *E* is the schedule of their actions.
+Generally, we need to signal to the other participant that there is someone else working with the same data at the same time, or accept presence of phantoms - effects of violated transaction isolation. A formal way to define the problem is to introduce the concept of a transaction schedule (see the example on the slide above). We have data items (*x* and *y*), participants (1 and 2) and operations (*r* for read and *w* for write). The participants read or write the data, and *E* is the schedule of their actions.
 
 Once we have transaction schedules written down, we can see their interference clearly, and see whether some coordination is necessary, or, in case transactions work on different subsets of data, whether isolated execution results are achievable without any coordination.
 
