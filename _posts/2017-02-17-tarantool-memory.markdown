@@ -195,7 +195,7 @@ the log-structured allocator, we avoid the long process of deleting the
 dumped objects one by one.
 
 We went on to make the library available on GitHub independently from
-Tarantool at [github.com/tarantool/small](github.com/tarantool/small). You
+Tarantool at [github.com/tarantool/small](http://github.com/tarantool/small). You
 can take a look at its source code - it’s relatively lightweight, which I
 consider an advantage. Whatever details I’ve omitted in my talk can be read
 in the repository.
