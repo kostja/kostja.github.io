@@ -1,10 +1,17 @@
 ---
 layout: post
 comments: true
-title: "Tarantool's data structures"
+title: "Tarantool data structures"
 date: 2017-02-23 09:24:02 +0300
 categories: misc
 ---
+
+> This is the final part of a four-part transcript of
+> my talk at Highload conference 2015.
+> For the previous parts, see
+> [How tarantool works with memory]({% post_url 2017-02-17-tarantool-memory %}),
+> [Tarantool engineering principles]({% post_url 2017-02-03-tarantool-engineering-principles %}) and
+> [Tarantool design principles]({% post_url 2017-01-24-tarantool-design-principles%}).
 
 ![Matras](/assets/matras.png)
 
