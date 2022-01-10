@@ -7,10 +7,9 @@
 
 # Site settings
 title: Kostja's github page
-email: kostja@tarantool.org
+email: kostja.osipov@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  Random posts from 2017+. I should import my livejournal archive in 
-  here someday.
+  Random posts from 2010+.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://kostja.github.io" # the base hostname & protocol for your site
 twitter_username: kostja_osipov
