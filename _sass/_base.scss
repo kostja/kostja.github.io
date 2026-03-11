@@ -45,6 +45,9 @@ ul, ol, dl, figure,
 img {
     max-width: 100%;
     vertical-align: middle;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
@@ -184,6 +187,44 @@ pre {
         display: table;
         clear: both;
     }
+}
+
+
+
+/**
+ * Tables
+ */
+table {
+    width: 100%;
+    margin-bottom: $spacing-unit / 2;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th {
+    background-color: #32373c;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid #073DA4;
+}
+
+td {
+    padding: 8px 14px;
+    border: 1px solid #e0e0e0;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fb;
+}
+
+tr:hover {
+    background-color: #E8F0FE;
+}
+
+td strong {
+    color: #008050;
 }
 
 
