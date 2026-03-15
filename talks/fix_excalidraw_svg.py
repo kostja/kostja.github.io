@@ -78,20 +78,19 @@ def fix_group(group_html):
 
         if half_h is not None:
             if n_texts == 1:
-                # Single text: center vertically
-                y = half_h + fs * 0.35
+                # Single text: center vertically using dominant-baseline
+                y = half_h
             else:
                 # Multiple texts (multiline): distribute evenly
                 line_h = fs * 1.2
                 total_h = n_texts * line_h
-                # Start so block is centered
-                start_y = half_h - total_h / 2 + fs * 0.85
+                start_y = half_h - total_h / 2 + fs * 0.5
                 y = start_y + idx * line_h
         else:
-            y = fs * 0.85
+            y = fs * 0.5
 
         old = tm.group(0)
-        new = old.replace('y="NaN"', f'y="{y:.1f}"')
+        new = old.replace('y="NaN"', f'y="{y:.1f}" dominant-baseline="central"')
         result = result.replace(old, new, 1)
 
     return result
@@ -103,8 +102,8 @@ def fix_standalone(m):
     suffix = m.group(2)
     fs_match = re.search(r'font-size="([\d.]+)px"', suffix)
     fs = float(fs_match.group(1)) if fs_match else 14
-    y = fs * 0.85
-    return f'{prefix}y="{y:.1f}"{suffix}'
+    y = fs * 0.5
+    return f'{prefix}y="{y:.1f}" dominant-baseline="central"{suffix}'
 
 
 if __name__ == "__main__":

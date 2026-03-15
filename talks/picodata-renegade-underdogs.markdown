@@ -80,11 +80,15 @@ Message-passing runtimes that partition work per CPU core:
 
 ![Buckets](/assets/img/talks/buckets.svg)
 
-> Data is split into **buckets** — fixed-size units of distribution and
-> rebalancing. Tables sharing a distribution key are co-located in the same
-> bucket, enabling local joins. When a new node joins, it starts with zero
-> buckets and gradually receives them from existing nodes. Drivers cache the
-> bucket-to-shard map so most queries go directly to the right node.
+> Data is split into **3 000 buckets** (by default) — fixed-size units of
+> distribution and rebalancing. When a new replica set joins the cluster,
+> it starts with zero buckets. Rebalancing begins only when the new RS is
+> **fully online** — all replicas present, replication factor satisfied.
+> Bucket transfer happens **leader to leader**: the source RS master sends
+> buckets directly to the destination RS master. Followers learn about the
+> new data via regular replication — they never participate in rebalancing
+> directly. Drivers cache the bucket→shard map so most queries go directly
+> to the right node without an extra hop.
 
 ---
 
