@@ -472,13 +472,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "  0.2.0 SET ENABLED;",
+      "text": "  0.2.0 ENABLE;",
       "fontSize": 11,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "  0.2.0 SET ENABLED;",
+      "originalText": "  0.2.0 ENABLE;",
       "lineHeight": 1.2
     },
     {

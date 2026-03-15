@@ -115,7 +115,7 @@ PANELS = [
         "fill": GRAY_FILL,
         "code": [
             "ALTER PLUGIN weather_plugin",
-            "  0.2.0 SET ENABLED;",
+            "  0.2.0 ENABLE;",
             "",
             "ALTER SERVICE weather_svc",
             "  SET TIER = 'compute';",
