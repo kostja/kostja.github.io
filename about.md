@@ -4,16 +4,12 @@ title: About
 permalink: /about/
 ---
 
-I'm a Director of Engineering at ScyllaDB, and ex CTO of Tarantool database.
+I'm a Co-Founder at Picodata and Managing Director, R&D at Arenadata. Previously CTO of Tarantool database and Director of Engineering at ScyllaDB.
 
-My github page: 
+My github page:
 {% include icon-github.html username="kostja" %} /
 [kostja](https://github.com/kostja/)
 
-ScyllaDB  github page: 
-{% include icon-github.html username="scylladb" %} /
-[scylladb](https://github.com/scylladb/)
-
-Tarantool github page: 
-{% include icon-github.html username="tarantool" %} /
-[tarantool](https://github.com/tarantool/)
+Picodata github page:
+{% include icon-github.html username="picodata" %} /
+[picodata](https://github.com/picodata/)

@@ -27,6 +27,12 @@ permalink: /talks/picodata-renegade-underdogs
 }
 </style>
 
+## 0. Title
+
+![Title](/assets/img/talks/title.svg)
+
+---
+
 ## 1. Three database architectures
 
 ![Three database architectures](/assets/img/talks/db_architectures.svg)
@@ -250,6 +256,8 @@ DOUBLE, DECIMAL, UUID, DATETIME, JSON.
 ## 12. Ouroboros & blue/green deploy
 
 ![Ouroboros](/assets/img/talks/ouroboros.svg)
+
+[Ouroboros manual](https://docs.picodata.io/picodata/25.5/architecture/ouroboros/)
 
 > **Ouroboros** is a proprietary async logical replication engine
 > (similar to Oracle GoldenGate). It maintains a second cluster as a
