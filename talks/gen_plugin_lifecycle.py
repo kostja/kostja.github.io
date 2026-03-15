@@ -110,22 +110,7 @@ PANELS = [
         ],
     },
     {
-        "title": "2. Migration",
-        "stroke": NAVY_STROKE,
-        "fill": NAVY_FILL,
-        "code": [
-            "-- pico.UP",
-            "CREATE TABLE weather (",
-            "  city TEXT,",
-            "  temp DOUBLE",
-            ") DISTRIBUTED BY (city);",
-            "",
-            "-- pico.DOWN",
-            "DROP TABLE weather;",
-        ],
-    },
-    {
-        "title": "3. Configure via SQL",
+        "title": "2. Configure & enable",
         "stroke": GRAY_STROKE,
         "fill": GRAY_FILL,
         "code": [
@@ -137,6 +122,21 @@ PANELS = [
             "",
             "-- max 2 versions live",
             "-- consistent across nodes",
+        ],
+    },
+    {
+        "title": "3. Migration & upgrade",
+        "stroke": NAVY_STROKE,
+        "fill": NAVY_FILL,
+        "code": [
+            "-- pico.UP",
+            "CREATE TABLE weather (",
+            "  city TEXT,",
+            "  temp DOUBLE",
+            ") DISTRIBUTED BY (city);",
+            "",
+            "-- pico.DOWN",
+            "DROP TABLE weather;",
         ],
     },
 ]
