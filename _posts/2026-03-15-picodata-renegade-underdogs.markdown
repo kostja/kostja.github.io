@@ -323,5 +323,5 @@ High-throughput OLTP with microsecond latency, ACID, and horizontal scaling.
 
 ![QR code — Telegram channel](/assets/img/talks/qr_telegram.png)
 
-- [@picodataru](https://t.me/picodataru)
+- [@picodataen](https://t.me/picodataen)
 - [@kostja_osipov](https://t.me/kostja_osipov)
