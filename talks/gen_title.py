@@ -129,7 +129,7 @@ NAME_Y = SQ_Y + SQ_SIZE + 20
 text("speaker", X0, NAME_Y, TOTAL_W, 24,
      "Kostja Osipov", size=18, color="#2B1321")
 text("role", X0, NAME_Y + 28, TOTAL_W, 18,
-     "Co-Founder, Picodata \u00b7 Managing Director R&D, Arenadata",
+     "Co-Founder, Picodata \u00b7 2025",
      size=13, color="#737A82")
 
 # ── Write output ──────────────────────────────────────

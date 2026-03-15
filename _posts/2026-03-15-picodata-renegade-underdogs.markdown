@@ -1,6 +1,7 @@
 ---
-layout: page
-title: "Picodata: Shard-Per-Core In-Memory Database"
+layout: post
+date:    2026-03-15
+title:   "Picodata: Shard-Per-Core In-Memory Database"
 permalink: /talks/picodata-renegade-underdogs
 ---
 
