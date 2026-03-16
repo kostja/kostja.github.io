@@ -325,3 +325,4 @@ High-throughput OLTP with microsecond latency, ACID, and horizontal scaling.
 
 - [@picodataen](https://t.me/picodataen)
 - [@kostja_osipov](https://t.me/kostja_osipov)
+- [Discord](https://discord.gg/tC5kuRVDMa)
