@@ -1,0 +1,9 @@
+---
+layout: post
+comments: true
+title:  "Техдолг - это ты"
+date:   2025-04-23 07:07:00 +0000
+categories: rabid-transit engineering
+---
+
+Техдолг - это ты. Каждая команда по-разному приоритезирует техдолг.
