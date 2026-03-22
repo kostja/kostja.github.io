@@ -18,4 +18,4 @@ conference :)
 
 Musing about this all, I took a step back, and thought: so typical of me:
 
-<img src="http://i350.photobucket.com/albums/q419/kostja_priutsky/hyatt.jpg" />
+<img src="/assets/images/hyatt.jpg" />

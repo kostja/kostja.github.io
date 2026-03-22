@@ -15,4 +15,4 @@ boss" :-)
 
 
 
-<img src="http://farm6.static.flickr.com/5251/5533322520_0d6992f48b_b.jpg" width="600"/>
+<img src="/assets/images/flickr_5533322520.jpg" width="600"/>
