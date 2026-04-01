@@ -336,7 +336,7 @@ The worklogs:
 <a href="http://forge.mysql.com/worklog/task.php?id=3726">WL#3726</a>
 <a href="http://forge.mysql.com/worklog/task.php?id=4284">WL#4284</a>,
 
-<a href="http://bazaar.launchpad.net/~mysql/mysql-server/mysql-trunk/view/head:/sql/mdl.h">the source</a>,
+<a href="https://github.com/mysql/mysql-server/blob/8.0/sql/mdl.h">the source</a>,
 
 <a href="http://forge.mysql.com/w/images/0/0a/Mdl.pdf">the pdf</a>.
 </p>

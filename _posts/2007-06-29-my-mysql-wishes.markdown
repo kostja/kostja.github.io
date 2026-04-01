@@ -8,7 +8,7 @@ categories:      mysql
 There has been a trend in the blogs for top5 MySQL wishes.
 
 Many people, including <a href="http://blog.arabx.com.au/?p=739">Ronald
-Bradford</a>, <a href="http://dormando.livejournal.com/469685.html">Alan
+Bradford</a>, <a href="https://web.archive.org/web/2008/http://dormando.livejournal.com/469685.html">Alan
 Kasindorf</a>, <a href="http://trainedmonkey.com/2007/6/23/my_five_mysql_wishes">Jim
 Winstead</a>, <a href="http://www.cybersite.com.au/blog/mysql_five_wishes">Jonathon
 Coombes</a>, <a href="http://jcole.us/blog/archives/2007/06/20/my-top-5-wishes-for-mysql/">Jeremy

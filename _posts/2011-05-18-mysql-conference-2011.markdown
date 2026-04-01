@@ -53,8 +53,8 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 Думаю, что через несколько лет MariaDB сможет составить очень существенную конкуренцию MySQL от Oracle.
 
 Ссылки:
-- [en.oreilly.com/mysql2011/public/schedule/detail/19899](http://en.oreilly.com/mysql2011/public/schedule/detail/19899)
-- [assets.en.oreilly.com/1/event/36/New%20Query%20Engine%20Feature](http://assets.en.oreilly.com/1/event/36/New%20Query%20Engine%20Feature)
+- [en.oreilly.com/mysql2011/public/schedule/detail/19899](https://web.archive.org/web/20130927231654/http://en.oreilly.com/mysql2011/public/schedule/detail/19899)
+- [assets.en.oreilly.com/1/event/36/New%20Query%20Engine%20Feature](https://web.archive.org/web/2015/http://assets.en.oreilly.com/1/event/36/New%20Query%20Engine%20Feature)
 
 ## Drizzle
 
@@ -66,7 +66,7 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 
 Ссылки по теме:
 - [krow.livejournal.com/700783.html](http://krow.livejournal.com/700783.html)
-- [en.oreilly.com/mysql2011/public/schedule/detail/17806](http://en.oreilly.com/mysql2011/public/schedule/detail/17806)
+- [en.oreilly.com/mysql2011/public/schedule/detail/17806](https://web.archive.org/web/20130927234443/http://en.oreilly.com/mysql2011/public/schedule/detail/17806)
 
 ## Keynote от Барона Шварца
 
@@ -82,7 +82,7 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 
 Если и стоит благодарить какую-то одну компанию за выход в свет 5.5, так это Sun Microsystems, в которой маркетинговые литавры долгое время успешно заменялись культурой поддержки технологических инноваций.
 
-[en.oreilly.com/mysql2011/public/schedule/detail/17808](http://en.oreilly.com/mysql2011/public/schedule/detail/17808)
+[en.oreilly.com/mysql2011/public/schedule/detail/17808](https://web.archive.org/web/20150905120340/http://en.oreilly.com/mysql2011/public/schedule/detail/17808)
 
 ## Разговор с Брюсом Момжияном
 
@@ -97,7 +97,7 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 В целом, репликация в PostgreSQL более простая и надёжная, что является как преимуществом, так и недостатком, например, в случаях, когда есть необходимость создавать сложные репликационные топологии.
 
 Ссылки:
-- [developer.postgresql.org/pgdocs/postgres/high-availability.html](http://developer.postgresql.org/pgdocs/postgres/high-availability.html)
+- [developer.postgresql.org/pgdocs/postgres/high-availability.html](https://www.postgresql.org/docs/current/high-availability.html)
 - [kristiannielsen.livejournal.com/12254.html](http://kristiannielsen.livejournal.com/12254.html)
 - [www.theserverside.com/feature/Comparing-MySQL-and-Postgres-90-Replication](http://www.theserverside.com/feature/Comparing-MySQL-and-Postgres-90-Replication)
 
@@ -117,7 +117,7 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 
 Ссылки:
 - [tungsten.sourceforge.net/docs/Tungsten-Replicator-Guide/Tungsten-Replicator-Guide.html](http://tungsten.sourceforge.net/docs/Tungsten-Replicator-Guide/Tungsten-Replicator-Guide.html)
-- [en.oreilly.com/mysql2011/public/schedule/detail/19268](http://en.oreilly.com/mysql2011/public/schedule/detail/19268)
+- [en.oreilly.com/mysql2011/public/schedule/detail/19268](https://web.archive.org/web/20160802193720/http://conferences.oreilly.com/mysql2011/public/schedule/detail/19268)
 
 ## Доклад Мартена Микоса
 
@@ -137,11 +137,11 @@ MariaDB 5.3 основана на MySQL 5.1 и, чтобы получить пр
 
 - модель разработки программного обеспечения для Web меняется: множество относительно слабых однопроцессорных виртуальных машин в облачной инфраструктуре — новая платформа разработки, даже для изначально небольших сайтов
 
-[en.oreilly.com/mysql2011/public/schedule/detail/17807](http://en.oreilly.com/mysql2011/public/schedule/detail/17807)
+[en.oreilly.com/mysql2011/public/schedule/detail/17807](https://web.archive.org/web/20131025162244/http://en.oreilly.com/mysql2011/public/schedule/detail/17807)
 
 ## Мой собственный доклад
 
 Мой доклад был посвящён новой подсистеме блокировок в MySQL 5.5. Тезисы и оценки повторять не буду, доклад полностью доступен в электронном виде, презентацию и текст можно найти в программе конференции и онлайн:
 
-- [en.oreilly.com/mysql2011/public/schedule/detail/17340](http://en.oreilly.com/mysql2011/public/schedule/detail/17340)
+- [en.oreilly.com/mysql2011/public/schedule/detail/17340](https://web.archive.org/web/20151006183313/http://conferences.oreilly.com/mysql2011/public/schedule/detail/17340)
 - [www.slideshare.net/kostjaosipov/metadata-locking-in-mysql-55](http://www.slideshare.net/kostjaosipov/metadata-locking-in-mysql-55)

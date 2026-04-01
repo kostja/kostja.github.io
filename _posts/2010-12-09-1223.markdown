@@ -5,7 +5,7 @@ title:   Speaking at O'Reilly MySQL Conference!
 ---
 
 Yay! My talk on new metadata locking in 5.5 was accepted to the 
-<a href="http://en.oreilly.com/mysql2011">O'Reilly MySQL Conference</a>
+<a href="https://web.archive.org/web/20150827040930/http://en.oreilly.com:80/mysql2011/">O'Reilly MySQL Conference</a>
 
 I'm happy to be given a chance to come and visit this place again (7th time!), especially since I know that it reinvents itself every year. 
 

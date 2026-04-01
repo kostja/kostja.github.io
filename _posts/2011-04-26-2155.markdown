@@ -6,7 +6,7 @@ title:   Upcoming speaking gigs
 
 Spring is a conference season.
 
-<a href="http://en.oreilly.com/mysql2011/">MySQL Users Conference</a> and <a href="http://ritconf.ru/">RIT</a> are behind, but I have two more engagements in the upcoming weeks:
+<a href="https://web.archive.org/web/20150827040930/http://en.oreilly.com:80/mysql2011/">MySQL Users Conference</a> and <a href="http://ritconf.ru/">RIT</a> are behind, but I have two more engagements in the upcoming weeks:
 - <a href="http://event.perlrussia.org/mayperl4/">YAPC Russia</a>, on Tarantool/Box key/value storage
 - <a href="http://devconf.ru">DevConf</a>, on methods of regression testing of 24/7 server applications.
 
