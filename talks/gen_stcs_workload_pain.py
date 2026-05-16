@@ -10,7 +10,7 @@ GREY = "#737A82"; INK = "#2B1321"
 DANGER = "#B91A36"; LDANGER = "#F09CAB"
 
 d.text("title", 20, 10, 1100, 28,
-       "STCS болит: удвоение диска при major compaction и разбросанные версии",
+       "STCS: удвоение диска при major compaction и разбросанные версии",
        size=20, color=INK)
 
 # LEFT PANEL: disk usage during major compaction

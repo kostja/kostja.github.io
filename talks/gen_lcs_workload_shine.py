@@ -69,7 +69,7 @@ for i, (h, b) in enumerate(CASES):
     d.text(f"c_b{i}", PX1 + 14, y + 32, 440, 22, b, size=12, color=INK, align="left")
 
 d.text("ann", 20, 460, 1100, 22,
-       "Сценарии «p99 чтения — главное, write amp вторичен».",
+       "Нагрузки, где p99 чтения важнее, чем стоимость записи.",
        size=14, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/lcs_workload_shine.excalidraw")

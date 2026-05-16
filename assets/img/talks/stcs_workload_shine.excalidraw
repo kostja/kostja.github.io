@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "STCS сияет: запись доминирует, чтения редкие",
+      "text": "STCS: запись доминирует, чтения редкие",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "STCS сияет: запись доминирует, чтения редкие",
+      "originalText": "STCS: запись доминирует, чтения редкие",
       "lineHeight": 1.2
     },
     {
@@ -1151,13 +1151,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Сценарии «write amp — главное, p99 чтения вторично».",
+      "text": "Нагрузки, где write amp важнее p99 чтения.",
       "fontSize": 14,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Сценарии «write amp — главное, p99 чтения вторично».",
+      "originalText": "Нагрузки, где write amp важнее p99 чтения.",
       "lineHeight": 1.2
     }
   ],

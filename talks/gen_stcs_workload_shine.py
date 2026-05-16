@@ -10,7 +10,7 @@ ORANGE = "#FF611D"
 GREY = "#737A82"; INK = "#2B1321"
 
 d.text("title", 20, 10, 1100, 28,
-       "STCS сияет: запись доминирует, чтения редкие",
+       "STCS: запись доминирует, чтения редкие",
        size=20, color=INK)
 
 # LEFT PANEL: burst of incoming writes hitting tiers
@@ -65,7 +65,7 @@ for i, (h, b) in enumerate(CASES):
 
 # Bottom annotation
 d.text("ann", 20, 460, 1100, 22,
-       "Сценарии «write amp — главное, p99 чтения вторично».",
+       "Нагрузки, где write amp важнее p99 чтения.",
        size=14, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/stcs_workload_shine.excalidraw")

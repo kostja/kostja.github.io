@@ -1335,13 +1335,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Сценарии «p99 чтения — главное, write amp вторичен».",
+      "text": "Нагрузки, где p99 чтения важнее, чем стоимость записи.",
       "fontSize": 14,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Сценарии «p99 чтения — главное, write amp вторичен».",
+      "originalText": "Нагрузки, где p99 чтения важнее, чем стоимость записи.",
       "lineHeight": 1.2
     }
   ],

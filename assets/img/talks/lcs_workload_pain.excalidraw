@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "LCS болит: 1 байт на L0 → 30 байт через каскад",
+      "text": "LCS: 1 байт на L0 → 30 байт через каскад",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "LCS болит: 1 байт на L0 → 30 байт через каскад",
+      "originalText": "LCS: 1 байт на L0 → 30 байт через каскад",
       "lineHeight": 1.2
     },
     {
@@ -1069,13 +1069,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "compaction-долг",
+      "text": "очередь слияний",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "compaction-долг",
+      "originalText": "очередь слияний",
       "lineHeight": 1.2
     },
     {
@@ -1168,13 +1168,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Bulk ingest (CDC, backfill, IoT): write amp превращает износ SSD в бутылочное горлышко.",
+      "text": "Bulk ingest (CDC, backfill, IoT): износ SSD становится главным ограничителем.",
       "fontSize": 14,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Bulk ingest (CDC, backfill, IoT): write amp превращает износ SSD в бутылочное горлышко.",
+      "originalText": "Bulk ingest (CDC, backfill, IoT): износ SSD становится главным ограничителем.",
       "lineHeight": 1.2
     }
   ],

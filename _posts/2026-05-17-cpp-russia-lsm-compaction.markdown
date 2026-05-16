@@ -70,7 +70,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 3. STCS — где она сияет
+## 3. Когда STCS — правильный выбор
 
 ![STCS shines](/assets/img/talks/stcs_workload_shine.svg)
 
@@ -86,7 +86,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 4. STCS в проде — где она болит
+## 4. Когда STCS подводит
 
 ![STCS pain](/assets/img/talks/stcs_workload_pain.svg)
 
@@ -125,7 +125,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 6. LCS — где она сияет
+## 6. Когда LCS — правильный выбор
 
 ![LCS shines](/assets/img/talks/lcs_workload_shine.svg)
 
@@ -142,7 +142,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 7. LCS в проде — где она болит
+## 7. Когда LCS подводит
 
 ![LCS pain](/assets/img/talks/lcs_workload_pain.svg)
 
@@ -236,7 +236,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 12. Тримминг плана — сливаем только пересекающееся
+## 12. Усечение плана — сливаем только пересекающееся
 
 ![Overlapping cluster](/assets/img/vinyl/overlapping_cluster.svg)
 
@@ -289,7 +289,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 15. Когда stitching помогает *несмотря на* тримминг плана
+## 15. Когда stitching помогает *несмотря на* усечение плана
 
 ![Stitching workload](/assets/img/talks/stitching_workload.svg)
 

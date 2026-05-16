@@ -11,7 +11,7 @@ BLUE = "#4B7BE5"; LBLUE = "#DBE6FA"
 GREY = "#737A82"; INK = "#2B1321"
 
 d.text("title", 20, 10, 1100, 28,
-       "LCS болит: 1 байт на L0 → 30 байт через каскад",
+       "LCS: 1 байт на L0 → 30 байт через каскад",
        size=20, color=INK)
 
 # LEFT PANEL: write amplification cascade
@@ -50,7 +50,7 @@ d.line("g_l3", GX0 + 190, GY0 + 73, [[0, 0], [120, 45]], color=DANGER, sw=2, rou
 d.line("g_l4", GX0 + 310, GY0 + 118, [[0, 0], [150, 20]], color=DANGER, sw=2, roughness=0)
 
 d.text("ann_high", GX0 + 30, GY0 + 6, 110, 18, "пик записи", size=12, color=BLUE, align="left")
-d.text("ann_collapse", GX0 + 220, GY0 + 130, 200, 18, "compaction-долг",
+d.text("ann_collapse", GX0 + 220, GY0 + 130, 200, 18, "очередь слияний",
        size=12, color=DANGER, align="left")
 
 # SSD wear box
@@ -61,7 +61,7 @@ d.text("wt", GX0, WY, GW, 50,
 
 # Bottom annotation
 d.text("ann", 20, 410, 1100, 22,
-       "Bulk ingest (CDC, backfill, IoT): write amp превращает износ SSD в бутылочное горлышко.",
+       "Bulk ingest (CDC, backfill, IoT): износ SSD становится главным ограничителем.",
        size=14, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/lcs_workload_pain.excalidraw")

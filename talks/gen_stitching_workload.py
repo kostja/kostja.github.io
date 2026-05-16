@@ -82,7 +82,7 @@ for i, line in enumerate([
 
 # Annotation
 d.text("ann", 20, DY + FH + 38, 1200, 22,
-       "Тримминг плана оставил эти файлы вместе — но новых байт нужно только 10%.",
+       "Усечение плана оставило эти файлы вместе — но новых байт нужно только 10%.",
        size=14, color=GREY)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/stitching_workload.excalidraw")

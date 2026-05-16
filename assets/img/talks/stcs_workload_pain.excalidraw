@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "STCS болит: удвоение диска при major compaction и разбросанные версии",
+      "text": "STCS: удвоение диска при major compaction и разбросанные версии",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "STCS болит: удвоение диска при major compaction и разбросанные версии",
+      "originalText": "STCS: удвоение диска при major compaction и разбросанные версии",
       "lineHeight": 1.2
     },
     {
