@@ -22,6 +22,21 @@ permalink: /talks/cpp-russia-lsm-compaction
     border-top: 2px solid #dee2e6;
     margin: 40px 0;
 }
+/* Let wide SVG diagrams render closer to native size on wider viewports
+   (post container is 740px; wider diagrams would otherwise downscale and
+   look text-tiny relative to the smaller Vinyl-article diagrams). */
+.post-content img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    width: auto;
+}
+@media (min-width: 1240px) {
+    .post-content img {
+        max-width: 1200px;
+        margin-left: calc(50% - 600px);
+    }
+}
 </style>
 
 ## 0. Title
@@ -70,7 +85,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 3. Когда STCS — правильный выбор
+## 3. Когда выбирать STCS
 
 ![STCS shines](/assets/img/talks/stcs_workload_shine.svg)
 
@@ -125,7 +140,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 6. Когда LCS — правильный выбор
+## 6. Когда выбирать LCS
 
 ![LCS shines](/assets/img/talks/lcs_workload_shine.svg)
 
@@ -200,7 +215,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 10. Universal Compaction — компромисс
+## 10. Universal Compaction: компромисс
 
 ![Universal Compaction](/assets/img/talks/universal_compaction.svg)
 
@@ -238,7 +253,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 12. Vinyl — per-range, shape-based
+## 12. Vinyl: per-range, shape-based
 
 ![Slices and ranges](/assets/img/vinyl/slices_and_ranges.svg)
 
@@ -278,7 +293,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 14. Усечение плана — сливаем только пересекающееся
+## 14. Усечение плана: сливаем только пересекающееся
 
 ![Overlapping cluster](/assets/img/vinyl/overlapping_cluster.svg)
 
@@ -296,7 +311,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 15. Read-amp драйвер — замыкаем цикл
+## 15. Read-amp драйвер замыкает цикл
 
 - Считаем mux на чтении: полезные байты ÷ просканированные байты
 - Mux упал ниже порога — планируем compaction для этого диапазона
@@ -312,7 +327,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 16. File stitching — что нам даёт ФС
+## 16. File stitching: что нам даёт ФС
 
 ![File stitching](/assets/img/talks/file_stitching.svg)
 
@@ -370,7 +385,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 19. Трёхуровневая структура — run › block › page
+## 19. Трёхуровневая структура: run › block › page
 
 ![Three-level format](/assets/img/talks/three_level_format.svg)
 
