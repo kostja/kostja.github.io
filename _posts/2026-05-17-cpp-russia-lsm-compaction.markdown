@@ -178,7 +178,29 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 9. Universal Compaction — компромисс
+## 9. Compaction как кластеризация
+
+![Compaction as 2D clustering](/assets/img/talks/compaction_continuum.svg)
+
+- Каждое обновление — точка в координатах (время, ключ)
+- Естественные кластеры имеют произвольную форму: диагональные полосы (key-order sweep), плотные сгустки (горячие ключи OLTP), шум
+- Файл / SSTable / run — это **осе-выровненный прямоугольник**, накрывающий кластер
+- Compaction = найти кластер и заменить его на «строку», где каждый ключ представлен один раз
+
+> Step back from the file-merging framing. Every write is a point in
+> (time, key) space. The natural clusters that emerge — diagonal
+> stripes from key-order sweeps, dense blobs from hot-key churn,
+> scattered noise from random workloads — are arbitrarily shaped.
+> Files, SSTables, runs, ranges are all axis-aligned rectangles
+> trying to cover those clusters. That's the whole story: every
+> strategy I'll describe next is a different way to choose those
+> rectangles. Plan trimming, per-block metadata, file stitching —
+> all of them are about making the rectangle cover the cluster more
+> tightly.
+
+---
+
+## 10. Universal Compaction — компромисс
 
 ![Universal Compaction](/assets/img/talks/universal_compaction.svg)
 
@@ -196,7 +218,27 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 10. Vinyl — per-range, shape-based
+## 11. Один и тот же датасет: Vinyl vs RocksDB
+
+![Vinyl vs RocksDB file layout](/assets/img/talks/vinyl_vs_rocksdb_layout.svg)
+
+- **Vinyl**: разбиение по ключу (range), внутри каждого диапазона — пирамида run-файлов
+- **RocksDB**: разбиение по уровню (LCS), на каждом уровне — набор SSTable фиксированного размера
+- L0 в обоих движках — недавно сброшенные файлы; в Vinyl один run может покрывать несколько диапазонов через slice-ы
+- Объёмы данных совпадают, единицы учёта разные
+
+> Same dataset, two different vocabularies. Vinyl partitions horizontally
+> by key, then stacks levels per partition; RocksDB partitions vertically
+> by level, then divides each level into fixed-size SSTables. The total
+> data volume and steady-state I/O cost are comparable — the engineering
+> difference is which axis you care about first when planning compaction.
+> Vinyl's per-range partitioning gives you cheap independent merges of
+> hot regions; RocksDB's per-level partitioning gives you simpler global
+> reasoning about read amplification.
+
+---
+
+## 12. Vinyl — per-range, shape-based
 
 ![Slices and ranges](/assets/img/vinyl/slices_and_ranges.svg)
 
@@ -216,7 +258,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 11. Bloat временны́х рядов после split-а
+## 13. Bloat временны́х рядов после split-а
 
 ![Time-series bloat](/assets/img/vinyl/timeseries_bloat.svg)
 
@@ -236,7 +278,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 12. Усечение плана — сливаем только пересекающееся
+## 14. Усечение плана — сливаем только пересекающееся
 
 ![Overlapping cluster](/assets/img/vinyl/overlapping_cluster.svg)
 
@@ -254,7 +296,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 13. Read-amp драйвер — замыкаем цикл
+## 15. Read-amp драйвер — замыкаем цикл
 
 - Считаем mux на чтении: полезные байты ÷ просканированные байты
 - Mux упал ниже порога — планируем compaction для этого диапазона
@@ -270,7 +312,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 14. File stitching — что нам даёт ФС
+## 16. File stitching — что нам даёт ФС
 
 ![File stitching](/assets/img/talks/file_stitching.svg)
 
@@ -289,7 +331,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 15. Когда stitching помогает *несмотря на* усечение плана
+## 17. Когда stitching помогает *несмотря на* усечение плана
 
 ![Stitching workload](/assets/img/talks/stitching_workload.svg)
 
@@ -310,7 +352,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 16. Ловушка bloom-фильтра
+## 18. Ловушка bloom-фильтра
 
 - На SSTable / run-файл — **один** bloom-фильтр на весь набор ключей
 - У сшитого файла другой набор ключей — фильтр инвалидирован
@@ -328,7 +370,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 17. Трёхуровневая структура — run › block › page
+## 19. Трёхуровневая структура — run › block › page
 
 ![Three-level format](/assets/img/talks/three_level_format.svg)
 
@@ -349,7 +391,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 18. Что даёт per-block метаданные
+## 20. Что даёт per-block метаданные
 
 ![Per-block workload](/assets/img/talks/block_workload.svg)
 
@@ -369,7 +411,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 19. Почему это будущее OLTP LSM
+## 21. Почему это будущее OLTP LSM
 
 - Per-file метаданные — наследие эпохи до reflink
 - Per-block метаданные включают stitching, TTL drop, MinHash pruning одной структурой
@@ -387,7 +429,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 20. Спасибо
+## 22. Спасибо
 
 - Блог: [kostja.github.io](https://kostja.github.io)
 - Telegram: [@kostja_osipov](https://t.me/kostja_osipov)
