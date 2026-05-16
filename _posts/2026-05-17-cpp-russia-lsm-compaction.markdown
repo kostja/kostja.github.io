@@ -1,7 +1,7 @@
 ---
 layout: post
 date:    2026-05-17
-title:   "Advanced LSM Compaction"
+title:   "Compaction в LSM: за пределами Leveled и Tiered"
 permalink: /talks/cpp-russia-lsm-compaction
 ---
 
@@ -26,32 +26,31 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 0. Title
 
-# Advanced LSM Compaction
+# Compaction в LSM
 
-### Beyond Leveled vs. Tiered
+### За пределами Leveled и Tiered
 
-Konstantin Osipov — C++ Russia, 2026
+Константин Осипов — C++ Russia, 17 мая 2026
 
-> Today I want to talk about LSM compaction — not as a Vinyl-specific
-> topic, but as a general design problem that any LSM engine faces.
-> I'll use Cassandra, RocksDB, and Vinyl as concrete examples, and
-> close with a proposal for what the next generation of LSM file
-> formats should look like.
+> Today's topic is LSM compaction — not as a Vinyl-specific subject,
+> but as a general design problem any LSM engine faces. I'll use
+> Cassandra, RocksDB, and Vinyl as concrete examples, and close with
+> a proposal for what the next generation of LSM file formats should
+> look like.
 
 ---
 
-## 1. LSM in one slide
+## 1. LSM на одном слайде
 
 ![LSM recap](/assets/img/talks/lsm_recap.svg)
 
-> Quick recap. Writes land in an in-memory **memtable**. When it fills
-> up, it's frozen and **flushed** to disk as a sorted immutable file —
-> Cassandra calls it an SSTable, RocksDB calls it an SST, Vinyl calls
-> it a run-file. Reads must consult the memtable and every on-disk
-> file, so over time the system **compacts** files together: it merges
-> several sorted files into one larger sorted file, collapsing updates
-> and dropping tombstones. *Compaction* is where almost all of the
-> engineering happens.
+> Quick recap. Writes land in an in-memory memtable. When it fills up,
+> it is frozen and flushed to disk as a sorted immutable file — an
+> SSTable in Cassandra, an SST in RocksDB, a run-file in Vinyl. Reads
+> must consult the memtable and every on-disk file, so over time the
+> engine compacts files together: it merges several sorted files into
+> one larger sorted file, collapsing updates and dropping tombstones.
+> Compaction is where almost all of the engineering happens.
 
 ---
 
@@ -59,239 +58,250 @@ Konstantin Osipov — C++ Russia, 2026
 
 ![Size-Tiered Compaction](/assets/img/talks/size_tiered_compaction.svg)
 
-- Group files of **similar size** into tiers
-- When a tier has **N** files (default 4), merge them into one
-- The result joins the next-larger tier
+- Файлы одного размера складываются в уровень
+- При накоплении N (по умолчанию 4) — слияние в один файл
+- Результат становится файлом следующего уровня
 
-> STCS is the original Cassandra strategy and the simplest one. It
-> just keeps a stack of size buckets. When enough files of roughly
-> the same size accumulate, they get merged and the result starts a
-> new, bigger bucket. Write amplification is low — each byte is
-> rewritten only when its tier fills. Conceptually beautiful.
-
----
-
-## 3. STCS in production — when it hurts
-
-![STCS workload pain](/assets/img/talks/stcs_workload_pain.svg)
-
-- **Time-series ingest** at high write rate produces many tiers
-- One key's history is **scattered across N tiers** — read amp blows up
-- **Major compaction** of the largest tier needs disk = 2× dataset
-- Cassandra outages routinely traced to "ran out of disk during compaction"
-
-> The trouble starts at scale. Imagine a Cassandra cluster ingesting
-> metrics or sensor data — billions of writes per day. Each key gets
-> updated frequently, and its versions end up scattered across many
-> tiers. To read one row, the engine must merge fragments from every
-> tier — read amplification grows unbounded. Worse, the largest tier
-> eventually needs to be compacted itself. That compaction reads N
-> files of the *biggest* size class and writes one merged file —
-> doubling the disk footprint for the duration. If you provisioned
-> for 1× your data, you're now out of space, and the merge fails.
-> This is the canonical "Cassandra ran out of disk" outage.
+> STCS is the original Cassandra strategy and the simplest. It keeps
+> a stack of size buckets — when enough files of the same size
+> accumulate, they get merged and the result starts a new, bigger
+> bucket. Write amplification is low because each byte is rewritten
+> only when its tier fills.
 
 ---
 
-## 4. Leveled Compaction (LCS)
+## 3. STCS — где она сияет
+
+![STCS shines](/assets/img/talks/stcs_workload_shine.svg)
+
+- Поток записи доминирует, чтения редкие
+- Низкий write amp — сливаются только файлы одного размера
+- Минимальный износ SSD
+- Подходит для: audit-логи, event-стримы, CDC-журналы, архивное хранение
+
+> STCS earns its place in workloads where writes dominate and reads
+> are rare or batched. Audit logs, event streams, CDC pipelines,
+> archival storage — all want low write amp and tolerate high read
+> amp because reads are uncommon or do scans rather than point lookups.
+
+---
+
+## 4. STCS в проде — где она болит
+
+![STCS pain](/assets/img/talks/stcs_workload_pain.svg)
+
+- Версии одного ключа разбросаны по N уровням → read amp растёт
+- Major compaction крупнейшего уровня требует диск ≈ 2× датасета
+- Классический инцидент: «Cassandra переполнила диск при compaction»
+
+> The trouble surfaces at scale. Imagine a Cassandra cluster ingesting
+> metrics — billions of writes per day, keys updated frequently. Each
+> key's versions end up scattered across many tiers. To read one row,
+> the engine merges fragments from every tier — read amp grows
+> unbounded. Worse, the largest tier eventually needs to be compacted
+> itself: that operation reads N files of the biggest size class and
+> writes one merged file, doubling the disk footprint for the duration.
+> If you provisioned for 1× your data, you are out of space and the
+> merge fails. This is the canonical "Cassandra ran out of disk"
+> outage.
+
+---
+
+## 5. Leveled Compaction (LCS)
 
 ![Leveled Compaction](/assets/img/talks/leveled_compaction.svg)
 
-- Files organized into **levels** L0, L1, L2, …
-- Each level is ~10× the size of the previous
-- Within a level, files **do not overlap** by key range
-- New files at L0 get promoted by merging into L1, then L2, …
+- Файлы организованы по уровням L0, L1, L2, …
+- Каждый следующий уровень ≈ ×10 больше предыдущего
+- Внутри уровня файлы не пересекаются по диапазону ключей
+- Продвижение между уровнями = перезапись затронутого диапазона
 
 > LCS, originally LevelDB's contribution, fixes the read-amp problem.
-> Within each level, files cover disjoint key ranges — so a point
-> lookup only needs to consult *one* file per level. Read amplification
-> is bounded by the number of levels — log₁₀(dataset). Space
-> amplification is also tight, because each level holds exactly one
-> copy of its key range.
+> Within each level, files cover disjoint key ranges — a point lookup
+> consults at most one file per level. Read amplification is bounded
+> by the number of levels, roughly log₁₀(dataset). Space amplification
+> is also tight because each level holds exactly one copy of its key
+> range.
 
 ---
 
-## 5. LCS in production — when it hurts
+## 6. LCS — где она сияет
 
-![LCS workload pain](/assets/img/talks/lcs_workload_pain.svg)
+![LCS shines](/assets/img/talks/lcs_workload_shine.svg)
 
-- **Bulk ingest** (backfill, IoT pipelines, batch loaders)
-- One byte at L0 cascades through every level → ~**30× write amp**
-- SSD wear becomes the hard ceiling — not CPU, not network
-- Sustained write throughput collapses once levels are full
+- OLTP с горячим набором ключей, точечные чтения по PK
+- p99 чтения — продуктовый SLA
+- read amp = O(log₁₀ N), space amp ≈ 1.1×
+- Подходит для: профили, сессии, корзины, справочники, API-поиск по PK
 
-> The cost of bounded read amp is unbounded write amp. To keep
-> levels non-overlapping, every file promotion rewrites the touched
-> range at the next level. With the default 10× ratio, one byte
-> written to L0 may be rewritten 10 times at L1, 10 at L2, and so on.
-> Total write amplification is the sum: 10 + 10 + 10 + … = O(levels).
-> Typical numbers are 20–30×. For bulk-ingest workloads — backfilling
-> a year of metrics, loading a CDC stream — write amp is the wall you
-> hit. The SSD wears out, the write quota drains, and sustained
-> throughput collapses to whatever the bottom level can absorb.
+> LCS shines on read-heavy OLTP: profiles, sessions, shopping carts,
+> API lookups by primary key. The bounded read amp and tight space
+> amp translate directly into predictable p99 latency, which is what
+> the product SLA usually measures. The cost — write amp — is
+> acceptable because the workload is read-heavy by definition.
 
 ---
 
-## 6. The RUM trilemma
+## 7. LCS в проде — где она болит
+
+![LCS pain](/assets/img/talks/lcs_workload_pain.svg)
+
+- 1 байт на L0 → ≈ 30 байт через каскад продвижений
+- Износ SSD упирается в DWPD-потолок
+- Bulk-ingest проседает: backfill, CDC, IoT, потоковая загрузка
+
+> The cost of bounded read amp is unbounded write amp. To keep levels
+> non-overlapping, every promotion rewrites the touched range at the
+> next level. With the default 10× ratio, one byte at L0 may be
+> rewritten 10× at L1, 10× at L2, and so on. Total write amp is the
+> sum: typically 20–30×. For bulk-ingest workloads — backfilling a
+> year of metrics, loading a CDC stream, ingesting IoT events — write
+> amp is the wall you hit. The SSD wears out, write quota drains,
+> sustained throughput collapses to whatever the bottom level can
+> absorb.
+
+---
+
+## 8. Треугольник RUM
 
 ![RUM trilemma](/assets/img/vinyl/amplification_triangle.svg)
 
-- **Read** amp — bytes read per byte requested
-- **Write** amp — bytes written per byte stored
-- **Space** amp — bytes on disk per byte of live data
+- **Read** amp — байт прочитано на байт запрошенных данных
+- **Write** amp — байт записано на байт сохранённых данных
+- **Space** amp — байт на диске на байт живых данных
 
 > Harvard's DASlab framed it crisply: you cannot minimize all three.
-> STCS optimizes write amp, sacrifices read and space. LCS optimizes
-> read and space, sacrifices write. Every compaction strategy is a
-> point in this triangle — and the right point depends on your
+> STCS optimizes write amp at the cost of read and space. LCS
+> optimizes read and space at the cost of write. Every strategy is a
+> point in this triangle — and the right point depends on the
 > workload, not on a universal answer.
 
 ---
 
-## 7. Universal Compaction — the compromise
+## 9. Universal Compaction — компромисс
 
 ![Universal Compaction](/assets/img/talks/universal_compaction.svg)
 
-- Cassandra **UCS** (5.0) and RocksDB **Universal** unify STCS and LCS
-- A single `scaling_parameter` (W) tunes each level between tiered and leveled
-- Adapts to workload — but is still a compromise
+- Cassandra **UCS** (5.0) и RocksDB **Universal** объединяют STCS и LCS
+- Параметр `scaling_parameter` (W) задаёт поведение каждого уровня
+- Адаптируется к нагрузке — но остаётся компромиссом
 
-> Both Cassandra and RocksDB converged on the same idea: parameterize
-> the strategy. UCS gives each level a knob — negative W behaves like
-> tiered, positive like leveled, zero is somewhere in between. You
-> can tune it. But "tuning" assumes you know your workload, that it
-> doesn't change, and that one knob is enough to describe it. In
-> practice these assumptions are wrong, and even a well-tuned UCS
-> leaves performance on the table compared to a strategy that
-> *observes* the workload at runtime.
+> Cassandra and RocksDB converged on the same idea: parameterize the
+> strategy. UCS gives each level a knob — negative W behaves like
+> tiered, positive like leveled. You can tune it, but tuning assumes
+> you know the workload, that it doesn't change, and that one knob
+> is enough to describe it. In practice these assumptions are wrong,
+> and even a well-tuned UCS leaves performance on the table compared
+> to a strategy that observes the workload at runtime.
 
 ---
 
-## 8. Vinyl — per-range shape-based
+## 10. Vinyl — per-range, shape-based
 
 ![Slices and ranges](/assets/img/vinyl/slices_and_ranges.svg)
 
 ![Shape-based compaction](/assets/img/vinyl/shape_based_compaction.svg)
 
-- Key space split into independent **ranges** (default 128 MB)
-- Each range maintains its own LSM **shape** — pyramid of run-files
-- A run-file may be referenced from many ranges via **slices**
+- Ключевое пространство разбито на независимые диапазоны (по умолчанию 128 МБ)
+- У каждого диапазона своя «форма» LSM-дерева — пирамида run-файлов
+- Run-файл может быть виден из нескольких диапазонов через slice-ссылки
 
-> Vinyl partitions the keyspace into ranges. Each range is its own
-> mini-LSM with its own shape — independent compaction decisions per
-> region of the keyspace. Range size bounds the worst-case compaction
-> cost: a major compaction of one 128 MB range needs only 128 MB of
-> temporary space, no matter how big the dataset.
+> Vinyl partitions the keyspace into ranges, each its own mini-LSM
+> with its own shape and compaction decisions. Range size bounds the
+> worst-case compaction cost: a major compaction of one 128 MB range
+> needs only 128 MB of temporary space, no matter how big the dataset.
 > Run-files can be shared across ranges via slices — a slice is a
-> `(file, start_page, end_page)` tuple. A range split creates new
+> (file, start_page, end_page) tuple. A range split creates new
 > slices, not new files.
 
 ---
 
-## 9. Per-range randomization — avoiding the stampede
-
-![Randomization](/assets/img/vinyl/randomization.svg)
-
-- 1000 ranges, all flushed together, all hit the threshold together
-- Naïve scheduler triggers 1000 simultaneous merges — throughput collapses
-- Vinyl **randomizes** the per-range trigger to spread merges over time
-
-> A subtle trap. If every range follows the same canonical shape,
-> every range reaches its compaction threshold at the same time —
-> right after a memtable flush. The scheduler tries to merge all 1000
-> ranges at once, write bandwidth saturates, the next flush is
-> blocked, memory fills up, transactions stall. Cassandra and RocksDB
-> hit variants of this regularly. Vinyl injects per-range randomness
-> into the shape — after a few cycles, merge work is evenly spread.
-
----
-
-## 10. When shape isn't enough — time-series bloat
+## 11. Bloat временны́х рядов после split-а
 
 ![Time-series bloat](/assets/img/vinyl/timeseries_bloat.svg)
 
-- Append-only data, then a range **split**
-- The lower half looks "ideal" — one big run-file
-- But that file holds 50% **dead** data, sitting in RAM and on disk
-- Delete-old scan turns **quadratic** as tombstones accumulate
+- Append-only вставки, затем split диапазона
+- Нижняя половинка выглядит «идеально» — один большой run-файл
+- Но 50% его данных уже устарели: page-index сидит в RAM зря
+- Удаление старых строк деградирует в квадратику
 
-> The exact bug that triggered our scheduler rewrite. Time-series
-> data appended in key order. The range grew past its size threshold,
-> split, and the lower half — never written to again — looked perfect
-> to the shape-based scheduler. But half of its bytes were already
-> dead, copied across during the split. The page index sat in RAM
-> for nothing. Worse, a delete-old scan from the cold end of the
-> data triggered quadratic behavior, because each scan re-read all
-> the tombstones the previous scans had created.
+> The exact bug that triggered our scheduler rewrite. Time-series data
+> appended in key order; the range grew past its threshold, split,
+> and the lower half — never written to again — looked perfect to the
+> shape-based scheduler. But half of its bytes were dead, copied
+> across during the split. The page index sat in RAM for nothing.
+> Worse, a delete-old scan from the cold end triggered quadratic
+> behavior — each scan re-read all the tombstones the previous scans
+> had created.
 
 ---
 
-## 11. Plan trimming — only merge what overlaps
+## 12. Тримминг плана — сливаем только пересекающееся
 
 ![Overlapping cluster](/assets/img/vinyl/overlapping_cluster.svg)
 
-- Inside one range, find the largest **cluster of run-files that overlap by key**
-- Compact only that cluster
-- Non-overlapping run-files are left alone — write amp avoided
+- Внутри диапазона ищем максимальный кластер run-файлов с пересекающимися ключами
+- Сливаем только этот кластер
+- Непересекающиеся run-файлы пропускаем — write amp экономится
 
 > The fix: don't take the shape at face value. Within a range, find
 > the maximal cluster of run-files that actually share key ranges,
-> and compact only that cluster. Non-overlapping runs — common in
-> time-series, append-only, and tenant-isolated workloads — get
-> skipped entirely. Conceptually simple, but it required making the
-> compaction *plan* a first-class object in the scheduler. Once you
-> have a plan, you can have multiple drivers competing to fill it.
+> compact only that cluster. Non-overlapping runs — common in
+> time-series, append-only, tenant-isolated workloads — get skipped
+> entirely. The change required making the compaction *plan* a
+> first-class object in the scheduler. Once you have a plan, you can
+> have multiple drivers competing to fill it.
 
 ---
 
-## 12. Read-amp driver — close the loop
+## 13. Read-amp драйвер — замыкаем цикл
 
-- Track **mux** at read time: useful bytes / scanned bytes
-- When mux drops below a threshold, **schedule compaction** for that range
-- Reads tell compaction what to do — no more guessing from shape alone
+- Считаем mux на чтении: полезные байты ÷ просканированные байты
+- Mux упал ниже порога — планируем compaction для этого диапазона
+- Чтения сами говорят compaction-у, что делать
 
 > The second driver is feedback from reads. The shape-based driver
 > looks at the file layout; the read-amp driver looks at what queries
-> are actually paying. When a range's read efficiency drops — too
-> many tombstones, too much dead data after a split — we compact it,
-> even if the shape looks fine. This closes the feedback loop that
-> classical LSM schedulers lack. It also gracefully handles workloads
-> the engine has no model for: if reads suffer, compaction kicks in.
+> actually pay. When read efficiency drops — too many tombstones,
+> too much dead data after a split — we compact the range even if
+> its shape looks fine. This closes the feedback loop classical LSM
+> schedulers lack. It also gracefully handles workloads the engine
+> has no model for: if reads suffer, compaction kicks in.
 
 ---
 
-## 13. File stitching — what the filesystem offers
+## 14. File stitching — что нам даёт ФС
 
 ![File stitching](/assets/img/talks/file_stitching.svg)
 
-- Linux: `FICLONERANGE` ioctl, `copy_file_range()` syscall
-- Filesystems: **btrfs**, **XFS** (with reflinks), ZFS, APFS
-- Splice a range of one file into another **without copying bytes**
-- The result shares physical extents until either side is overwritten
+- Linux: ioctl `FICLONERANGE`, syscall `copy_file_range`
+- ФС с reflink: btrfs, XFS, ZFS, APFS
+- Сращивание фрагмента файла в другой файл без копирования байт
+- Результирующие файлы делят физические экстенты, пока их не перезаписать
 
-> Modern filesystems can splice file fragments by reference. btrfs
-> and XFS expose this as reflink copies. The Linux kernel offers
-> `FICLONERANGE` and `copy_file_range`. Two files share the same
-> physical blocks until one of them is modified — then copy-on-write
-> kicks in. For an LSM engine, this is enormously tempting: instead
-> of physically rewriting megabytes during a merge, splice the
-> existing data pages into the new run-file at near-zero I/O cost.
+> Modern filesystems splice file fragments by reference. btrfs and XFS
+> expose this as reflink copies; the Linux kernel offers FICLONERANGE
+> and copy_file_range. Two files share the same physical blocks until
+> one of them is modified — then copy-on-write kicks in. For an LSM
+> engine this is enormously tempting: instead of physically rewriting
+> megabytes during a merge, splice existing data pages into the new
+> run-file at near-zero I/O cost.
 
 ---
 
-## 14. When stitching pays *despite* plan trimming
+## 15. Когда stitching помогает *несмотря на* тримминг плана
 
 ![Stitching workload](/assets/img/talks/stitching_workload.svg)
 
-- Two run-files in the same overlapping cluster
-- They overlap on **10%** of keys (recent updates)
-- The other **90%** is independent — perfect candidate for stitching
-- Workloads: out-of-order backfill, schema migrations, batch corrections
+- Два run-файла в одном кластере пересечений
+- Пересечение — на 10% ключей (например, k–l)
+- Остальные 90% независимы — кандидат на reflink
+- Нагрузки: out-of-order backfill, миграция схемы, пакетные корректировки, запоздавшие CDC
 
-> Plan trimming excludes run-files that don't overlap *at all*. But
+> Plan trimming excludes run-files that don't overlap at all. But
 > within a single overlapping cluster, two files often share keys
 > only on a narrow band. Out-of-order backfills land mostly in new
-> regions but touch a few old ones. Schema migrations rewrite a
+> regions, touching a few old ones. Schema migrations rewrite a
 > column across the keyspace, touching every old run on a small
 > subset of pages. Batch corrections rewrite specific transactions.
 > In all of these, plan trimming says "compact these two files" —
@@ -300,92 +310,90 @@ Konstantin Osipov — C++ Russia, 2026
 
 ---
 
-## 15. The bloom-filter trap
+## 16. Ловушка bloom-фильтра
 
-- Each SSTable / run-file has **one bloom filter** for its entire key set
-- Stitched output has a different key set — the old filter is wrong
-- To build a new filter you must **scan every key** — defeating the optimization
-- The same problem hits the page index, min/max stats, MinHash sketches
+- На SSTable / run-файл — **один** bloom-фильтр на весь набор ключей
+- У сшитого файла другой набор ключей — фильтр инвалидирован
+- Пересборка фильтра требует читать все ключи — экономия I/O аннулирована
+- Та же проблема с page-index, min/max и MinHash-скетчем
 
 > Here's why naïve stitching doesn't work. A bloom filter is computed
-> once when the file is written, and it's a function of the file's
-> exact key set. Stitch two fragments together and the resulting
-> file has a new key set — the old filters are invalid. To rebuild
-> them you must read every key out of every fragment, which means
-> reading every page, which is exactly the I/O cost you were trying
-> to skip. The same holds for the page index, the key min/max stats,
-> and any other per-file metadata. *The file-level granularity of
-> metadata is the obstacle.*
+> once when the file is written, and is a function of the file's exact
+> key set. Stitch two fragments together and the resulting file has
+> a new key set — the old filters are invalid. To rebuild them you
+> must read every key from every fragment, which means reading every
+> page — exactly the I/O cost you were trying to skip. The same holds
+> for the page index, key min/max, and any other per-file metadata.
+> *The file-level granularity of metadata is the obstacle.*
 
 ---
 
-## 16. Three-level layout — run › block › page
+## 17. Трёхуровневая структура — run › block › page
 
 ![Three-level format](/assets/img/talks/three_level_format.svg)
 
-- **Run-file** — the SSTable, logically owned by an LSM level
-- **Block** — 50–100 pages, the new intermediate unit
-- **Page** — the physical I/O unit (4–8 KB)
-- Each **block** owns its own metadata: key min/max, ttl min/max, bloom filter, MinHash sketch
+- **Run-файл** — SSTable, принадлежит уровню LSM
+- **Блок** — 50–100 страниц, новый промежуточный уровень
+- **Page** — единица I/O (4–8 КБ)
+- У каждого **блока** свои метаданные: key min/max, ttl min/max, bloom, MinHash
 
 > The proposal. Today's LSM files are two-level: pages and the file.
-> Page-level metadata is too granular to be useful for compaction
-> planning; file-level metadata is too coarse for stitching. Insert
-> a third level between them: a *block* of 50–100 pages, with its
-> own filter, its own key range, its own TTL bounds, its own MinHash
-> sketch. The block is the smallest unit the scheduler reasons about,
-> and the smallest unit that can be stitched without rebuilding
-> metadata. The directory of block metadata stays small enough to
-> live in RAM; the blocks themselves are paged in on demand.
+> Page-level metadata is too granular for compaction planning;
+> file-level metadata is too coarse for stitching. Insert a third
+> level between them: a block of 50–100 pages, with its own filter,
+> key range, TTL bounds, MinHash sketch. The block is the smallest
+> unit the scheduler reasons about, and the smallest unit that can
+> be stitched without rebuilding metadata. The block directory stays
+> small enough to live in RAM; the blocks themselves are paged in on
+> demand.
 
 ---
 
-## 17. What per-block metadata unlocks
+## 18. Что даёт per-block метаданные
 
-![Block-level workload](/assets/img/talks/block_workload.svg)
+![Per-block workload](/assets/img/talks/block_workload.svg)
 
-- **Per-block TTL drop** — expire whole blocks without merging
-- **MinHash skip** — scheduler proves two blocks barely overlap, skips the merge
-- **Per-block fuse8 filter** — survives stitching; no rebuild needed
-- **Smaller in-RAM index** — catalog of blocks fits where the page index didn't
+- **TTL drop** — блок целиком expire без слияния
+- **MinHash skip** — планировщик доказывает, что блоки почти не пересекаются, и пропускает слияние
+- **Per-block fuse8** — фильтр переживает stitching, пересборка не нужна
+- **Меньше RAM** — каталог блоков на терабайте занимает десятки МБ
 
 > Concretely: multi-tenant SaaS with per-tenant TTL gets free
 > expiration — when every key in a block has expired, drop the block
 > without reading it. MinHash sketches let the scheduler compute
 > Jaccard similarity in O(1) between two blocks; if it's near zero,
-> skip the merge — they're not really overlapping. The fuse8 filter
-> at block granularity survives any stitching operation, because
-> stitching moves whole blocks. And the catalog of block metadata
-> for a terabyte dataset is tens of megabytes, not hundreds — the
-> rest paged in through a small cache.
+> skip the merge. The fuse8 filter at block granularity survives any
+> stitching, because stitching moves whole blocks. And the catalog
+> of block metadata for a terabyte dataset is tens of megabytes,
+> not hundreds.
 
 ---
 
-## 18. Why this is the future of OLTP LSM
+## 19. Почему это будущее OLTP LSM
 
-- File-level metadata is a **legacy of the pre-reflink era**
-- Block-granular metadata enables **stitching, TTL drop, merge pruning** in one design
-- Already shipping in **Picodata Vinyl 2.11.8** as the `.index2` format
-- The next step for RocksDB, Cassandra, ScyllaDB, and anyone else willing to break their on-disk format
+- Per-file метаданные — наследие эпохи до reflink
+- Per-block метаданные включают stitching, TTL drop, MinHash pruning одной структурой
+- Уже релизится в **Picodata Vinyl 2.11.8** как формат `.index2`
+- Следующий шаг для RocksDB, Cassandra, ScyllaDB — если они захотят сломать формат на диске
 
 > File-level metadata made sense when the only way to move data was
-> to copy it. Reflinks change the economics: now the unit of *data*
-> movement is decoupled from the unit of *metadata* ownership. Any
-> serious OLTP LSM engine will eventually need the three-level
-> layout. We're shipping it in Picodata Vinyl as the `.index2`
-> format — backwards compatible, automatic upgrade, opt-out by
-> deleting `.index2` files and restarting with `--force-recovery`.
-> I expect RocksDB and ScyllaDB to follow within a few years.
+> to copy it. Reflinks change the economics: the unit of data
+> movement is now decoupled from the unit of metadata ownership.
+> Any serious OLTP LSM engine will eventually need the three-level
+> layout. We're shipping it in Picodata Vinyl as the .index2 format —
+> backwards compatible, automatic upgrade, opt-out by deleting
+> .index2 files and restarting with --force-recovery. I expect
+> RocksDB and ScyllaDB to follow within a few years.
 
 ---
 
-## 19. Thank you
+## 20. Спасибо
 
-- Blog: [kostja.github.io](https://kostja.github.io)
+- Блог: [kostja.github.io](https://kostja.github.io)
 - Telegram: [@kostja_osipov](https://t.me/kostja_osipov)
-- Project chats: [@picodataru](https://t.me/picodataru), [@tarantoolru](https://t.me/tarantoolru), [@databaseinternalschat](https://t.me/databaseinternalschat)
-- Full article: [Как мы пересобрали сборку мусора в Vinyl](/tarantool/vinyl/2026/03/11/vinyl-compaction-scheduler.html)
+- Профильные чаты: [@picodataru](https://t.me/picodataru), [@tarantoolru](https://t.me/tarantoolru), [@databaseinternalschat](https://t.me/databaseinternalschat)
+- Подробнее: [Как мы пересобрали сборку мусора в Vinyl](/tarantool/vinyl/2026/03/11/vinyl-compaction-scheduler.html)
 
-> Questions welcome — on stage, in the hallway, or in the chats
-> above. Everything I described is open source. Vinyl ships with
-> Picodata; the new scheduler is in 2.11.8 and Picodata 26.1.
+> Questions welcome — on stage, in the hallway, or in the chats above.
+> Everything described is open source. Vinyl ships with Picodata; the
+> new scheduler is in 2.11.8 and Picodata 26.1.

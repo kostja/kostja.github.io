@@ -1,58 +1,55 @@
 #!/usr/bin/env python3
-"""LSM recap — memtable → flush → merge cascade."""
+"""LSM recap — memtable → flush → merge (Russian)."""
 
 from excalidraw_lib import Doc
 
 d = Doc(seed_base=810000)
-
-RED = "#E23956"; LRED = "#F8CDD6"; FLRED = "#FDECEF"
-NAVY = "#16222E"; GREY = "#737A82"; LGREY = "#E8E9EB"
-ORANGE = "#FF611D"; LORANGE = "#FFE0D0"
+RED = "#E23956"; LRED = "#F8CDD6"
+NAVY = "#16222E"; GREY = "#737A82"
+ORANGE = "#FF611D"
 INK = "#2B1321"
 
-# Title
-d.text("t", 20, 10, 700, 22, "Write path: memtable → flush → merge", size=15, color=INK)
+d.text("t", 20, 10, 900, 28, "Путь записи: memtable → дамп → слияние", size=20, color=INK)
 
-# Memtable (left)
-d.labeled_rect("mt", 30, 70, 130, 90, "memtable\n(RAM)",
-               stroke=RED, fill=LRED)
+# Memtable
+d.rect("mt", 30, 80, 170, 110, stroke=RED, bg=LRED, sw=1, roundness=3)
+d.text("mt_t", 30, 80, 170, 110, "memtable\n(RAM)", size=18, color=RED)
 
 # Arrow: write
-d.arrow("a_w", 30, 50, [[0, 0], [60, 0]], color=NAVY, sw=2)
-d.text("a_w_t", 30, 30, 60, 16, "write", size=11, color=NAVY)
+d.arrow("a_w", 30, 60, [[0, 0], [80, 0]], color=NAVY, sw=2, roughness=0)
+d.text("a_w_t", 30, 36, 80, 18, "запись", size=14, color=NAVY)
 
 # Arrow: flush
-d.arrow("a_f", 165, 115, [[0, 0], [60, 0]], color=ORANGE, sw=2)
-d.text("a_f_t", 165, 95, 60, 16, "flush", size=11, color=ORANGE)
+d.arrow("a_f", 205, 135, [[0, 0], [70, 0]], color=ORANGE, sw=2, roughness=0)
+d.text("a_f_t", 205, 110, 70, 18, "дамп", size=14, color=ORANGE)
 
 # L0 — three flushed files
-def run(eid, x, y, w, h, label, stroke, fill, fill_style="solid"):
-    d.rect(eid, x, y, w, h, stroke=stroke, bg=fill, sw=1, fill=fill_style, roundness=3)
-    d.text(eid + "_t", x, y, w, h, label, size=10, color=stroke)
-
-L0_X = 230; L0_Y = 70
+L0_X = 285; L0_Y = 80
 for i in range(3):
-    run(f"l0_{i}", L0_X + i * 60, L0_Y, 50, 90, f"run{i}\n8MB", RED, LRED)
-d.text("l0_lbl", L0_X, L0_Y + 100, 170, 16, "L0 (recent flushes)", size=11, color=GREY)
+    d.rect(f"l0_{i}", L0_X + i * 75, L0_Y, 65, 110, stroke=RED, bg=LRED, sw=1, roundness=3)
+    d.text(f"l0_{i}t", L0_X + i * 75, L0_Y, 65, 110, f"run{i}\n8 МБ", size=14, color=RED)
+d.text("l0_lbl", L0_X, L0_Y + 120, 215, 20, "L0 (свежие дампы)", size=14, color=GREY)
 
-# Arrow: merge
-d.arrow("a_m", 415, 115, [[0, 0], [60, 0]], color=ORANGE, sw=2)
-d.text("a_m_t", 415, 95, 60, 16, "merge", size=11, color=ORANGE)
+# Arrow: merge → L1
+d.arrow("a_m", 515, 135, [[0, 0], [70, 0]], color=ORANGE, sw=2, roughness=0)
+d.text("a_m_t", 515, 110, 70, 18, "слияние", size=14, color=ORANGE)
 
-# L1 — one merged file
-run("l1", 480, 70, 90, 90, "merged\n24MB", RED, "#F09CAB")
-d.text("l1_lbl", 480, 170, 90, 16, "L1", size=11, color=GREY)
+# L1 — merged
+d.rect("l1", 595, 80, 120, 110, stroke=RED, bg="#F09CAB", sw=1, roundness=3)
+d.text("l1_t", 595, 80, 120, 110, "merged\n24 МБ", size=16, color=RED)
+d.text("l1_lbl", 595, 200, 120, 20, "L1", size=14, color=GREY)
 
-# Arrow: merge
-d.arrow("a_m2", 575, 115, [[0, 0], [60, 0]], color=ORANGE, sw=2)
+# Arrow merge → L2
+d.arrow("a_m2", 720, 135, [[0, 0], [70, 0]], color=ORANGE, sw=2, roughness=0)
 
-# L2 — one large file
-run("l2", 640, 50, 120, 130, "compacted\n240MB", RED, "#E96B80")
-d.text("l2_lbl", 640, 190, 120, 16, "L2 (older data)", size=11, color=GREY)
+# L2
+d.rect("l2", 800, 60, 160, 150, stroke=RED, bg="#E96B80", sw=1, roundness=3)
+d.text("l2_t", 800, 60, 160, 150, "compacted\n240 МБ", size=16, color="#7C1324")
+d.text("l2_lbl", 800, 220, 160, 20, "L2 (старые данные)", size=14, color=GREY)
 
 # Bottom annotation
-d.text("ann", 20, 230, 740, 18,
-       "Each compaction trades I/O cost for shorter read paths and dropped tombstones.",
-       size=12, color=INK)
+d.text("ann", 20, 270, 940, 22,
+       "Каждый compaction обменивает I/O на короткие пути чтения и удаление tombstone-ов.",
+       size=16, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/lsm_recap.excalidraw")

@@ -1,67 +1,67 @@
 #!/usr/bin/env python3
-"""LCS workload pain — write-amp cascade, SSD wear, throughput collapse."""
+"""LCS workload pain — Russian."""
 
 from excalidraw_lib import Doc
 
 d = Doc(seed_base=850000)
 RED = "#E23956"; LRED = "#F8CDD6"
 DANGER = "#B91A36"; LDANGER = "#F09CAB"
-ORANGE = "#FF611D"; LORANGE = "#FFE0D0"
+ORANGE = "#FF611D"
 BLUE = "#4B7BE5"; LBLUE = "#DBE6FA"
 GREY = "#737A82"; INK = "#2B1321"
 
-d.text("title", 20, 8, 720, 22,
-       "LCS pain: 1 byte at L0 → 30 bytes through the cascade",
-       size=14, color=INK)
+d.text("title", 20, 10, 1100, 28,
+       "LCS болит: 1 байт на L0 → 30 байт через каскад",
+       size=20, color=INK)
 
 # LEFT PANEL: write amplification cascade
 PX0 = 30
-d.text("p1t", PX0, 50, 360, 18, "1. Write-amp cascade", size=13, color=INK, align="left")
+d.text("p1t", PX0, 65, 480, 24, "1. Каскад write-amp", size=16, color=INK, align="left")
 
-# 5 levels with bytes-rewritten counter
-LEVELS = [(0, "L0 → flush", "1×", LRED, RED),
-          (1, "L1 → merge", "10×", LBLUE, BLUE),
-          (2, "L2 → merge", "10×", LBLUE, BLUE),
-          (3, "L3 → merge", "10×", LBLUE, BLUE),
-          (4, "Σ total", "31×", LDANGER, DANGER)]
-
-LY0 = 80
+LEVELS = [
+    (0, "L0 → дамп",   "1×",  LRED,    RED),
+    (1, "L1 → слияние","10×", LBLUE,   BLUE),
+    (2, "L2 → слияние","10×", LBLUE,   BLUE),
+    (3, "L3 → слияние","10×", LBLUE,   BLUE),
+    (4, "Σ всего",     "31×", LDANGER, DANGER),
+]
+LY0 = 100; ROW_H = 50
 for lvl, name, mult, fill, stroke in LEVELS:
-    y = LY0 + lvl * 38
-    d.rect(f"l_{lvl}", PX0, y, 200, 30, stroke=stroke, bg=fill, sw=1, roundness=3)
-    d.text(f"l_{lvl}_n", PX0 + 8, y, 150, 30, name, size=11, color=stroke, align="left")
-    d.text(f"l_{lvl}_m", PX0 + 150, y, 50, 30, mult, size=12, color=stroke)
-    if lvl > 0 and lvl < 4:
-        d.arrow(f"l_{lvl}_a", PX0 + 100, y - 8, [[0, 0], [0, -8]], color=ORANGE, sw=1.5, roughness=0)
+    y = LY0 + lvl * ROW_H
+    d.rect(f"l_{lvl}", PX0, y, 320, 40, stroke=stroke, bg=fill, sw=1, roundness=3)
+    d.text(f"l_{lvl}_n", PX0 + 10, y, 240, 40, name, size=14, color=stroke, align="left")
+    d.text(f"l_{lvl}_m", PX0 + 240, y, 70, 40, mult, size=18, color=stroke)
+    if 0 < lvl < 4:
+        d.arrow(f"l_{lvl}_a", PX0 + 160, y - 10, [[0, 0], [0, -10]], color=ORANGE, sw=1.5, roughness=0)
 
 # RIGHT PANEL: throughput collapse
-PX1 = 440
-d.text("p2t", PX1, 50, 320, 18, "2. Sustained throughput collapses", size=13, color=INK, align="left")
+PX1 = 530
+d.text("p2t", PX1, 65, 580, 24, "2. Пропускная способность падает",
+       size=16, color=INK, align="left")
 
-# Simple line graph: throughput vs time
-GX0 = PX1; GY0 = 90; GW = 280; GH = 130
+GX0 = PX1 + 60; GY0 = 110; GW = 480; GH = 160
 d.rect("g_box", GX0, GY0, GW, GH, stroke=GREY, bg="transparent", sw=1, roundness=0)
-# X axis label
-d.text("g_x", GX0, GY0 + GH + 4, GW, 14, "time →", size=10, color=GREY, align="right")
-d.text("g_y", GX0 - 60, GY0 + GH/2 - 10, 58, 16, "MB/s", size=10, color=GREY, align="right")
+d.text("g_x", GX0, GY0 + GH + 6, GW, 18, "время →", size=12, color=GREY, align="right")
+d.text("g_y", PX1, GY0 + GH/2 - 12, 56, 22, "МБ/с", size=14, color=GREY, align="right")
 
-# Curve: high, then collapse
-d.line("g_l1", GX0 + 10, GY0 + 30, [[0, 0], [60, 5]], color=BLUE, sw=2, roughness=0)
-d.line("g_l2", GX0 + 70, GY0 + 35, [[0, 0], [40, 25]], color=DANGER, sw=2, roughness=0)
-d.line("g_l3", GX0 + 110, GY0 + 60, [[0, 0], [80, 35]], color=DANGER, sw=2, roughness=0)
-d.line("g_l4", GX0 + 190, GY0 + 95, [[0, 0], [80, 15]], color=DANGER, sw=2, roughness=0)
+d.line("g_l1", GX0 + 10, GY0 + 30, [[0, 0], [110, 8]], color=BLUE, sw=2, roughness=0)
+d.line("g_l2", GX0 + 120, GY0 + 38, [[0, 0], [70, 35]], color=DANGER, sw=2, roughness=0)
+d.line("g_l3", GX0 + 190, GY0 + 73, [[0, 0], [120, 45]], color=DANGER, sw=2, roughness=0)
+d.line("g_l4", GX0 + 310, GY0 + 118, [[0, 0], [150, 20]], color=DANGER, sw=2, roughness=0)
 
-d.text("ann_high", GX0 + 20, GY0 + 10, 90, 14, "ingest peak", size=10, color=BLUE, align="left")
-d.text("ann_collapse", GX0 + 140, GY0 + 110, 130, 14, "compaction debt", size=10, color=DANGER, align="left")
+d.text("ann_high", GX0 + 30, GY0 + 6, 110, 18, "пик записи", size=12, color=BLUE, align="left")
+d.text("ann_collapse", GX0 + 220, GY0 + 130, 200, 18, "compaction-долг",
+       size=12, color=DANGER, align="left")
 
-# SSD wear icon (just text in box)
-WX = PX1; WY = GY0 + GH + 30
-d.rect("wbox", WX, WY, 280, 36, stroke=DANGER, bg=LDANGER, sw=1, roundness=3)
-d.text("wt", WX, WY, 280, 36, "SSD wear (DWPD) — the hard ceiling", size=11, color=DANGER)
+# SSD wear box
+WY = GY0 + GH + 40
+d.rect("wbox", GX0, WY, GW, 50, stroke=DANGER, bg=LDANGER, sw=1, roundness=3)
+d.text("wt", GX0, WY, GW, 50,
+       "Износ SSD (DWPD) — жёсткий потолок", size=14, color=DANGER)
 
 # Bottom annotation
-d.text("ann", 20, 290, 760, 18,
-       "Bulk ingest (CDC, backfill, IoT): write amp turns SSD wear into the bottleneck.",
-       size=12, color=INK)
+d.text("ann", 20, 410, 1100, 22,
+       "Bulk ingest (CDC, backfill, IoT): write amp превращает износ SSD в бутылочное горлышко.",
+       size=14, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/lcs_workload_pain.excalidraw")

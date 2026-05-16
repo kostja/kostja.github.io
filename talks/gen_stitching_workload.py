@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""When stitching pays despite plan trimming — narrow overlap workload."""
+"""When stitching helps despite plan trimming (Russian)."""
 
 from excalidraw_lib import Doc
 
@@ -8,73 +8,81 @@ RED = "#E23956"; LRED = "#F8CDD6"
 BLUE = "#4B7BE5"; LBLUE = "#DBE6FA"
 DANGER = "#B91A36"; LDANGER = "#F09CAB"
 GREY = "#737A82"; INK = "#2B1321"
-ORANGE = "#FF611D"
+ORANGE = "#FF611D"; LORANGE = "#FFE0D0"
 
-d.text("title", 20, 8, 760, 22,
-       "Two runs in one overlapping cluster — 10% overlap, 90% independent",
-       size=14, color=INK)
+d.text("title", 20, 10, 1200, 28,
+       "Два файла одного кластера: пересечение 10%, остальное независимо",
+       size=20, color=INK)
 
-# Run A: spans a-z, mostly cold
-SY = 60; FH = 50; PW = 32
+PW = 42; FH = 64
 TOTAL = 20
-d.text("a_lbl", 20, SY - 20, 800, 16, "run A  (old: a–z)", size=11, color=INK, align="left")
+ROW_X = 30
+
+# Run A
+SY = 80
+d.text("a_lbl", ROW_X, SY - 26, 600, 22, "run A  (старые: a–z)",
+       size=16, color=INK, align="left")
 for i in range(TOTAL):
     is_overlap = i in (9, 10)
     fill = LDANGER if is_overlap else LBLUE
     stroke = DANGER if is_overlap else BLUE
-    d.rect(f"a_{i}", 20 + i * PW, SY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
+    d.rect(f"a_{i}", ROW_X + i * PW, SY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
 
-# Run B: spans a-z too (out-of-order backfill), most pages non-overlapping
-BY = SY + 90
-d.text("b_lbl", 20, BY - 20, 800, 16,
-       "run B  (out-of-order backfill: scattered, but overlap on k–l only)",
-       size=11, color=INK, align="left")
+# Run B
+BY = SY + 120
+d.text("b_lbl", ROW_X, BY - 26, 800, 22,
+       "run B  (out-of-order backfill: разбросан, пересечение только на k–l)",
+       size=16, color=INK, align="left")
 for i in range(TOTAL):
     is_overlap = i in (9, 10)
     fill = LDANGER if is_overlap else LRED
     stroke = DANGER if is_overlap else RED
-    d.rect(f"b_{i}", 20 + i * PW, BY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
+    d.rect(f"b_{i}", ROW_X + i * PW, BY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
 
-# Bracket marking the narrow overlap region
-OVL_X0 = 20 + 9 * PW; OVL_W = 2 * PW - 2
-d.rect("ovl", OVL_X0 - 2, SY - 8, OVL_W + 4, FH + BY - SY + 16,
+# Bracket marking overlap
+OVL_X0 = ROW_X + 9 * PW; OVL_W = 2 * PW - 2
+d.rect("ovl", OVL_X0 - 4, SY - 10, OVL_W + 8, FH + (BY - SY) + 18,
        stroke=DANGER, bg="transparent", sw=2, ss="dashed", roundness=3)
-d.text("ovl_t", OVL_X0 - 20, SY - 30, OVL_W + 40, 14,
-       "10% overlap → merge", size=10, color=DANGER)
+d.text("ovl_t", OVL_X0 - 60, SY - 50, OVL_W + 120, 22,
+       "10% пересечения → слить", size=14, color=DANGER)
 
-# Destination row: stitched output
-DY = BY + 90
-d.text("d_lbl", 20, DY - 20, 800, 16,
-       "result: reflink the non-overlapping 90%, merge only the overlap",
-       size=11, color=INK, align="left")
+# Destination
+DY = BY + 120
+d.text("d_lbl", ROW_X, DY - 26, 1100, 22,
+       "результат: reflink 90%, слить только пересечение",
+       size=16, color=INK, align="left")
 for i in range(TOTAL):
     if i in (9, 10):
-        fill = "#FFE0D0"; stroke = ORANGE
+        fill = LORANGE; stroke = ORANGE
     elif i < 9:
-        fill = LBLUE; stroke = BLUE  # from A
+        fill = LBLUE; stroke = BLUE
     else:
-        fill = LRED; stroke = RED  # from B
-    d.rect(f"d_{i}", 20 + i * PW, DY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
+        fill = LRED; stroke = RED
+    d.rect(f"d_{i}", ROW_X + i * PW, DY, PW - 2, FH, stroke=stroke, bg=fill, sw=1, roundness=2)
 
-# Labels for source
-d.text("from_a", 20 + 4 * PW - 30, DY + FH + 4, 80, 14, "from A (reflink)", size=9, color=BLUE)
-d.text("from_b", 20 + 15 * PW - 40, DY + FH + 4, 100, 14, "from B (reflink)", size=9, color=RED)
-d.text("merged", OVL_X0 - 20, DY + FH + 4, OVL_W + 40, 14, "merged", size=9, color=ORANGE)
+# Bottom labels
+d.text("from_a", ROW_X + 4 * PW - 60, DY + FH + 8, 200, 18,
+       "из A (reflink)", size=12, color=BLUE)
+d.text("from_b", ROW_X + 15 * PW - 60, DY + FH + 8, 200, 18,
+       "из B (reflink)", size=12, color=RED)
+d.text("merged", OVL_X0 - 30, DY + FH + 8, OVL_W + 60, 18,
+       "слито", size=12, color=ORANGE)
 
-# Right side workload examples
-PX = 700; PY = SY
-d.text("ex_t", PX - 40, PY - 20, 200, 16, "Real workloads", size=12, color=INK, align="left")
+# Right side: real workloads
+PX = 920; PY = SY
+d.text("ex_t", PX, PY - 26, 260, 22, "Реальные нагрузки",
+       size=16, color=INK, align="left")
 for i, line in enumerate([
     "• out-of-order backfill",
-    "• schema migration",
-    "• batch corrections",
-    "• late-arriving CDC events",
+    "• миграция схемы",
+    "• пакетные корректировки",
+    "• запоздавшие CDC-события",
 ]):
-    d.text(f"ex_{i}", PX - 40, PY + 8 + i * 20, 200, 16, line, size=11, color=INK, align="left")
+    d.text(f"ex_{i}", PX, PY + i * 28, 280, 22, line, size=14, color=INK, align="left")
 
 # Annotation
-d.text("ann", 20, DY + FH + 30, 760, 18,
-       "Plan trimming kept these two files together — but only 10% needs new bytes.",
-       size=12, color=GREY)
+d.text("ann", 20, DY + FH + 38, 1200, 22,
+       "Тримминг плана оставил эти файлы вместе — но новых байт нужно только 10%.",
+       size=14, color=GREY)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/stitching_workload.excalidraw")
