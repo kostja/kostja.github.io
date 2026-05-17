@@ -1,3 +1,5 @@
 _site/*
 .sass-cache
 .DS_Store
+talks/__pycache__/
+talks/_pptx_cache/
