@@ -445,29 +445,65 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 21. Итоги
 
-- Универсальной стратегии compaction нет: каждая — точка в RUM-треугольнике
-- Compaction — задача 2D-кластеризации в (время, ключ); файлы — осе-выровненные приближения
-- План compaction как first-class объект: несколько драйверов (shape, read-amp, space-amp) заполняют его
-- Per-block метаданные открывают reflink-эру: stitching, TTL drop, MinHash pruning
+- RUM-треугольник запрещает одновременно минимизировать read amp, write amp и space amp
+- Файлы, SSTable, run — осе-выровненные приближения произвольных кластеров в (время, ключ)
+- Compaction-планировщик становится мощнее, когда драйверы shape, read-amp и space-amp обновляют общий план
+- Чтобы reflink-стиль stitching работал, метаданные должны жить на блоке, а не на SSTable
 
-> Four things worth taking away. First, no universal compaction
-> strategy exists — STCS, LCS, UCS are different trade-offs across
-> the RUM triangle, and the right one depends on the workload, not on
-> someone's opinion. Second, the file-merging framing is a leaky
-> abstraction: compaction is really about covering arbitrarily-shaped
-> clusters in (time, key) space with axis-aligned rectangles. Third,
-> the compaction plan deserves to be a first-class object in the
-> scheduler, with multiple drivers — shape, read-amp, space-amp —
-> competing to fill it; this lets reads tell compaction what to do.
-> Fourth, file-level metadata is the bottleneck that prevents
-> reflink-based stitching from paying off in real LSM engines.
-> Per-block metadata is what unblocks it, and opens a class of
-> optimizations (TTL drop, MinHash pruning) that the field has been
-> leaving on the table.
+> The RUM triangle is the real constraint. STCS, LCS, UCS each pick
+> a different point in it; arguing about "the best strategy" without
+> stating the workload misses what's actually being chosen.
+>
+> Compaction reads more naturally as a 2D clustering problem in
+> (time, key) space than as a file-merging chore. Every strategy is
+> a different way to cover natural clusters with axis-aligned
+> rectangles. Tight covers waste less I/O; loose covers waste more.
+>
+> When the compaction plan becomes a first-class object, the
+> scheduler can carry multiple drivers in parallel — file-shape,
+> observed read amplification, observed space amplification — and
+> reads themselves can tell compaction what to do. The engine adapts
+> to the workload at runtime instead of relying on offline tuning.
+>
+> The last frontier is metadata granularity. Per-file bloom filters
+> and key indexes are a pre-reflink legacy that defeats stitching —
+> rebuilding them costs the I/O you were trying to save. Per-block
+> metadata fixes that, and cheap stitching, TTL drop and MinHash
+> pruning fall out as side effects.
 
 ---
 
-## 22. Спасибо
+## 22. References
+
+**Теория и trade-offs**
+
+- M. Athanassoulis et al., "Designing Access Methods: The RUM Conjecture", EDBT 2016 — [daslab.seas.harvard.edu/rum-conjecture](http://daslab.seas.harvard.edu/rum-conjecture/)
+- N. Dayan, S. Idreos, "Dostoevsky: Better Space-Time Trade-Offs for LSM-Tree Based KV-Stores via Adaptive Removal of Superfluous Merging", SIGMOD 2018 — [dl.acm.org/doi/10.1145/3183713.3196927](https://dl.acm.org/doi/10.1145/3183713.3196927)
+- N. Dayan, M. Athanassoulis, S. Idreos, "Monkey: Optimal Navigable Key-Value Store", SIGMOD 2017 — [stratos.seas.harvard.edu/publications/monkey-optimal-navigable-key-value-store](https://stratos.seas.harvard.edu/publications/monkey-optimal-navigable-key-value-store)
+
+**Движки**
+
+- Cassandra Unified Compaction Strategy: [CASSANDRA-18397](https://issues.apache.org/jira/browse/CASSANDRA-18397)
+- RocksDB Universal Compaction: [github.com/facebook/rocksdb/wiki/Universal-Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction)
+- Архитектура Vinyl (2018): [habr.com/companies/vk/articles/358210](https://habr.com/ru/companies/vk/articles/358210/)
+
+**Filters & sketches**
+
+- T. Graf, D. Lemire, "Binary Fuse Filters: Fast and Smaller Than Xor Filters", 2022 — [arxiv.org/abs/2201.01174](https://arxiv.org/abs/2201.01174)
+- A. Broder, "On the resemblance and containment of documents", 1997 — MinHash оригинал
+
+> Pointer slide — not for reading aloud. Dostoevsky formalizes the
+> "leave the last level alone" optimization that Vinyl applies; the
+> RUM Conjecture paper is the source for slide 8. Monkey covers
+> bloom-filter sizing per LSM level, motivation for moving to
+> per-block fuse8 filters. The Cassandra UCS ticket and RocksDB
+> Universal wiki document the parametric strategies discussed in
+> slide 10. The 2018 Vinyl article is the engine background for
+> slides 11–15.
+
+---
+
+## 23. Спасибо
 
 - Блог: [kostja.github.io](https://kostja.github.io)
 - Telegram: [@kostja_osipov](https://t.me/kostja_osipov)
