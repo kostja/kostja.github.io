@@ -41,12 +41,13 @@ for i, (name, n, fw) in enumerate(LEVELS):
                stroke=stroke, bg=fill, sw=2 if is_hit else 1, roundness=3)
 
 # Arrow showing point-read path.
-# Aligned to the centre of the j=2 column (the orange "hit" rectangle)
-# at x = LEVELS_X + 2*80 + fw/2 ≈ LEVELS_X + 190, so it visibly goes
-# THROUGH the orange column rather than the blue one to its right.
-d.arrow("pr", LEVELS_X + 190, LY0 - 18, [[0, 0], [0, 4 * 60 - 10]],
-        color=ORANGE, sw=2, roughness=0)
-d.text("pr_t", LEVELS_X + 125, LY0 - 40, 130, 22,
+# Centered on the j=2 ORANGE column (true centre at LEVELS_X + 192 in
+# the L1+ rows where fw=64). Adding 3px of right bias compensates for
+# the excalidraw-to-svg arrow rendering, which translates the bbox a
+# few pixels left of the line's logical x.
+d.arrow("pr", LEVELS_X + 195, LY0 - 18, [[0, 0], [0, 4 * 60 - 10]],
+        color=ORANGE, sw=2.5, roughness=0)
+d.text("pr_t", LEVELS_X + 130, LY0 - 40, 130, 22,
        "read(k)", size=14, color=ORANGE)
 
 # Read amp summary

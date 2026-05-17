@@ -767,7 +767,7 @@
     {
       "type": "arrow",
       "id": "pr",
-      "x": 185.10638297872342,
+      "x": 188.29787234042553,
       "y": 58.72340425531915,
       "width": 0.6382978723404256,
       "height": 146.8085106382979,
@@ -775,7 +775,7 @@
       "strokeColor": "#FF611D",
       "backgroundColor": "transparent",
       "fillStyle": "solid",
-      "strokeWidth": 2,
+      "strokeWidth": 2.5,
       "strokeStyle": "solid",
       "roughness": 0,
       "opacity": 100,
@@ -811,7 +811,7 @@
     {
       "type": "text",
       "id": "pr_t",
-      "x": 143.61702127659575,
+      "x": 146.8085106382979,
       "y": 44.68085106382979,
       "width": 82.97872340425532,
       "height": 14.042553191489363,
