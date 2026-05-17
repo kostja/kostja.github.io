@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""2D time × key continuum: compaction as cluster covering.
+"""2D (key × time) continuum: compaction as cluster covering.
 
-Updates plotted as dots in (time, key) space. Three cluster shapes —
-diagonal stripe, dense blob, scattered noise — and how files (axis-aligned
-rectangles) try to cover them. After-compaction inset shown BELOW the
-plot to avoid label crowding inside the scatter area.
+Axes:
+- X = key  (grows right)
+- Y = time (grows UP — newer events at the top, like a Tetris board)
+
+Three natural cluster shapes:
+- Diagonal stripe = key-order sweep / time-series append
+- Tall narrow blob = hot OLTP keys updated continuously
+- Scattered = random workload noise
+
+Files (axis-aligned rectangles) try to cover those clusters; after a
+compaction, a cluster collapses to one entry per key (a horizontal row
+shown in the right-hand inset).
 """
 
 import math
@@ -19,25 +27,37 @@ GREEN = "#2E7D32"
 GREY = "#737A82"; INK = "#2B1321"
 DOT = "#2B1321"
 
-d.text("title", 20, 10, 1200, 30,
-       "Compaction как проблема кластеризации в (время, ключ)",
+d.text("title", 20, 10, 1240, 30,
+       "Compaction как кластеризация в пространстве (время, ключ)",
        size=22, color=INK)
 
-# ── Coordinate plane ──────────────────────────────────────
-PX0 = 130; PY0 = 80
-PW = 780; PH = 320
+# ── Labels above the plot, color-coded to their rectangles ────
+# These sit BETWEEN the title and the plot so they cannot overlap
+# the scatter points.
+d.text("r1_lbl", 100, 50, 380, 22,
+       "файл накрывает диагональ", size=14, color=RED, align="left")
+d.text("r2_lbl", 380, 50, 380, 22,
+       "файл плотно накрывает кластер", size=14, color=BLUE, align="right")
 
-# Axes
-d.line("ax_x", PX0, PY0 + PH, [[0, 0], [PW + 12, 0]],
+# ── Coordinate plane ──────────────────────────────────────
+PX0 = 100; PY0 = 90
+PW = 660; PH = 420
+PX1 = PX0 + PW   # 760
+PY1 = PY0 + PH   # 510
+
+# Axes (bottom and left)
+d.line("ax_x", PX0, PY1, [[0, 0], [PW + 12, 0]],
        color=GREY, sw=2, roughness=0)
 d.line("ax_y", PX0, PY0, [[0, 0], [0, PH + 12]],
        color=GREY, sw=2, roughness=0)
 
-d.text("lbl_x", PX0, PY0 + PH + 16, PW, 24,
-       "время →", size=16, color=GREY, align="right")
-d.text("lbl_y", 20, PY0 + PH/2 - 14, 100, 24,
-       "ключ ↑", size=16, color=GREY, align="right")
+# Axis labels
+d.text("lbl_x", PX0, PY1 + 12, PW + 12, 22,
+       "ключ →", size=16, color=GREY, align="right")
+d.text("lbl_y", 10, PY0 - 6, 100, 22,
+       "время ↑", size=16, color=GREY, align="right")
 
+# Faint plot frame
 d.rect("frame", PX0, PY0, PW, PH, stroke=GREY, bg="transparent", sw=0.5,
        roundness=0)
 
@@ -52,80 +72,88 @@ def prng(i):
     return (h[0] - 128) / 128.0
 
 
-# ── Cluster 1: DIAGONAL STRIPE (time-series / key-order sweep) ──
-x1a, y1a = PX0 + 40,  PY0 + PH - 40
-x1b, y1b = PX0 + 340, PY0 + 40
+# ── Cluster 1: DIAGONAL stripe (key-order sweep) ──
+# Bottom-left of plot (early time, low keys) to upper-mid (recent, mid keys).
+x1a, y1a = PX0 + 50,  PY1 - 50
+x1b, y1b = PX0 + 380, PY0 + 60
 N1 = 26
 for i in range(N1):
     t = i / (N1 - 1)
     cx = x1a + (x1b - x1a) * t
     cy = y1a + (y1b - y1a) * t
     j = prng(i) * 14
-    dx = -(y1b - y1a)
-    dy = (x1b - x1a)
+    dx = -(y1b - y1a); dy = (x1b - x1a)
     m = math.hypot(dx, dy)
     px = cx + dx / m * j
     py = cy + dy / m * j
     dot(f"d1_{i}", px, py, r=4, color=RED)
 
-# Loose rectangle covering the diagonal
-RECT1_X = PX0 + 20; RECT1_Y = PY0 + 20
-RECT1_W = 350; RECT1_H = PH - 40
+# Loose axis-aligned rectangle around diagonal.
+# (The diagonal lives in the bottom-left half; this rectangle wraps it
+# generously so the two empty corners — upper-left and lower-right of
+# the rectangle — are visible.)
+RECT1_X = PX0 + 30; RECT1_Y = PY0 + 30
+RECT1_W = 380; RECT1_H = PH - 60
 d.rect("r1", RECT1_X, RECT1_Y, RECT1_W, RECT1_H,
        stroke=RED, bg="transparent", sw=2.5, ss="dashed", roundness=3)
-# Loose-fit caption — top inside the rectangle
-d.text("r1_lbl", RECT1_X + 10, RECT1_Y + 8, 380, 22,
-       "файл накрывает диагональ", size=14, color=RED, align="left")
-d.text("r1_lbl2", RECT1_X + 10, RECT1_Y + RECT1_H - 28, 380, 22,
-       "(половина площади пуста)", size=12, color=RED, align="left")
 
-# ── Cluster 2: DENSE BLOB (hot-key OLTP churn) ──
-CX2, CY2 = PX0 + 580, PY0 + 170
-N2 = 32
+# ── Cluster 2: TALL BLOB (hot OLTP keys) ──
+# Narrow X (a few hot keys), wide Y (continuous over time).
+# Placed in the upper-right of the plot so it doesn't overlap the
+# diagonal cluster or its rectangle.
+CX2, CY2 = PX0 + 555, PY0 + 195
+N2 = 30
 for i in range(N2):
-    rx = prng(i + 200) * 60
-    ry = prng(i + 300) * 36
+    rx = prng(i + 200) * 28
+    ry = prng(i + 300) * 110
     dot(f"d2_{i}", CX2 + rx, CY2 + ry, r=4, color=BLUE)
 
-# Tight rectangle around the blob
-RECT2_X = CX2 - 70; RECT2_Y = CY2 - 46
-RECT2_W = 140; RECT2_H = 92
+# Tight rectangle hugging the blob
+RECT2_X = CX2 - 38; RECT2_Y = CY2 - 130
+RECT2_W = 76; RECT2_H = 260
 d.rect("r2", RECT2_X, RECT2_Y, RECT2_W, RECT2_H,
        stroke=BLUE, bg="transparent", sw=2.5, ss="dashed", roundness=3)
-# Tight-fit caption — above the rectangle, with breathing room
-d.text("r2_lbl", RECT2_X - 80, RECT2_Y - 32, 380, 22,
-       "файл накрывает кластер плотно", size=13, color=BLUE, align="left")
 
-# ── Cluster 3: SCATTERED (random noise) ──
-for i in range(14):
-    rx = (prng(i + 500) + 1) / 2 * (PW - 80) + PX0 + 40
-    ry = (prng(i + 600) + 1) / 2 * (PH - 80) + PY0 + 40
+# ── Cluster 3: SCATTERED noise ──
+# A handful of grey dots away from labels and named clusters
+# (upper-mid empty zone between R1 and R2).
+for i in range(10):
+    rx = prng(i + 500) * 60 + PX0 + 280
+    ry = (prng(i + 600) + 1) / 2 * 70 + PY0 + 50
     dot(f"d3_{i}", rx, ry, r=3, color=GREY)
 
-# ── After-compaction inset BELOW the plot ──
-INS_Y = PY0 + PH + 60
-# Caption on the left
-d.text("comp_lbl", PX0 + 20, INS_Y - 24, 520, 24,
-       "после слияния — по одной строке на ключ:",
+# ── After-compaction inset, right of the plot ──
+# A separate small panel showing the collapsed result: one dot per key.
+INS_X = 800; INS_Y = PY0 + 80
+INS_W = 460; INS_H = 240
+d.rect("inset", INS_X, INS_Y, INS_W, INS_H,
+       stroke=GREEN, bg="transparent", sw=1, roundness=3)
+d.text("comp_lbl", INS_X + 12, INS_Y + 14, INS_W - 24, 24,
+       "после слияния: 1 точка / ключ",
        size=14, color=GREEN, align="left")
-# Single thin line of dots
-COMP_X0 = PX0 + 60
+
+# Compacted row of dots near the bottom of the inset
+COMP_Y = INS_Y + INS_H - 40
+COMP_X0 = INS_X + 30
 for i in range(20):
-    dot(f"comp_{i}", COMP_X0 + i * 16, INS_Y, r=4, color=GREEN)
+    dot(f"comp_{i}", COMP_X0 + i * 20, COMP_Y, r=4, color=GREEN)
 
-# Arrow from blob down to the compacted line
-d.arrow("arr", CX2 - 80, CY2 + 50, [[0, 0], [-160, INS_Y - CY2 - 60]],
+# Arrow from blob → inset entry. Goes outside the plot (around the
+# right edge) so it doesn't cross any scatter points.
+d.arrow("arr",
+        RECT2_X + RECT2_W + 4, CY2,
+        [[0, 0], [INS_X - (RECT2_X + RECT2_W) - 8, 0]],
         color=ORANGE, sw=2, roughness=0)
-d.text("arr_t", CX2 - 270, CY2 + 130, 160, 22,
-       "compaction",
-       size=14, color=ORANGE, align="right")
+d.text("arr_t",
+       RECT2_X + RECT2_W + 6, CY2 - 28, 200, 22,
+       "compaction", size=14, color=ORANGE, align="left")
 
-# ── Annotations below everything ──────────────────────────
-BOT_Y = INS_Y + 50
-d.text("ann1", 20, BOT_Y, 1280, 26,
+# ── Annotations at the bottom ──
+ANN_Y = PY1 + 60
+d.text("ann1", 20, ANN_Y, 1240, 26,
        "Файл, SSTable, run — осе-выровненный прямоугольник, накрывающий кластер обновлений.",
        size=14, color=INK)
-d.text("ann2", 20, BOT_Y + 30, 1280, 26,
+d.text("ann2", 20, ANN_Y + 30, 1240, 26,
        "Чем плотнее прямоугольник к форме кластера, тем меньше bloat и read amp.",
        size=14, color=GREY)
 
