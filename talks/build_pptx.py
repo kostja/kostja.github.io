@@ -69,11 +69,11 @@ def parse_post(path):
     for p in parts:
         m = re.search(r"^## (\d+)\.\s*(.+)$", p, re.M)
         if not m:
-            # Title slide doesn't use ## NN
-            if "# " in p and "## 0. Title" in p:
-                slides.append(parse_title_slide(p))
             continue
         num = int(m.group(1))
+        if num == 0:
+            slides.append(parse_title_slide(p))
+            continue
         title = m.group(2).strip()
         slides.append({
             "num": num,
@@ -261,6 +261,21 @@ def place_image(slide, png_path, x_unused, y, max_w, max_h, center_x=False):
     slide.shapes.add_picture(png_path, x, y_centered, width=w, height=h)
 
 
+def add_slide_number(slide, num, total):
+    """Bottom-right page number, e.g. '7 / 23'."""
+    w = Inches(1.2); h = Inches(0.3)
+    x = Emu(SLIDE_W.emu - w.emu - Inches(0.2).emu)
+    y = Emu(SLIDE_H.emu - h.emu - Inches(0.1).emu)
+    box = slide.shapes.add_textbox(x, y, w, h)
+    tf = box.text_frame
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.RIGHT
+    run = p.add_run()
+    run.text = f"{num} / {total}"
+    run.font.size = Pt(11)
+    run.font.color.rgb = RGBColor(0x73, 0x7A, 0x82)
+
+
 def add_notes(slide, notes_text):
     if not notes_text:
         return
@@ -302,6 +317,7 @@ def build_title_slide(prs, sl):
     r3.font.size = Pt(18); r3.font.color.rgb = INK
 
     add_notes(slide, sl["notes"])
+    return slide
 
 
 def build_content_slide(prs, sl):
@@ -329,6 +345,7 @@ def build_content_slide(prs, sl):
         add_bullets(slide, bullets, body_top, body_h)
 
     add_notes(slide, sl["notes"])
+    return slide
 
 
 def main():
@@ -336,12 +353,16 @@ def main():
     prs = Presentation()
     prs.slide_width = SLIDE_W
     prs.slide_height = SLIDE_H
+    total = max(sl["num"] for sl in slides)
 
     for sl in slides:
         if sl.get("is_title"):
-            build_title_slide(prs, sl)
+            slide = build_title_slide(prs, sl)
         else:
-            build_content_slide(prs, sl)
+            slide = build_content_slide(prs, sl)
+        # Skip page number on the title slide
+        if sl["num"] != 0 and slide is not None:
+            add_slide_number(slide, sl["num"], total)
         print(f"  slide {sl['num']}: {sl['title'][:60]}")
 
     prs.save(OUT)
