@@ -67,11 +67,8 @@ for i in range(3):
     d.text(f"l2_t{i}", x, L2_Y, COL_W, L2_H, "L2 run",
            size=14, color="#7C1324")
 
-# Bottom label
-VINYL_BOT = L2_Y + L2_H + 12
-d.text("v_b", LX, VINYL_BOT, LW + 40, 20,
-       "файл = run, разбиение = range, ссылка = slice",
-       size=12, color=GREY)
+# Bottom label position is computed after both panels are laid out
+# (see end of file). The left-panel bottom annotation is rendered there.
 
 # ── RIGHT PANEL: RocksDB ──────────────────────────────────
 RX = LX + LW + 40; RW = 540
@@ -120,14 +117,23 @@ for i in range(N_L2):
 d.text("r_l2_lbl", RX, R_L2_Y + R_L2_H + 4, RW, 16,
        "L2  (10 SST × 64 МБ, без пересечений)", size=11, color=GREY, align="left")
 
-# Bottom label
-d.text("r_b", RX, VINYL_BOT, RW + 40, 20,
+# ── Bottom labels for both panels and the global annotation ──
+# Place below the rightmost-bottom element across both panels so
+# nothing collides with the L2 rects or the right-side level labels.
+LEFT_PANEL_BOT = L2_Y + L2_H
+RIGHT_PANEL_BOT = R_L2_Y + R_L2_H + 22   # +22 covers r_l2_lbl height & gap
+BOTTOM = max(LEFT_PANEL_BOT, RIGHT_PANEL_BOT) + 16
+
+d.text("v_b", LX, BOTTOM, LW + 40, 20,
+       "файл = run, разбиение = range, ссылка = slice",
+       size=12, color=GREY)
+d.text("r_b", RX, BOTTOM, RW + 40, 20,
        "файл = SSTable, разбиение = level, размер ~ const",
        size=12, color=GREY)
 
-# Bottom annotation across full width
-BOT_Y = VINYL_BOT + 36
-d.text("ann", 20, BOT_Y, 1200, 22,
+# Full-width annotation
+ANN_Y = BOTTOM + 36
+d.text("ann", 20, ANN_Y, 1200, 22,
        "Один объём данных, разные единицы учёта. Стоимости I/O в установившемся режиме сопоставимы.",
        size=14, color=INK)
 

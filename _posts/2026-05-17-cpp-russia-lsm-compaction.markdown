@@ -290,14 +290,14 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 13. Bloat временны́х рядов после split-а
+## 13. Bloat временны́х рядов после разделения диапазона
 
 ![Time-series bloat](/assets/img/vinyl/timeseries_bloat.svg)
 
 - Append-only вставки, затем split диапазона
 - Нижняя половинка выглядит «идеально» — один большой run-файл
 - Но 50% его данных уже устарели: page-index сидит в RAM зря
-- Удаление старых строк деградирует в квадратику
+- Удаление старых строк превращается в квадратичный скан
 
 > The exact bug that triggered our scheduler rewrite. Time-series data
 > appended in key order; the range grew past its threshold, split,
@@ -328,11 +328,10 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 15. Read-amp драйвер замыкает цикл
+## 15. Read-amp драйвер
 
 - Считаем mux на чтении: полезные байты ÷ просканированные байты
 - Mux упал ниже порога — планируем compaction для этого диапазона
-- Чтения сами говорят compaction-у, что делать
 
 > The second driver is feedback from reads. The shape-based driver
 > looks at the file layout; the read-amp driver looks at what queries
@@ -344,7 +343,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 16. File stitching: что нам даёт ФС
+## 16. File stitching: возможности файловых систем
 
 ![File stitching](/assets/img/talks/file_stitching.svg)
 
@@ -427,7 +426,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ![Per-block workload](/assets/img/talks/block_workload.svg)
 
-- **TTL drop** — блок целиком expire без слияния
+- **TTL drop** — целый блок удаляется по TTL без слияния
 - **MinHash skip** — планировщик доказывает, что блоки почти не пересекаются, и пропускает слияние
 - **Per-block fuse8** — фильтр переживает stitching, пересборка не нужна
 - **Меньше RAM** — каталог блоков на терабайте занимает десятки МБ
@@ -510,7 +509,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 ## 23. Спасибо
 
 - Блог: [kostja.github.io](https://kostja.github.io)
-- Telegram: [@kostja_osipov](https://t.me/kostja_osipov)
+- Telegram: [@rabid_transit](https://t.me/rabid_transit)
 - Профильные чаты: [@picodataru](https://t.me/picodataru), [@tarantoolru](https://t.me/tarantoolru), [@databaseinternalschat](https://t.me/databaseinternalschat)
 - Подробнее: [Как мы пересобрали сборку мусора в Vinyl](/tarantool/vinyl/2026/03/11/vinyl-compaction-scheduler.html)
 
