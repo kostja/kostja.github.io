@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Size-Tiered: группировка по размеру, слияние при накоплении N",
+      "text": "Группировка по размеру, слияние при накоплении N файлов",
       "fontSize": 14.007782101167315,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Size-Tiered: группировка по размеру, слияние при накоплении N",
+      "originalText": "Группировка по размеру, слияние при накоплении N файлов",
       "lineHeight": 1.2
     },
     {
