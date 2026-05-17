@@ -2869,13 +2869,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Файл, SSTable, run — осе-выровненный прямоугольник, накрывающий кластер обновлений.",
+      "text": "Файл, SSTable, run — выровненный по осям прямоугольник, накрывающий кластер обновлений.",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Файл, SSTable, run — осе-выровненный прямоугольник, накрывающий кластер обновлений.",
+      "originalText": "Файл, SSTable, run — выровненный по осям прямоугольник, накрывающий кластер обновлений.",
       "lineHeight": 1.2
     },
     {
