@@ -443,21 +443,16 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 21. Почему это будущее OLTP LSM
+## 21. Итоги
 
 - Per-file метаданные — наследие эпохи до reflink
 - Per-block метаданные включают stitching, TTL drop, MinHash pruning одной структурой
-- Уже релизится в **Picodata Vinyl 2.11.8** как формат `.index2`
-- Следующий шаг для RocksDB, Cassandra, ScyllaDB — если они захотят сломать формат на диске
 
 > File-level metadata made sense when the only way to move data was
 > to copy it. Reflinks change the economics: the unit of data
 > movement is now decoupled from the unit of metadata ownership.
 > Any serious OLTP LSM engine will eventually need the three-level
-> layout. We're shipping it in Picodata Vinyl as the .index2 format —
-> backwards compatible, automatic upgrade, opt-out by deleting
-> .index2 files and restarting with --force-recovery. I expect
-> RocksDB and ScyllaDB to follow within a few years.
+> layout.
 
 ---
 
