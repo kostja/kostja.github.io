@@ -104,6 +104,27 @@ permalink: /talks/cpp-russia-lsm-compaction
 > If you provisioned for 1× your data, you are out of space and the
 > merge fails. This is the canonical "Cassandra ran out of disk"
 > outage.
+>
+> A subtler weakness: STCS classifies files by their actual size, not
+> by a level counter. If four 8 MB files compact down to one 8 MB file
+> (heavy update/delete workload), the result sits in the same 8 MB
+> bucket the inputs came from — no promotion. The tier can cycle
+> indefinitely: flush, hit threshold, compact, end up back at the same
+> size, repeat. Read amp at that tier never improves; the only way out
+> is a major compaction. LCS doesn't have this problem because output
+> goes to L_n+1 by *level number*, not by resulting size.
+>
+> Q someone in the audience will ask: doesn't size-based placement
+> break read ordering — couldn't an old, shrunken file end up in a
+> "newer" tier than a recent, bigger file, masking a tombstone?
+> Answer: no, because no production engine actually places by size
+> alone. Cassandra tags every cell with a timestamp and resolves
+> conflicts by timestamp, so tier position is irrelevant for
+> correctness. RocksDB Universal and Vinyl maintain a recency-ordered
+> SSTable / run list — size buckets are used only to *select* which
+> files to compact, never to decide where the output sits. LCS uses
+> explicit level numbers. The size-bucket logic is a selection
+> heuristic, not a placement rule.
 
 ---
 
