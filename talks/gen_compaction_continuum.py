@@ -57,9 +57,9 @@ d.text("lbl_x", PX0, PY1 + 12, PW + 12, 22,
 d.text("lbl_y", 10, PY0 - 6, 100, 22,
        "время ↑", size=16, color=GREY, align="right")
 
-# Faint plot frame
-d.rect("frame", PX0, PY0, PW, PH, stroke=GREY, bg="transparent", sw=0.5,
-       roundness=0)
+# (No plot frame — the axes define the plot boundary. A frame
+# rectangle drawn at (PX0, PY0)+(PW, PH) would overlap the axes
+# along its left and bottom edges.)
 
 
 def dot(eid, x, y, r=4, color=DOT):
@@ -145,7 +145,7 @@ d.arrow("arr",
         [[0, 0], [INS_X - (RECT2_X + RECT2_W) - 8, 0]],
         color=ORANGE, sw=2, roughness=0)
 d.text("arr_t",
-       RECT2_X + RECT2_W + 6, CY2 - 28, 200, 22,
+       RECT2_X + RECT2_W + 6, CY2 - 50, 200, 22,
        "compaction", size=14, color=ORANGE, align="left")
 
 # ── Annotations at the bottom ──
