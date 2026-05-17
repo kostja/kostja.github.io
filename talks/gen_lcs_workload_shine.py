@@ -13,9 +13,12 @@ d.text("title", 20, 10, 1100, 28,
        "LCS оптимальна для OLTP с горячими ключами и предсказуемой p99",
        size=20, color=INK)
 
-# LEFT PANEL: point-read traverses one file per level
+# LEFT PANEL: point-read traverses one file per level.
+# Panel header sits ABOVE the orange "read(k)" arrow label so they
+# don't collide horizontally (both start near x≈100, would otherwise
+# overlap at the column where the read arrow lives).
 PX0 = 30
-d.text("p1t", PX0, 70, 540, 24, "1. Точечное чтение: ≤ 1 файл/уровень",
+d.text("p1t", PX0, 40, 540, 24, "1. Точечное чтение: ≤ 1 файл/уровень",
        size=16, color=INK, align="left")
 
 # Levels with point-read arrow
