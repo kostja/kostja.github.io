@@ -487,9 +487,10 @@ permalink: /talks/cpp-russia-lsm-compaction
 - RocksDB Universal Compaction: [github.com/facebook/rocksdb/wiki/Universal-Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction)
 - Архитектура Vinyl (2018): [habr.com/companies/vk/articles/358210](https://habr.com/ru/companies/vk/articles/358210/)
 
-**Filters & sketches**
+**Indexes, filters & sketches**
 
 - T. Graf, D. Lemire, "Binary Fuse Filters: Fast and Smaller Than Xor Filters", 2022 — [arxiv.org/abs/2201.01174](https://arxiv.org/abs/2201.01174)
+- P. Ferragina, G. Vinciguerra, "The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds", VLDB 2020 — [arxiv.org/abs/1910.06169](https://arxiv.org/abs/1910.06169)
 - A. Broder, "On the resemblance and containment of documents", 1997 — MinHash оригинал
 
 > Pointer slide — not for reading aloud. Dostoevsky formalizes the
@@ -499,7 +500,10 @@ permalink: /talks/cpp-russia-lsm-compaction
 > per-block fuse8 filters. The Cassandra UCS ticket and RocksDB
 > Universal wiki document the parametric strategies discussed in
 > slide 10. The 2018 Vinyl article is the engine background for
-> slides 11–15.
+> slides 11–15. PGM-index is here because per-block organization
+> (slide 19) lets the engine choose a lookup structure per block —
+> learned PGM-index for blocks with predictable key distributions,
+> conventional indexes elsewhere.
 
 ---
 
