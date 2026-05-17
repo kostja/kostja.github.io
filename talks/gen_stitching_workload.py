@@ -18,8 +18,9 @@ PW = 42; FH = 64
 TOTAL = 20
 ROW_X = 30
 
-# Run A
-SY = 80
+# Run A. SY pushed down to give the bracket caption "10% пересечения
+# → слить" (which sits at SY-50) clearance below the diagram title.
+SY = 110
 d.text("a_lbl", ROW_X, SY - 26, 600, 22, "run A  (старые: a–z)",
        size=16, color=INK, align="left")
 for i in range(TOTAL):
