@@ -210,7 +210,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 9. Compaction как кластеризация
+## 9. Compaction как проблема кластеризации
 
 ![Compaction as 2D clustering](/assets/img/talks/compaction_continuum.svg)
 

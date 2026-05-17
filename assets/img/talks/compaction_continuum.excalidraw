@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Compaction как кластеризация в (время, ключ)",
+      "text": "Compaction как проблема кластеризации в (время, ключ)",
       "fontSize": 12.110091743119266,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Compaction как кластеризация в (время, ключ)",
+      "originalText": "Compaction как проблема кластеризации в (время, ключ)",
       "lineHeight": 1.2
     },
     {
