@@ -40,7 +40,7 @@ L0_W = 3 * COL_W + 2 * COL_GAP
 d.rect("l0", COLS_X0, L0_Y, L0_W, L0_H,
        stroke=RED, bg="#FAEAED", sw=1.5, roundness=3)
 d.text("l0_t", COLS_X0, L0_Y, L0_W, L0_H,
-       "L0 run-file  (один файл, slice-ы в 3 диапазона)",
+       "L0 run-file  (один файл, 3 slice-а)",
        size=12, color=RED)
 
 # Slice boundary marks (dashed verticals across L0)
@@ -69,8 +69,8 @@ for i in range(3):
 
 # Bottom label
 VINYL_BOT = L2_Y + L2_H + 12
-d.text("v_b", LX, VINYL_BOT, LW, 20,
-       "файл = run, шаг разбиения = range, ссылка из range = slice",
+d.text("v_b", LX, VINYL_BOT, LW + 40, 20,
+       "файл = run, разбиение = range, ссылка = slice",
        size=12, color=GREY)
 
 # ── RIGHT PANEL: RocksDB ──────────────────────────────────
@@ -92,7 +92,7 @@ d.text("r_l0_0t", RX, R_L0_Y, SST0_W, R_L0_H, "SST", size=12, color=BLUE)
 d.rect("r_l0_1", RX + SST0_W + 8, R_L0_Y, SST0_W, R_L0_H,
        stroke=BLUE, bg=LBLUE, sw=1, roundness=3)
 d.text("r_l0_1t", RX + SST0_W + 8, R_L0_Y, SST0_W, R_L0_H, "SST", size=12, color=BLUE)
-d.text("r_l0_lbl", RX + 240, R_L0_Y + 6, 120, 22,
+d.text("r_l0_lbl", RX + 240, R_L0_Y + 6, 160, 22,
        "L0  (overlap)", size=12, color=GREY, align="left")
 
 # L1: 4 non-overlapping SSTs spanning keyspace
@@ -121,8 +121,8 @@ d.text("r_l2_lbl", RX, R_L2_Y + R_L2_H + 4, RW, 16,
        "L2  (10 SST × 64 МБ, без пересечений)", size=11, color=GREY, align="left")
 
 # Bottom label
-d.text("r_b", RX, VINYL_BOT, RW, 20,
-       "файл = SSTable, шаг разбиения = level, размер SST ~ const (64 МБ)",
+d.text("r_b", RX, VINYL_BOT, RW + 40, 20,
+       "файл = SSTable, разбиение = level, размер ~ const",
        size=12, color=GREY)
 
 # Bottom annotation across full width

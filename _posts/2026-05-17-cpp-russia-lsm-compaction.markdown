@@ -22,21 +22,6 @@ permalink: /talks/cpp-russia-lsm-compaction
     border-top: 2px solid #dee2e6;
     margin: 40px 0;
 }
-/* Let wide SVG diagrams render closer to native size on wider viewports
-   (post container is 740px; wider diagrams would otherwise downscale and
-   look text-tiny relative to the smaller Vinyl-article diagrams). */
-.post-content img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    width: auto;
-}
-@media (min-width: 1240px) {
-    .post-content img {
-        max-width: 1200px;
-        margin-left: calc(50% - 600px);
-    }
-}
 </style>
 
 ## 0. Title

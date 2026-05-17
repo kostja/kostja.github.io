@@ -54,6 +54,16 @@ def fix_svg(path):
         svg
     )
 
+    # Fix font-family fallback: excalidraw-to-svg writes
+    # "Cascadia, Segoe UI Emoji" which on systems without Cascadia falls
+    # back to an emoji font (no Cyrillic glyphs) then to browser default
+    # serif. Vinyl-article SVGs use "Cascadia, sans-serif" which falls
+    # back cleanly to the user's sans-serif. Match that.
+    svg = svg.replace(
+        'font-family="Cascadia, Segoe UI Emoji"',
+        'font-family="Cascadia, sans-serif"',
+    )
+
     with open(path, 'w') as f:
         f.write(svg)
     print(f"Fixed {path}")

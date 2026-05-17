@@ -20,15 +20,15 @@ def file_box(eid, x, y, w, h, label, stroke, fill):
     d.text(eid + "_t", x, y, w, h, label, size=12, color=stroke)
 
 L0Y = 70
-d.text("l0lbl", 30, L0Y + 12, 160, 22, "L0 (с пересечением)",
+d.text("l0lbl", 0, L0Y + 12, 190, 22, "L0 (с пересечением)",
        size=14, color=GREY, align="right")
 for i in range(4):
     file_box(f"l0_{i}", LX0 + i * 75, L0Y, 65, 36, "a–z", RED, LRED)
 
 # L1
 L1Y = L0Y + 70
-d.text("l1lbl", 0, L1Y + 12, 190, 22, "L1  ×10, не пересекаются",
-       size=13, color=GREY, align="right")
+d.text("l1lbl", 0, L1Y + 12, 190, 22, "L1  ×10",
+       size=14, color=GREY, align="right")
 for i, r in enumerate(["a–e", "f–j", "k–o", "p–t", "u–z"]):
     file_box(f"l1_{i}", LX0 + i * 75, L1Y, 70, 36, r, BLUE, LBLUE)
 
@@ -61,6 +61,6 @@ for i, line in enumerate([
 
 # Arrow: promotion
 d.arrow("prom", 175, L0Y + 36, [[0, 0], [0, 180]], color=ORANGE, sw=1.5, roughness=0)
-d.text("prom_t", 80, L0Y + 100, 90, 22, "продвижение", size=12, color=ORANGE)
+d.text("prom_t", 70, L0Y + 100, 110, 22, "продвижение", size=12, color=ORANGE)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/leveled_compaction.excalidraw")

@@ -45,7 +45,7 @@ d.arrow("a_m2", 720, 135, [[0, 0], [70, 0]], color=ORANGE, sw=2, roughness=0)
 # L2
 d.rect("l2", 800, 60, 160, 150, stroke=RED, bg="#E96B80", sw=1, roundness=3)
 d.text("l2_t", 800, 60, 160, 150, "compacted\n240 МБ", size=16, color="#7C1324")
-d.text("l2_lbl", 800, 220, 160, 20, "L2 (старые данные)", size=14, color=GREY)
+d.text("l2_lbl", 800, 220, 160, 20, "L2 (старое)", size=14, color=GREY)
 
 # Bottom annotation
 d.text("ann", 20, 270, 940, 22,

@@ -74,10 +74,10 @@ RECT1_W = 350; RECT1_H = PH - 40
 d.rect("r1", RECT1_X, RECT1_Y, RECT1_W, RECT1_H,
        stroke=RED, bg="transparent", sw=2.5, ss="dashed", roundness=3)
 # Loose-fit caption — top inside the rectangle
-d.text("r1_lbl", RECT1_X + 10, RECT1_Y + 8, 320, 22,
-       "файл накрывает диагональ свободно", size=14, color=RED, align="left")
-d.text("r1_lbl2", RECT1_X + 10, RECT1_Y + RECT1_H - 28, 320, 22,
-       "большая часть площади пустует", size=13, color=RED, align="left")
+d.text("r1_lbl", RECT1_X + 10, RECT1_Y + 8, 380, 22,
+       "файл накрывает диагональ", size=14, color=RED, align="left")
+d.text("r1_lbl2", RECT1_X + 10, RECT1_Y + RECT1_H - 28, 380, 22,
+       "(половина площади пуста)", size=12, color=RED, align="left")
 
 # ── Cluster 2: DENSE BLOB (hot-key OLTP churn) ──
 CX2, CY2 = PX0 + 580, PY0 + 170
@@ -93,8 +93,8 @@ RECT2_W = 140; RECT2_H = 92
 d.rect("r2", RECT2_X, RECT2_Y, RECT2_W, RECT2_H,
        stroke=BLUE, bg="transparent", sw=2.5, ss="dashed", roundness=3)
 # Tight-fit caption — above the rectangle, with breathing room
-d.text("r2_lbl", RECT2_X - 60, RECT2_Y - 32, 260, 22,
-       "файл плотно накрывает кластер", size=14, color=BLUE, align="left")
+d.text("r2_lbl", RECT2_X - 80, RECT2_Y - 32, 380, 22,
+       "файл накрывает кластер плотно", size=13, color=BLUE, align="left")
 
 # ── Cluster 3: SCATTERED (random noise) ──
 for i in range(14):
@@ -105,7 +105,7 @@ for i in range(14):
 # ── After-compaction inset BELOW the plot ──
 INS_Y = PY0 + PH + 60
 # Caption on the left
-d.text("comp_lbl", PX0 + 20, INS_Y - 24, 380, 24,
+d.text("comp_lbl", PX0 + 20, INS_Y - 24, 520, 24,
        "после слияния — по одной строке на ключ:",
        size=14, color=GREEN, align="left")
 # Single thin line of dots
@@ -122,11 +122,11 @@ d.text("arr_t", CX2 - 270, CY2 + 130, 160, 22,
 
 # ── Annotations below everything ──────────────────────────
 BOT_Y = INS_Y + 50
-d.text("ann1", 20, BOT_Y, 1180, 26,
-       "Файл, SSTable, run — всегда осе-выровненный прямоугольник, накрывающий естественный кластер обновлений.",
-       size=16, color=INK)
-d.text("ann2", 20, BOT_Y + 32, 1180, 26,
-       "Чем точнее прямоугольник подогнан под форму кластера, тем меньше bloat и read amp.",
-       size=16, color=GREY)
+d.text("ann1", 20, BOT_Y, 1280, 26,
+       "Файл, SSTable, run — осе-выровненный прямоугольник, накрывающий кластер обновлений.",
+       size=14, color=INK)
+d.text("ann2", 20, BOT_Y + 30, 1280, 26,
+       "Чем плотнее прямоугольник к форме кластера, тем меньше bloat и read amp.",
+       size=14, color=GREY)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/compaction_continuum.excalidraw")

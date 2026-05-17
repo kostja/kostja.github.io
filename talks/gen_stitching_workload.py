@@ -31,7 +31,7 @@ for i in range(TOTAL):
 # Run B
 BY = SY + 120
 d.text("b_lbl", ROW_X, BY - 26, 800, 22,
-       "run B  (out-of-order backfill: разбросан, пересечение только на k–l)",
+       "run B  (out-of-order backfill, пересечение на k–l)",
        size=16, color=INK, align="left")
 for i in range(TOTAL):
     is_overlap = i in (9, 10)
@@ -43,7 +43,7 @@ for i in range(TOTAL):
 OVL_X0 = ROW_X + 9 * PW; OVL_W = 2 * PW - 2
 d.rect("ovl", OVL_X0 - 4, SY - 10, OVL_W + 8, FH + (BY - SY) + 18,
        stroke=DANGER, bg="transparent", sw=2, ss="dashed", roundness=3)
-d.text("ovl_t", OVL_X0 - 60, SY - 50, OVL_W + 120, 22,
+d.text("ovl_t", OVL_X0 - 100, SY - 50, OVL_W + 200, 22,
        "10% пересечения → слить", size=14, color=DANGER)
 
 # Destination
@@ -75,10 +75,10 @@ d.text("ex_t", PX, PY - 26, 260, 22, "Реальные нагрузки",
 for i, line in enumerate([
     "• out-of-order backfill",
     "• миграция схемы",
-    "• пакетные корректировки",
-    "• запоздавшие CDC-события",
+    "• пакет корректировок",
+    "• поздние CDC-события",
 ]):
-    d.text(f"ex_{i}", PX, PY + i * 28, 280, 22, line, size=14, color=INK, align="left")
+    d.text(f"ex_{i}", PX, PY + i * 28, 320, 22, line, size=14, color=INK, align="left")
 
 # Annotation
 d.text("ann", 20, DY + FH + 38, 1200, 22,

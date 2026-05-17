@@ -21,14 +21,14 @@ d.text("run_n", RX + RW - 360, RY, 350, RH,
        "принадлежит уровню LSM", size=14, color=GREY, align="right")
 
 # Middle: blocks
-BY = RY + RH + 22; BW = 168; BH = 76; NB = 6
+BY = RY + RH + 22; BW = 200; BH = 86; NB = 5
 BX0 = RX + (RW - NB * BW - (NB - 1) * 8) / 2
 for i in range(NB):
     bx = BX0 + i * (BW + 8)
     d.rect(f"blk_{i}", bx, BY, BW, BH, stroke=BLUE, bg=LBLUE, sw=1.5, roundness=3)
     d.text(f"blk_{i}t", bx, BY + 6, BW, 22, f"блок {i}", size=14, color=BLUE)
     d.text(f"blk_{i}m", bx, BY + 32, BW, 40,
-           "50–100 страниц\nфильтр • min/max • TTL", size=12, color=GREY)
+           "50–100 страниц\nфильтр, min/max", size=12, color=GREY)
 
 # Pages — zoom
 PY_LBL = BY + BH + 28
