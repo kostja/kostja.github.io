@@ -114,12 +114,27 @@ RECT2_W = 76; RECT2_H = 260
 d.rect("r2", RECT2_X, RECT2_Y, RECT2_W, RECT2_H,
        stroke=BLUE, bg="transparent", sw=2.5, ss="dashed", roundness=3)
 
+# Blue OUTLIERS — points that belong to the same hot-key cluster
+# semantically (occasional updates to neighboring keys, occasional
+# off-window timestamps) but fall outside the axis-aligned rectangle.
+# Their presence is the visual argument that the rectangle is only
+# an approximation of the cluster's real shape.
+OUTLIERS = [
+    (RECT2_X + RECT2_W / 2 - 5, RECT2_Y - 14),         # just above
+    (RECT2_X + RECT2_W / 2 + 8, RECT2_Y + RECT2_H + 16),  # just below
+    (RECT2_X - 16, RECT2_Y + RECT2_H * 0.42),          # just left
+    (RECT2_X + RECT2_W + 18, RECT2_Y + RECT2_H * 0.62),  # just right
+]
+for i, (ox, oy) in enumerate(OUTLIERS):
+    dot(f"d2o_{i}", ox, oy, r=4, color=BLUE)
+
 # ── Cluster 3: SCATTERED noise ──
-# A handful of grey dots away from labels and named clusters
-# (upper-mid empty zone between R1 and R2).
-for i in range(10):
-    rx = prng(i + 500) * 60 + PX0 + 280
-    ry = (prng(i + 600) + 1) / 2 * 70 + PY0 + 50
+# Grey dots placed in the lower-mid empty zone of the plot —
+# outside both R1 (which covers the diagonal in the left half) and
+# R2 (which covers the blob in the right half).
+for i in range(8):
+    rx = prng(i + 500) * 40 + PX0 + 460  # x: 520-600
+    ry = (prng(i + 600) + 1) / 2 * 100 + PY0 + 290  # y: 380-480
     dot(f"d3_{i}", rx, ry, r=3, color=GREY)
 
 # ── After-compaction inset, right of the plot ──
