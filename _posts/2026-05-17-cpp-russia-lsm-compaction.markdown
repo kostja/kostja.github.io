@@ -250,27 +250,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 11. Один и тот же датасет: Vinyl vs RocksDB
-
-![Vinyl vs RocksDB file layout](/assets/img/talks/vinyl_vs_rocksdb_layout.svg)
-
-- **Vinyl**: разбиение по ключу (range), внутри каждого диапазона — пирамида run-файлов
-- **RocksDB**: разбиение по уровню (LCS), на каждом уровне — набор SSTable фиксированного размера
-- L0 в обоих движках — недавно сброшенные файлы; в Vinyl один run может покрывать несколько диапазонов через slice-ы
-- Объёмы данных совпадают, единицы учёта разные
-
-> Same dataset, two different vocabularies. Vinyl partitions horizontally
-> by key, then stacks levels per partition; RocksDB partitions vertically
-> by level, then divides each level into fixed-size SSTables. The total
-> data volume and steady-state I/O cost are comparable — the engineering
-> difference is which axis you care about first when planning compaction.
-> Vinyl's per-range partitioning gives you cheap independent merges of
-> hot regions; RocksDB's per-level partitioning gives you simpler global
-> reasoning about read amplification.
-
----
-
-## 12. Vinyl: per-range, shape-based
+## 11. Vinyl: per-range, shape-based
 
 ![Slices and ranges](/assets/img/vinyl/slices_and_ranges.svg)
 
@@ -287,6 +267,26 @@ permalink: /talks/cpp-russia-lsm-compaction
 > Run-files can be shared across ranges via slices — a slice is a
 > (file, start_page, end_page) tuple. A range split creates new
 > slices, not new files.
+
+---
+
+## 12. Один и тот же датасет: Vinyl vs RocksDB
+
+![Vinyl vs RocksDB file layout](/assets/img/talks/vinyl_vs_rocksdb_layout.svg)
+
+- **Vinyl**: разбиение по ключу (range), внутри каждого диапазона — пирамида run-файлов
+- **RocksDB**: разбиение по уровню (LCS), на каждом уровне — набор SSTable фиксированного размера
+- L0 в обоих движках — недавно сброшенные файлы; в Vinyl один run может покрывать несколько диапазонов через slice-ы
+- Объёмы данных совпадают, единицы учёта разные
+
+> Same dataset, two different vocabularies. Vinyl partitions horizontally
+> by key, then stacks levels per partition; RocksDB partitions vertically
+> by level, then divides each level into fixed-size SSTables. The total
+> data volume and steady-state I/O cost are comparable — the engineering
+> difference is which axis you care about first when planning compaction.
+> Vinyl's per-range partitioning gives you cheap independent merges of
+> hot regions; RocksDB's per-level partitioning gives you simpler global
+> reasoning about read amplification.
 
 ---
 
@@ -386,9 +386,9 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 18. Ловушка bloom-фильтра
 
-- На SSTable / run-файл — **один** bloom-фильтр на весь набор ключей
-- У сшитого файла другой набор ключей — фильтр инвалидирован
-- Пересборка фильтра требует читать все ключи — экономия I/O аннулирована
+- На один SSTable / run-файл приходится **один** bloom-фильтр, общий для всех его ключей
+- После stitching набор ключей меняется, и фильтр становится непригоден
+- Пересборка фильтра читает все ключи и сводит экономию I/O к нулю
 - Та же проблема с page-index, min/max и MinHash-скетчем
 
 > Here's why naïve stitching doesn't work. A bloom filter is computed
@@ -423,7 +423,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 20. Что даёт per-block метаданные
+## 20. Возможности блочной организации страниц
 
 ![Per-block workload](/assets/img/talks/block_workload.svg)
 
@@ -445,10 +445,10 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 21. Итоги
 
-- RUM-треугольник запрещает одновременно минимизировать read amp, write amp и space amp
-- Файлы, SSTable, run — осе-выровненные приближения произвольных кластеров в (время, ключ)
-- Compaction-планировщик становится мощнее, когда драйверы shape, read-amp и space-amp обновляют общий план
-- Чтобы reflink-стиль stitching работал, метаданные должны жить на блоке, а не на SSTable
+- Любая стратегия compaction балансирует три величины: read amp, write amp, space amp
+- Файл, SSTable, run в пространстве (время, ключ) — осе-выровненный прямоугольник, накрывающий кластер обновлений
+- Общий план compaction объединяет драйверы shape, read-amp и space-amp
+- Stitching через reflink работает, когда метаданные привязаны к блоку, а не к SSTable
 
 > The RUM triangle is the real constraint. STCS, LCS, UCS each pick
 > a different point in it; arguing about "the best strategy" without

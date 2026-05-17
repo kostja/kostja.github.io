@@ -109,7 +109,7 @@
       "lineHeight": 1.2
     },
     {
-      "type": "line",
+      "type": "arrow",
       "id": "ax_x",
       "x": 56.782334384858046,
       "y": 289.58990536277605,
@@ -150,15 +150,15 @@
       "startBinding": null,
       "endBinding": null,
       "startArrowhead": null,
-      "endArrowhead": null
+      "endArrowhead": "arrow"
     },
     {
-      "type": "line",
+      "type": "arrow",
       "id": "ax_y",
       "x": 56.782334384858046,
-      "y": 51.10410094637224,
+      "y": 296.403785488959,
       "width": 0.5678233438485805,
-      "height": 245.29968454258676,
+      "height": 250.97791798107255,
       "angle": 0,
       "strokeColor": "#737A82",
       "backgroundColor": "transparent",
@@ -187,20 +187,20 @@
         ],
         [
           0.0,
-          245.29968454258676
+          -250.97791798107255
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": null,
       "endBinding": null,
       "startArrowhead": null,
-      "endArrowhead": null
+      "endArrowhead": "arrow"
     },
     {
       "type": "text",
       "id": "lbl_x",
       "x": 56.782334384858046,
-      "y": 296.403785488959,
+      "y": 302.0820189274448,
       "width": 381.5772870662461,
       "height": 12.49211356466877,
       "angle": 0,
@@ -222,21 +222,21 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "ключ →",
+      "text": "ключ",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "right",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "ключ →",
+      "originalText": "ключ",
       "lineHeight": 1.2
     },
     {
       "type": "text",
       "id": "lbl_y",
-      "x": 5.678233438485805,
+      "x": 0.0,
       "y": 47.69716088328076,
-      "width": 56.782334384858046,
+      "width": 45.42586750788644,
       "height": 12.49211356466877,
       "angle": 0,
       "strokeColor": "#737A82",
@@ -257,13 +257,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "время ↑",
+      "text": "время",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "right",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "время ↑",
+      "originalText": "время",
       "lineHeight": 1.2
     },
     {

@@ -45,17 +45,19 @@ PW = 660; PH = 420
 PX1 = PX0 + PW   # 760
 PY1 = PY0 + PH   # 510
 
-# Axes (bottom and left)
-d.line("ax_x", PX0, PY1, [[0, 0], [PW + 12, 0]],
-       color=GREY, sw=2, roughness=0)
-d.line("ax_y", PX0, PY0, [[0, 0], [0, PH + 12]],
-       color=GREY, sw=2, roughness=0)
+# Axes with arrowheads. Y axis is drawn from bottom-up so its arrow
+# points up (= "time grows up"). X axis points right naturally.
+d.arrow("ax_x", PX0, PY1, [[0, 0], [PW + 12, 0]],
+        color=GREY, sw=2, roughness=0)
+d.arrow("ax_y", PX0, PY1 + 12, [[0, 0], [0, -(PH + 22)]],
+        color=GREY, sw=2, roughness=0)
 
-# Axis labels
-d.text("lbl_x", PX0, PY1 + 12, PW + 12, 22,
-       "ключ →", size=16, color=GREY, align="right")
-d.text("lbl_y", 10, PY0 - 6, 100, 22,
-       "время ↑", size=16, color=GREY, align="right")
+# Axis labels — direction is conveyed by the axis arrowheads, so the
+# labels carry just the name. Boxes sized to stay clear of the heads.
+d.text("lbl_x", PX0, PY1 + 22, PW + 12, 22,
+       "ключ", size=16, color=GREY, align="right")
+d.text("lbl_y", 0, PY0 - 6, 80, 22,
+       "время", size=16, color=GREY, align="right")
 
 # (No plot frame — the axes define the plot boundary. A frame
 # rectangle drawn at (PX0, PY0)+(PW, PH) would overlap the axes
