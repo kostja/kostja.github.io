@@ -10,7 +10,7 @@ ORANGE = "#FF611D"
 GREY = "#737A82"; INK = "#2B1321"
 
 d.text("title", 20, 10, 1100, 28,
-       "LCS сияет: OLTP с горячими ключами и предсказуемой p99",
+       "LCS оптимальна для OLTP с горячими ключами и предсказуемой p99",
        size=20, color=INK)
 
 # LEFT PANEL: point-read traverses one file per level
