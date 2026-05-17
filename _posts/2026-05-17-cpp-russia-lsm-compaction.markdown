@@ -1,7 +1,7 @@
 ---
 layout: post
 date:    2026-05-17
-title:   "Compaction в LSM: за пределами Leveled и Tiered"
+title:   "Стратегии слияния (compaction strategies) в LSM-деревьях"
 permalink: /talks/cpp-russia-lsm-compaction
 ---
 
@@ -26,7 +26,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 0. Title
 
-# Compaction в LSM
+# Стратегии слияния (compaction strategies) в LSM-деревьях
 
 ### За пределами Leveled и Tiered
 
