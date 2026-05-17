@@ -91,19 +91,30 @@ permalink: /talks/cpp-russia-lsm-compaction
 ![STCS pain](/assets/img/talks/stcs_workload_pain.svg)
 
 - Версии одного ключа разбросаны по N уровням → read amp растёт
-- Major compaction крупнейшего уровня требует диск ≈ 2× датасета
+- Размер SSTable ничем не ограничен (на нижнем уровне — сотни ГБ)
 - Классический инцидент: «Cassandra переполнила диск при compaction»
 
 > The trouble surfaces at scale. Imagine a Cassandra cluster ingesting
 > metrics — billions of writes per day, keys updated frequently. Each
 > key's versions end up scattered across many tiers. To read one row,
 > the engine merges fragments from every tier — read amp grows
-> unbounded. Worse, the largest tier eventually needs to be compacted
-> itself: that operation reads N files of the biggest size class and
-> writes one merged file, doubling the disk footprint for the duration.
-> If you provisioned for 1× your data, you are out of space and the
-> merge fails. This is the canonical "Cassandra ran out of disk"
-> outage.
+> unbounded.
+>
+> The "ran out of disk" outage follows from one root cause: Cassandra
+> SSTables have no size cap. There's no `target_file_size_base` analog
+> like RocksDB's 64 MB default. Under STCS, the bottom tier accumulates
+> SSTables that grow without bound as the dataset ages — a year-old
+> cluster routinely has individual SSTables in the hundreds of GB.
+> Compaction cannot delete input SSTables until the output is fully
+> written (durability), so for the duration of a compaction job both
+> the inputs and the partial output sit on disk together. A major
+> compaction of a 1 TB dataset literally needs 1 TB of free headroom.
+> DataStax's standard rule for STCS deployments is to keep at least
+> 50% disk free — and that 50% figure is downstream of the unbounded
+> SSTable size. LCS doesn't have this problem because compactions
+> touch one bounded-size file per level (headroom ≈ a few hundred MB).
+> Vinyl caps it by range — major compaction of one range needs only
+> 128 MB of headroom regardless of dataset size.
 >
 > A subtler weakness: STCS classifies files by their actual size, not
 > by a level counter. If four 8 MB files compact down to one 8 MB file
