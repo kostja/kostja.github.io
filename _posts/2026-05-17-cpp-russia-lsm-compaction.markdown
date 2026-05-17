@@ -40,7 +40,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 1. LSM на одном слайде
+## 1. Общий вид LSM-дерева
 
 ![LSM recap](/assets/img/talks/lsm_recap.svg)
 
