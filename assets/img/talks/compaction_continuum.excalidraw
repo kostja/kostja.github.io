@@ -2215,13 +2215,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "после слияния: 1 точка / ключ",
+      "text": "после слияния: 1 точка = 1 ключ",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "после слияния: 1 точка / ключ",
+      "originalText": "после слияния: 1 точка = 1 ключ",
       "lineHeight": 1.2
     },
     {

@@ -146,7 +146,7 @@ INS_W = 460; INS_H = 240
 d.rect("inset", INS_X, INS_Y, INS_W, INS_H,
        stroke=GREEN, bg="transparent", sw=1, roundness=3)
 d.text("comp_lbl", INS_X + 12, INS_Y + 14, INS_W - 24, 24,
-       "после слияния: 1 точка / ключ",
+       "после слияния: 1 точка = 1 ключ",
        size=14, color=GREEN, align="left")
 
 # Compacted row of dots near the bottom of the inset
