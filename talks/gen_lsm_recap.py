@@ -83,7 +83,7 @@ d.text("l2_lbl", L2_X, L2_Y + L2_H + 10, L2_W, 20, "L2 (старое)", size=13,
 # Bottom annotation
 ANN_Y = L2_Y + L2_H + 50
 d.text("ann", 20, ANN_Y, L2_X + L2_W, 22,
-       "Каждый compaction обменивает I/O на короткие пути чтения и удаление tombstone-ов.",
+       "Compaction требует I/O но снижает стоимость чтения и собирает мусор (tombstones).",
        size=14, color=INK)
 
 d.save("/home/kostja/work/kostja.github.io/assets/img/talks/lsm_recap.excalidraw")

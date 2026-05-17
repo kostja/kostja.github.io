@@ -834,13 +834,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "Каждый compaction обменивает I/O на короткие пути чтения и удаление tombstone-ов.",
+      "text": "Compaction требует I/O но снижает стоимость чтения и собирает мусор (tombstones).",
       "fontSize": 12,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "Каждый compaction обменивает I/O на короткие пути чтения и удаление tombstone-ов.",
+      "originalText": "Compaction требует I/O но снижает стоимость чтения и собирает мусор (tombstones).",
       "lineHeight": 1.2
     }
   ],
