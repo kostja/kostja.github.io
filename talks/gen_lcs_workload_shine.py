@@ -40,10 +40,13 @@ for i, (name, n, fw) in enumerate(LEVELS):
         d.rect(f"l_{i}_{j}", LEVELS_X + j * 80, y, fw, 50,
                stroke=stroke, bg=fill, sw=2 if is_hit else 1, roundness=3)
 
-# Arrow showing point-read path
-d.arrow("pr", LEVELS_X + 250, LY0 - 18, [[0, 0], [0, 4 * 60 - 10]],
+# Arrow showing point-read path.
+# Aligned to the centre of the j=2 column (the orange "hit" rectangle)
+# at x = LEVELS_X + 2*80 + fw/2 ≈ LEVELS_X + 190, so it visibly goes
+# THROUGH the orange column rather than the blue one to its right.
+d.arrow("pr", LEVELS_X + 190, LY0 - 18, [[0, 0], [0, 4 * 60 - 10]],
         color=ORANGE, sw=2, roughness=0)
-d.text("pr_t", LEVELS_X + 220, LY0 - 40, 130, 22,
+d.text("pr_t", LEVELS_X + 125, LY0 - 40, 130, 22,
        "read(k)", size=14, color=ORANGE)
 
 # Read amp summary
