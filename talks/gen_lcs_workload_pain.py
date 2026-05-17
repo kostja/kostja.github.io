@@ -11,7 +11,7 @@ BLUE = "#4B7BE5"; LBLUE = "#DBE6FA"
 GREY = "#737A82"; INK = "#2B1321"
 
 d.text("title", 20, 10, 1100, 28,
-       "LCS: 1 байт на L0 → 30 байт через каскад",
+       "1 байт на L0 → 30 байт через каскад",
        size=20, color=INK)
 
 # LEFT PANEL: write amplification cascade

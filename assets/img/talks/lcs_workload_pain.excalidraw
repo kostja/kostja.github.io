@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "LCS: 1 байт на L0 → 30 байт через каскад",
+      "text": "1 байт на L0 → 30 байт через каскад",
       "fontSize": 12.76595744680851,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "LCS: 1 байт на L0 → 30 байт через каскад",
+      "originalText": "1 байт на L0 → 30 байт через каскад",
       "lineHeight": 1.2
     },
     {

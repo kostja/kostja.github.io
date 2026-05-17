@@ -10,7 +10,7 @@ ORANGE = "#FF611D"
 GREY = "#737A82"; INK = "#2B1321"
 
 d.text("title", 20, 10, 1100, 28,
-       "STCS: запись доминирует, чтения редкие",
+       "Запись доминирует, чтения редкие",
        size=20, color=INK)
 
 # LEFT PANEL: burst of incoming writes hitting tiers

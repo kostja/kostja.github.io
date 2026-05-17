@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "STCS: удвоение диска при major compaction; версии одного ключа во многих файлах",
+      "text": "Удвоение диска при major compaction; версии одного ключа во многих файлах",
       "fontSize": 12.76595744680851,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "STCS: удвоение диска при major compaction; версии одного ключа во многих файлах",
+      "originalText": "Удвоение диска при major compaction; версии одного ключа во многих файлах",
       "lineHeight": 1.2
     },
     {

@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "STCS: запись доминирует, чтения редкие",
+      "text": "Запись доминирует, чтения редкие",
       "fontSize": 12.76595744680851,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "STCS: запись доминирует, чтения редкие",
+      "originalText": "Запись доминирует, чтения редкие",
       "lineHeight": 1.2
     },
     {

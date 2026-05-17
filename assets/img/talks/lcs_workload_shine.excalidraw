@@ -29,13 +29,13 @@
       "link": null,
       "locked": false,
       "roundness": null,
-      "text": "LCS оптимальна для OLTP с горячими ключами и предсказуемой p99",
+      "text": "Оптимальна для OLTP с горячими ключами и предсказуемой p99",
       "fontSize": 12.76595744680851,
       "fontFamily": 3,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": null,
-      "originalText": "LCS оптимальна для OLTP с горячими ключами и предсказуемой p99",
+      "originalText": "Оптимальна для OLTP с горячими ключами и предсказуемой p99",
       "lineHeight": 1.2
     },
     {

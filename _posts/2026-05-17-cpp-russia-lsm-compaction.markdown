@@ -86,7 +86,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 4. Когда STCS подводит
+## 4. Недостатки STCS
 
 ![STCS pain](/assets/img/talks/stcs_workload_pain.svg)
 
@@ -174,7 +174,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 7. Когда LCS подводит
+## 7. Недостатки LCS
 
 ![LCS pain](/assets/img/talks/lcs_workload_pain.svg)
 
