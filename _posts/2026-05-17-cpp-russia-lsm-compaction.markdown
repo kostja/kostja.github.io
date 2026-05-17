@@ -445,14 +445,25 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ## 21. Итоги
 
-- Per-file метаданные — наследие эпохи до reflink
-- Per-block метаданные включают stitching, TTL drop, MinHash pruning одной структурой
+- Универсальной стратегии compaction нет: каждая — точка в RUM-треугольнике
+- Compaction — задача 2D-кластеризации в (время, ключ); файлы — осе-выровненные приближения
+- План compaction как first-class объект: несколько драйверов (shape, read-amp, space-amp) заполняют его
+- Per-block метаданные открывают reflink-эру: stitching, TTL drop, MinHash pruning
 
-> File-level metadata made sense when the only way to move data was
-> to copy it. Reflinks change the economics: the unit of data
-> movement is now decoupled from the unit of metadata ownership.
-> Any serious OLTP LSM engine will eventually need the three-level
-> layout.
+> Four things worth taking away. First, no universal compaction
+> strategy exists — STCS, LCS, UCS are different trade-offs across
+> the RUM triangle, and the right one depends on the workload, not on
+> someone's opinion. Second, the file-merging framing is a leaky
+> abstraction: compaction is really about covering arbitrarily-shaped
+> clusters in (time, key) space with axis-aligned rectangles. Third,
+> the compaction plan deserves to be a first-class object in the
+> scheduler, with multiple drivers — shape, read-amp, space-amp —
+> competing to fill it; this lets reads tell compaction what to do.
+> Fourth, file-level metadata is the bottleneck that prevents
+> reflink-based stitching from paying off in real LSM engines.
+> Per-block metadata is what unblocks it, and opens a class of
+> optimizations (TTL drop, MinHash pruning) that the field has been
+> leaving on the table.
 
 ---
 
