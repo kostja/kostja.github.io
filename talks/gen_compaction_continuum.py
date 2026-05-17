@@ -35,9 +35,9 @@ d.text("title", 20, 10, 1240, 30,
 # These sit BETWEEN the title and the plot so they cannot overlap
 # the scatter points.
 d.text("r1_lbl", 100, 50, 380, 22,
-       "файл накрывает диагональ", size=14, color=RED, align="left")
-d.text("r2_lbl", 380, 50, 380, 22,
-       "файл плотно накрывает кластер", size=14, color=BLUE, align="right")
+       "файл ограничивает диагональ", size=14, color=RED, align="left")
+d.text("r2_lbl", 360, 50, 420, 22,
+       "файл плотно ограничивает кластер", size=14, color=BLUE, align="right")
 
 # ── Coordinate plane ──────────────────────────────────────
 PX0 = 100; PY0 = 90
@@ -168,7 +168,7 @@ d.text("arr_t",
 # ── Annotations at the bottom ──
 ANN_Y = PY1 + 60
 d.text("ann1", 20, ANN_Y, 1240, 26,
-       "Файл, SSTable, run — выровненный по осям прямоугольник, накрывающий кластер обновлений.",
+       "Файл, SSTable, run — выровненный по осям прямоугольник, ограничивающий кластер обновлений.",
        size=14, color=INK)
 d.text("ann2", 20, ANN_Y + 30, 1240, 26,
        "Чем плотнее прямоугольник к форме кластера, тем меньше bloat и read amp.",

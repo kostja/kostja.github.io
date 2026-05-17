@@ -101,11 +101,11 @@ for i in range(4):
            stroke=BLUE, bg=LBLUE, sw=1, roundness=3)
     d.text(f"r_l1_t{i}", x, R_L1_Y, SST1_W, R_L1_H, "SST",
            size=12, color=BLUE)
-d.text("r_l1_lbl", RX, R_L1_Y + R_L1_H + 4, RW, 16,
+d.text("r_l1_lbl", RX, R_L1_Y + R_L1_H + 14, RW, 16,
        "L1  (4 SST, без пересечений)", size=11, color=GREY, align="left")
 
 # L2: 10 smaller SSTs spanning keyspace, larger total area
-R_L2_Y = R_L1_Y + R_L1_H + 28; R_L2_H = 140
+R_L2_Y = R_L1_Y + R_L1_H + 44; R_L2_H = 140
 N_L2 = 10
 SST2_W = (RW - (N_L2 - 1) * 4) / N_L2
 for i in range(N_L2):
@@ -114,14 +114,14 @@ for i in range(N_L2):
            stroke=BLUE, bg="#A8C4F0", sw=1, roundness=3)
     d.text(f"r_l2_t{i}", x, R_L2_Y, SST2_W, R_L2_H, "SST",
            size=10, color="#1E4A8C")
-d.text("r_l2_lbl", RX, R_L2_Y + R_L2_H + 4, RW, 16,
+d.text("r_l2_lbl", RX, R_L2_Y + R_L2_H + 14, RW, 16,
        "L2  (10 SST × 64 МБ, без пересечений)", size=11, color=GREY, align="left")
 
 # ── Bottom labels for both panels and the global annotation ──
 # Place below the rightmost-bottom element across both panels so
 # nothing collides with the L2 rects or the right-side level labels.
 LEFT_PANEL_BOT = L2_Y + L2_H
-RIGHT_PANEL_BOT = R_L2_Y + R_L2_H + 22   # +22 covers r_l2_lbl height & gap
+RIGHT_PANEL_BOT = R_L2_Y + R_L2_H + 30   # +30 covers r_l2_lbl gap (14) + height (16)
 BOTTOM = max(LEFT_PANEL_BOT, RIGHT_PANEL_BOT) + 16
 
 d.text("v_b", LX, BOTTOM, LW + 40, 20,

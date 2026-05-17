@@ -61,8 +61,10 @@ for i, s in enumerate([
 ]):
     d.text(f"k_l{i}", KX + 14, KY + 36 + i * 24, 360, 22, s, size=14, color=INK, align="left")
 
-# Annotation
-d.text("ann", 20, DY + FH + 30, 1100, 22,
+# Annotation — placed below both the destination row of pages AND
+# the Kernel & FS box, whichever is lower.
+ANN_Y = max(DY + FH, KY + 150) + 20
+d.text("ann", 20, ANN_Y, 1100, 22,
        "CoW: общие блоки становятся независимыми только при перезаписи одной из сторон.",
        size=14, color=GREY)
 

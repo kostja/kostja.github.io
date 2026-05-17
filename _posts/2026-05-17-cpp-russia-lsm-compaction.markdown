@@ -216,7 +216,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 - Каждое обновление — точка в координатах (время, ключ)
 - Естественные кластеры имеют произвольную форму: диагональные полосы (key-order sweep), плотные сгустки (горячие ключи OLTP), шум
-- Файл / SSTable / run — это **выровненный по осям прямоугольник**, накрывающий кластер
+- Файл / SSTable / run — это **выровненный по осям прямоугольник**, ограничивающий кластер
 - Compaction = найти кластер и заменить его на «строку», где каждый ключ представлен один раз
 
 > Step back from the file-merging framing. Every write is a point in
@@ -290,7 +290,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 13. Bloat временны́х рядов после разделения диапазона
+## 13. Bloat после разделения диапазона
 
 ![Time-series bloat](/assets/img/vinyl/timeseries_bloat.svg)
 
@@ -310,7 +310,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 14. Усечение плана: сливаем только пересекающееся
+## 14. Усечение плана compaction
 
 ![Overlapping cluster](/assets/img/vinyl/overlapping_cluster.svg)
 
@@ -362,7 +362,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 
 ---
 
-## 17. Когда stitching помогает *несмотря на* усечение плана
+## 17. Stitching сверх усечения плана
 
 ![Stitching workload](/assets/img/talks/stitching_workload.svg)
 
@@ -445,7 +445,7 @@ permalink: /talks/cpp-russia-lsm-compaction
 ## 21. Итоги
 
 - Любая стратегия compaction балансирует три величины: read amp, write amp, space amp
-- Файл, SSTable, run в пространстве (время, ключ) — выровненный по осям прямоугольник, накрывающий кластер обновлений
+- Файл, SSTable, run в пространстве (время, ключ) — выровненный по осям прямоугольник, ограничивающий кластер обновлений
 - Общий план compaction объединяет драйверы shape, read-amp и space-amp
 - Stitching через reflink работает, когда метаданные привязаны к блоку, а не к SSTable
 
