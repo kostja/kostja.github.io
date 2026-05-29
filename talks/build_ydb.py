@@ -136,7 +136,7 @@ set_single(s2['Text 37'],
     'Нет каталога Iceberg/Delta/Hudi. Коннектор Spark экспериментальный, '
     'функционал колоночных таблиц требует доработок.')
 set_single(s2['Text 42'],
-    'YDB — СУБД сегмента NewSQL и конкурирует с TiDB, Cockroach, Spanner '
+    'YDB — СУБД класса NewSQL и конкурирует с TiDB, Cockroach, Spanner '
     'в сегменте distributed SQL.')
 
 # --- uniform row geometry + correct zebra (gray on rows 1,3,5) ---
