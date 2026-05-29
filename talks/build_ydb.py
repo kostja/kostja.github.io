@@ -112,10 +112,10 @@ set_single(s2['Text 30'], 'Opportunity')
 set_single(s2['Text 36'], 'Нет')
 # 'Не применимо' already Russian
 
-# pill colors: Mid-tier green->amber; Overstated yellow->gold + dark text
+# pill colors: Mid-tier green->amber; Opportunity -> blue
 fill(s2['Shape 24'], 'B45309')           # Средне -> amber (white text OK)
-fill(s2['Shape 29'], 'FACC15')           # Opportunity -> gold
-font_color(s2['Text 30'], '1E293B')      # dark text on gold
+fill(s2['Shape 29'], '2563EB')           # Opportunity -> blue
+font_color(s2['Text 30'], 'FFFFFF')      # white text on blue
 
 # notes -> Russian
 set_single(s2['Text 9'],
