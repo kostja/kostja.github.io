@@ -791,7 +791,7 @@ picodata.io\*S3R* | Так мы построили S3R, и всё это мож�
         var c = gcount[it.part + '|' + it.group];
         h += '<h3>' + esc(it.group) + '<small>' + c + ' предл., ' + mmss(c * SEC) + ', с ' + mmss(i * SEC) + '</small></h3>'; lg = it.group;
       }
-      var scr = it.scr === '-' ? '' : plain(it.scr);
+      var scr = it.scr === '-' ? '' : plain(it.scr).replace(/^[a-zа-яё]/, function (c) { return c.toUpperCase(); });
       var tag = it.ill ? (it.ill.kind === 'fig' ? '▦ схема' : it.ill.kind === 'pre' ? '▤ текст' : '▣ ' + it.ill.v.split('/').pop().replace(/\.\w+$/, '')) : '';
       h += '<div class="row" data-i="' + i + '"><div class="n">' + (i + 1) + '</div><div class="scr">' + esc(scr) +
         (tag ? '<div style="font-weight:400;color:#737A82;font-size:12px">' + esc(tag) + '</div>' : '') +
@@ -817,7 +817,7 @@ picodata.io\*S3R* | Так мы построили S3R, и всё это мож�
     elShow.querySelector('.group').textContent = it.group;
     var p = elShow.querySelector('.phrase'), box = elShow.querySelector('.ill');
     var scrText = il && il.kind !== 'side' ? it.scr.replace(/\\/g, ' ') : it.scr;
-    if (il) scrText = scrText.replace(/^(\*?)([a-zа-яё])/, function (m, st, ch) { return st + ch.toUpperCase(); });
+    scrText = scrText.replace(/^(\*?)([a-zа-яё])/, function (m, st, ch) { return st + ch.toUpperCase(); });
     p.innerHTML = it.scr === '-' ? '' : fmt(scrText);
     p.style.fontSize = 'min(' + size(it.scr) + 'vw, ' + (size(it.scr) * 1.7) + 'vh)';
     elShow.classList.toggle('has-ill', !!il);
