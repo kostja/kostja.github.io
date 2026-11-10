@@ -1,0 +1,262 @@
+---
+layout: null
+permalink: /talks/s3r-openspec-live
+sitemap: false
+---
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>S3R и openspec</title>
+<style>
+:root { --black:#2B1321; --red:#E23956; --gray:#737A82; --light:#E8E9EB; --tint:#FAEAED; }
+* { box-sizing: border-box; }
+html, body { margin:0; height:100%; }
+body { font-family: Inter, "Helvetica Neue", Arial, sans-serif; color: var(--black); background:#fff; }
+code { font-family: "JetBrains Mono", Menlo, Consolas, monospace; font-size: .92em; }
+
+/* script view */
+#script { max-width: 1040px; margin: 0 auto; padding: 24px 16px 80px; }
+#script h1 { font-size: 26px; margin: 0 0 4px; }
+#script .meta { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+#script .meta b { color: var(--black); }
+#script .bar { position: sticky; top: 0; background:#fff; padding: 10px 0; border-bottom: 1px solid var(--light); z-index: 2; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+#script button, #script a.btn { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--black); background:#fff; color: var(--black); cursor:pointer; text-decoration:none; }
+#script button.primary { background: var(--red); border-color: var(--red); color:#fff; }
+#script h2 { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--red); margin: 36px 0 0; }
+#script h3 { font-size: 19px; margin: 22px 0 8px; display:flex; justify-content:space-between; gap:12px; align-items:baseline; }
+#script h3 small { font-weight: 400; color: var(--gray); font-size: 13px; white-space:nowrap; }
+#script .row { display:grid; grid-template-columns: 34px 250px 1fr; gap: 12px; padding: 7px 0; border-top: 1px solid var(--light); cursor:pointer; }
+#script .row:hover { background: var(--tint); }
+#script .row .n { color: var(--gray); font-size: 12px; padding-top: 3px; text-align:right; }
+#script .row .scr { font-weight: 600; font-size: 14px; color: var(--black); white-space: pre-line; }
+#script .row .say { font-size: 16px; line-height: 1.45; }
+@media (max-width: 700px) { #script .row { grid-template-columns: 28px 1fr; } #script .row .scr { grid-column: 2; color: var(--red);} #script .row .say { grid-column: 2; } }
+
+/* show view */
+#show { display:none; position:fixed; inset:0; background:#fff; cursor: pointer; user-select:none; }
+#show .part { position:absolute; left:4vw; top:3.5vh; font-size: 1.8vh; letter-spacing:.12em; text-transform:uppercase; color: var(--red); }
+#show .group { position:absolute; left:4vw; top:6.5vh; font-size: 2.6vh; color: var(--gray); }
+#show .count { position:absolute; right:4vw; bottom:3.5vh; font-size: 1.8vh; color: var(--gray); }
+#show .brand { position:absolute; left:4vw; bottom:3.5vh; font-size: 1.8vh; color: var(--gray); }
+#show .stage { position:absolute; inset: 12vh 6vw 12vh 6vw; display:flex; align-items:center; justify-content:center; text-align:center; }
+#show .phrase { font-weight: 700; line-height: 1.12; white-space: pre-line; letter-spacing: -0.01em; }
+#show .phrase em { font-style: normal; color: var(--red); }
+#show .phrase code { background: var(--light); padding: 0 .2em; border-radius: .15em; }
+#show .say { display:none; position:absolute; left:6vw; right:6vw; bottom:7.5vh; text-align:center; font-size: 2.3vh; color: var(--gray); line-height:1.35; }
+#show.with-say .say { display:block; }
+#show .progress { position:absolute; left:0; bottom:0; height:4px; background: var(--red); }
+
+/* notes view */
+#notes { display:none; padding: 4vh 5vw; }
+#notes .cur { font-size: 5.2vh; line-height: 1.25; font-weight: 600; }
+#notes .scr { color: var(--red); font-size: 2.6vh; margin-bottom: 1.5vh; letter-spacing:.04em; }
+#notes .next { color: var(--gray); font-size: 3vh; line-height: 1.3; margin-top: 3.5vh; }
+#notes .info { position:fixed; left:5vw; right:5vw; bottom:3vh; display:flex; justify-content:space-between; color: var(--gray); font-size: 2.4vh; }
+</style>
+</head>
+<body>
+{% raw %}
+<div id="script"></div>
+<div id="show">
+  <div class="part"></div><div class="group"></div>
+  <div class="stage"><div class="phrase"></div></div>
+  <div class="say"></div>
+  <div class="brand">Picodata</div><div class="count"></div><div class="progress"></div>
+</div>
+<div id="notes">
+  <div class="scr"></div><div class="cur"></div><div class="next"></div>
+  <div class="info"><span class="pos"></span><span class="clock"></span></div>
+</div>
+
+<!--
+Формат: «# часть», «= тема», далее строки «фраза на экране | произносимое предложение».
+В экранной фразе: *слово* красным, `код`, «\» перенос строки.
+-->
+<script type="text/plain" id="deck">
+# Вступление
+
+= Откуда мы пришли
+Использование LLM\в разработке системного ПО:\подход *openspec* | Меня зовут Константин Осипов, я из Picodata.
+год назад | Год назад на этой же конференции я рассказывал, зачем переносить вычисления в базу данных и почему мы заменили Lua на Rust.
+что мы построили\*за год* | Сегодня расскажу, что мы за год построили этим же способом и как мы это проверяли.
+*S3R* | Речь пойдёт об S3R, объектном хранилище с протоколом S3, которое целиком работает внутри Picodata.
+162 000 строк Rust\*10 недель* | В нём сто шестьдесят две тысячи строк на Rust, и написаны они за десять недель.
+кто это написал? | Почти весь этот код написали агенты, отсюда и название доклада.
+как этому *верить*? | Поэтому главный вопрос на сегодня такой: как коду, написанному моделью, можно верить.
+
+= План
+1. Picodata | Сначала я напомню, как устроено приложение на Rust внутри Picodata и что такое глобальные и шардированные таблицы.
+2. S3 как задача | Затем покажу, как на эти таблицы раскладывается объектное хранилище со всеми его возможностями.
+3. Корректность | Потом объясню, почему в таком хранилище труднее всего не скорость, а корректность.
+4. Метод | И в конце расскажу про метод: спецификации openspec, внедрение сбоев и симуляцию.
+
+# Часть I. Picodata
+
+= Приложение рядом с данными
+приложение ⇄ сеть ⇄ СУБД | В привычной архитектуре приложение и база данных работают в разных процессах и общаются по сети.
+*1 мс* | Каждое обращение к данным в такой схеме стоит порядка миллисекунды.
+*1 мкс* | Если код работает в одном процессе с данными, то же обращение превращается в поиск по индексу в памяти и стоит порядка микросекунды.
+в 1000 раз | Тысяча раз это не оптимизация, это другой класс приложений.
+транзакция\рядом с данными | Границы транзакции в этом случае задаёт код, который стоит рядом с данными, а не клиент на другом конце сети.
+вы это уже делаете | Вам этот подход знаком: ваш тарифный калькулятор именно так и работает, кодом на Rust внутри Tarantool.
+
+= От узла к кластеру
+один узел → кластер | Вопрос в том, что нужно добавить, чтобы один узел с модулем на Rust стал кластером.
+схема | Во-первых, схема данных: в Picodata она одна на весь кластер и меняется распределённым DDL.
+шардирование | Во-вторых, шардирование: оно встроено в ядро, и данные переезжают между узлами без остановки.
+Raft | В-третьих, состав кластера и отказы узлов: за них отвечает Raft в ядре, внешний координатор не нужен.
+SQL | В-четвёртых, запросы: к тем же данным можно обратиться распределённым SQL по протоколу PostgreSQL.
+плагин | И наконец, сам код приложения становится плагином: у него есть манифест, миграции и версия.
+`ALTER PLUGIN` | Плагин устанавливается и обновляется командой SQL, и две его версии могут работать в кластере одновременно.
+обычный крейт Rust | При этом плагин остаётся обычным крейтом Rust: исходники в git, сборка через cargo, тесты и CI как у любой библиотеки.
+
+= Два вида таблиц
+два вида таблиц | Для скорости важнее всего одно различие, о нём я год назад сказал одной строкой, а сегодня остановлюсь подробнее.
+`DISTRIBUTED GLOBALLY` | Глобальная таблица целиком лежит на каждом узле кластера.
+запись через Raft | Запись в неё идёт через журнал Raft, то есть через одного лидера на весь кластер.
+чтение *локальное* | Зато читать её можно на любом узле, и это чтение из локальной памяти.
+`DISTRIBUTED BY (ключ)` | Шардированная таблица разложена по кластеру: каждая строка живёт на одном репликасете.
+запись *масштабируется* | Запись в неё идёт прямо в тот репликасет, который владеет ключом, и скорость записи растёт с числом узлов.
+справочники\и\основной объём | Глобальные таблицы подходят для справочников и конфигурации, шардированные для основного объёма данных.
+
+= Управление распределением
+ключ распределения | Ключ, по которому шардируется таблица, выбирает разработчик, и он не обязан совпадать с первичным ключом.
+одинаковый ключ →\один репликасет | Строки с одинаковым ключом распределения лежат на одном репликасете, даже если это строки разных таблиц.
+совместное\распределение | Это называется совместным распределением.
+транзакция =\один репликасет | Транзакция в Picodata работает в пределах одного репликасета.
+атомарно → рядом | Значит, всё, что должно меняться атомарно, нужно положить рядом, то есть дать ему один ключ распределения.
+быстро → с ключом | И второе следствие: запрос с известным ключом идёт на один узел, а запрос без ключа обходит весь кластер.
+ключ решает *два* вопроса | Получается, что выбор ключа распределения решает сразу два вопроса: что будет атомарным и что будет быстрым.
+</script>
+
+<script>
+(function () {
+  var text = document.getElementById('deck').textContent;
+  var items = [], part = '', group = '';
+  text.split('\n').forEach(function (line) {
+    line = line.trim();
+    if (!line) return;
+    if (line[0] === '#') { part = line.slice(1).trim(); return; }
+    if (line[0] === '=') { group = line.slice(1).trim(); return; }
+    var i = line.indexOf(' | ');
+    if (i < 0) return;
+    items.push({ part: part, group: group, scr: line.slice(0, i).trim(), say: line.slice(i + 3).trim() });
+  });
+
+  var SEC = 12.5;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function fmt(s) {
+    return esc(s).replace(/\\/g, '\n').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  }
+  function plain(s) { return s.replace(/\\/g, '\n').replace(/[`*]/g, ''); }
+  function mmss(sec) { sec = Math.round(sec); return Math.floor(sec / 60) + ':' + ('0' + sec % 60).slice(-2); }
+
+  var mode = /[?&]notes\b/.test(location.search) ? 'notes' : 'script';
+  var cur = 0, started = 0;
+  var chan = ('BroadcastChannel' in window) ? new BroadcastChannel('s3r-openspec') : null;
+
+  var elScript = document.getElementById('script'), elShow = document.getElementById('show'), elNotes = document.getElementById('notes');
+
+  function renderScript() {
+    var h = '<h1>S3R и openspec: текст доклада</h1>' +
+      '<div class="meta"><b>' + items.length + '</b> предложений, около <b>' + mmss(items.length * SEC) +
+      '</b> при 12,5 с на предложение. Слева фраза на экране, справа то, что произносится.</div>' +
+      '<div class="bar"><button class="primary" id="go">Показ с начала</button>' +
+      '<a class="btn" href="?notes" target="_blank">Окно докладчика</a>' +
+      '<span class="meta" style="margin:0">В показе: стрелки или пробел листают, N показывает текст, Esc возвращает сюда.</span></div>';
+    var lp = null, lg = null, gcount = {};
+    items.forEach(function (it) { var k = it.part + '|' + it.group; gcount[k] = (gcount[k] || 0) + 1; });
+    items.forEach(function (it, i) {
+      if (it.part !== lp) { h += '<h2>' + esc(it.part) + '</h2>'; lp = it.part; lg = null; }
+      if (it.group !== lg) {
+        var c = gcount[it.part + '|' + it.group];
+        h += '<h3>' + esc(it.group) + '<small>' + c + ' предл., ' + mmss(c * SEC) + ', с ' + mmss(i * SEC) + '</small></h3>'; lg = it.group;
+      }
+      h += '<div class="row" data-i="' + i + '"><div class="n">' + (i + 1) + '</div><div class="scr">' + esc(plain(it.scr)) +
+        '</div><div class="say">' + esc(it.say) + '</div></div>';
+    });
+    elScript.innerHTML = h;
+    document.getElementById('go').onclick = function () { start(0); };
+    Array.prototype.forEach.call(elScript.querySelectorAll('.row'), function (r) {
+      r.onclick = function () { start(+r.getAttribute('data-i')); };
+    });
+  }
+
+  function size(s) {
+    var lines = plain(s).split('\n'), longest = 0;
+    lines.forEach(function (l) { longest = Math.max(longest, l.length); });
+    var byW = 150 / Math.max(longest, 4), byH = 62 / lines.length;
+    return Math.max(4, Math.min(byW, byH, 30));
+  }
+
+  function renderShow() {
+    var it = items[cur];
+    elShow.querySelector('.part').textContent = it.part;
+    elShow.querySelector('.group').textContent = it.group;
+    var p = elShow.querySelector('.phrase');
+    p.innerHTML = fmt(it.scr);
+    p.style.fontSize = 'min(' + size(it.scr) + 'vw, ' + (size(it.scr) * 1.7) + 'vh)';
+    elShow.querySelector('.say').textContent = it.say;
+    elShow.querySelector('.count').textContent = (cur + 1) + ' / ' + items.length;
+    elShow.querySelector('.progress').style.width = ((cur + 1) / items.length * 100) + '%';
+  }
+
+  function renderNotes() {
+    var it = items[cur];
+    elNotes.querySelector('.scr').textContent = it.group + ': ' + plain(it.scr).replace(/\n/g, ' ');
+    elNotes.querySelector('.cur').textContent = it.say;
+    var nx = items.slice(cur + 1, cur + 3).map(function (x) { return esc(x.say); }).join('<br><br>');
+    elNotes.querySelector('.next').innerHTML = nx;
+    elNotes.querySelector('.pos').textContent = (cur + 1) + ' / ' + items.length + ', по плану ' + mmss(cur * SEC);
+  }
+
+  function render() { if (mode === 'show') renderShow(); if (mode === 'notes') renderNotes(); }
+
+  function go(i, silent) {
+    cur = Math.max(0, Math.min(items.length - 1, i));
+    if (!started) started = Date.now();
+    render();
+    if (mode !== 'notes') { try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {} }
+    if (chan && !silent) chan.postMessage({ cur: cur });
+  }
+
+  function start(i) {
+    mode = 'show'; elScript.style.display = 'none'; elShow.style.display = 'block'; go(i);
+  }
+  function stop() {
+    mode = 'script'; elShow.style.display = 'none'; elScript.style.display = 'block';
+    var r = elScript.querySelector('.row[data-i="' + cur + '"]'); if (r) r.scrollIntoView({ block: 'center' });
+  }
+
+  if (chan) chan.onmessage = function (e) { if (mode !== 'script') go(e.data.cur, true); };
+
+  document.addEventListener('keydown', function (e) {
+    if (mode === 'script') { if (e.key === 'p' || e.key === 'з') start(cur); return; }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'ArrowDown' || e.key === 'Enter') { go(cur + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'ArrowUp' || e.key === 'Backspace') { go(cur - 1); e.preventDefault(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(items.length - 1);
+    else if (e.key === 'n' || e.key === 'т') elShow.classList.toggle('with-say');
+    else if (e.key === 'f' || e.key === 'а') { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }
+    else if (e.key === 'Escape' && mode === 'show') stop();
+  });
+  elShow.addEventListener('click', function (e) { go(cur + (e.clientX < window.innerWidth * 0.25 ? -1 : 1)); });
+
+  setInterval(function () {
+    if (mode === 'notes' && started) elNotes.querySelector('.clock').textContent = 'идёт ' + mmss((Date.now() - started) / 1000);
+  }, 1000);
+
+  if (mode === 'notes') { elScript.style.display = 'none'; elNotes.style.display = 'block'; go(0, true); }
+  else {
+    renderScript();
+    var m = /^#(\d+)$/.exec(location.hash);
+    if (m) start(+m[1] - 1);
+  }
+})();
+</script>
+{% endraw %}
+</body>
+</html>
